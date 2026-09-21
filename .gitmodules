@@ -9,7 +9,7 @@
 	url = https://github.com/go-code-bot/team-agents.git
 [submodule "skills/list-builder"]
 	path = skills/list-builder
-	url = https://github.com/go-code-bot/list-builder.git
+	url = https://github.com/Gabriel-Operator/list-builder.git
 [submodule "skills/pipeline-builder"]
 	path = skills/pipeline-builder
 	url = https://github.com/go-code-bot/pipeline-builder.git
