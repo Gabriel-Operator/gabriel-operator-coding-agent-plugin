@@ -1,6 +1,6 @@
 [submodule "skills/digital-twin-page"]
 	path = skills/digital-twin-page
-	url = https://github.com/go-code-bot/go-digital-twin-page-skills.git
+	url = https://github.com/Gabriel-Operator/go-digital-twin-page-skills.git
 [submodule "skills/workflow-builder"]
 	path = skills/workflow-builder
 	url = https://github.com/go-code-bot/go-workflow-builder-skills.git
