@@ -12,6 +12,10 @@ metadata:
 
 # Data Binding
 
+## Offline behavior
+
+Read [contract v1](references/offline-runtime-v1.md). Bind local-mode components to device repository queries and expose pending, conflict, deleted, blocked, and partially available states. Do not fall through from a missing local binding to a hosted endpoint.
+
 Connect Page Builder components to live data sources: collections, agents, and workflow endpoints.
 
 ## Core Interfaces

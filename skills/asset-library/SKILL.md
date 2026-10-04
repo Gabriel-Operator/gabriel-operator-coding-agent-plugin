@@ -1,9 +1,13 @@
 ---
 name: asset-library
-description: "Maintain a signed-in user's Git-backed generated asset library and Remotion movie manifests."
+description: Maintain a signed-in user's Git-backed generated asset library and Remotion movie manifests.
 ---
 
 # Asset Library
+
+## Offline assets
+
+Read [the embedded runtime contract](references/offline-runtime-v1.md). Keep downloaded source files, generated local artifacts, cloud uploads, and Git manifest exports distinct. Store local metadata and checksums in the device repository. Do not call a manifest reference offline-ready unless its bytes were prepared locally, and do not upload generated artifacts until the user explicitly chooses an online action or synchronization path.
 
 This repository stores a user's versioned asset-library manifests. Runtime media
 files remain in the app's private storage; Git stores stable JSON references,

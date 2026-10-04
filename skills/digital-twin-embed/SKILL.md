@@ -1,15 +1,19 @@
 ---
 name: digital-twin-embed
-description: "Maintain Git-backed Gabriel embed appearance via assets/embed-config.json."
+description: Maintain Git-backed Gabriel embed appearance via assets/embed-config.json.
 ---
 
-# Digital Twin Embed Skill
+# AI Persona Embed Skill
 
-Use this repository to update only the public embed appearance for one Gabriel digital twin.
+## Offline-first embeds
+
+Read [the embedded runtime contract](references/offline-runtime-v1.md). Persist prepared guided-journey state and form submissions through the local repository when the host is an embedded app. Check action capabilities before enabling them, expose pending/blocked/conflict status, and reserve hosted endpoints for explicit online actions or manual synchronization.
+
+Use this repository to update only the public embed appearance for one Gabriel AI Persona.
 
 ## Using this skill in coding agents
 
-Gabriel Operator skills are designed for Claude Code, Codex, Cursor, Hermes, OpenClaw, and any agent that supports skill packs. Work in the git-backed embed repository connected to your digital twin page.
+Gabriel Operator skills are designed for Claude Code, Codex, Cursor, Hermes, OpenClaw, and any agent that supports skill packs. Work in the git-backed embed repository connected to your AI Persona.
 
 ### Install the skill pack
 

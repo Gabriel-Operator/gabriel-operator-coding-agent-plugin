@@ -1,17 +1,35 @@
 ---
 name: page-builder
-description: "Orchestrator skill for generating PageBuilderConfig JSON that powers Gabriel Operator's universal app renderer. Covers web apps, mobile apps, and landing pages. Routes work to category-specific child skills for components and structural concerns."
-compatibility:
-  runtime: server
-  requires:
-    - server/skills/page-builder/references/SCHEMA.md
-    - server/skills/page-builder/references/CROSS-CUTTING.md
-    - server/skills/page-builder/references/TEMPLATE.md
-    - server/skills/page-builder/references/COMPONENT-REGISTRY.md
-    - server/skills/page-builder/references/TEMPLATES-CATALOG.md
+description: >
+  Orchestrator skill for generating PageBuilderConfig JSON that powers Gabriel Operator's
+  universal app renderer. Covers web apps, mobile apps, and landing pages.
+  Routes work to category-specific child skills for components and structural
+  concerns.
+metadata:
+  version: 1.0.0
+  author: gabriel-operator
+  tags:
+    - page-builder
+    - config-generation
+    - app-builder
+    - landing-page
+    - web-app
+    - mobile-app
+  compatibility:
+    runtime: server
+    requires:
+      - server/skills/page-builder/references/SCHEMA.md
+      - server/skills/page-builder/references/CROSS-CUTTING.md
+      - server/skills/page-builder/references/TEMPLATE.md
+      - server/skills/page-builder/references/COMPONENT-REGISTRY.md
+      - server/skills/page-builder/references/TEMPLATES-CATALOG.md
 ---
 
 # Page Builder Orchestrator
+
+## Offline-first pages
+
+Read [the embedded runtime contract](references/offline-runtime-v1.md). Generate pages that can bind to local repositories and capability reports. Actions that are unavailable in the active environment must render blocked or partially available states; mutations must expose pending/conflict state until the user explicitly synchronizes. Package required UI assets for cold offline startup.
 
 Generate complete `PageBuilderConfig` JSON objects that the Gabriel Operator platform
 renders into fully functional web apps, mobile apps, and landing pages.

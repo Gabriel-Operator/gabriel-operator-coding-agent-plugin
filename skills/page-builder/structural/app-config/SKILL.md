@@ -12,6 +12,10 @@ metadata:
 
 # App Configuration
 
+## Offline behavior
+
+Read [contract v1](references/offline-runtime-v1.md). Declare packaged assets, local repository bindings, manual synchronization, and capability-aware states. Keep auth secrets, device model selection, and scheduler ownership out of authored app configuration.
+
 Configure application-level settings: billing products, monitoring/analytics, authentication providers, LLM defaults, runtime behavior, and override precedence.
 
 ## Billing

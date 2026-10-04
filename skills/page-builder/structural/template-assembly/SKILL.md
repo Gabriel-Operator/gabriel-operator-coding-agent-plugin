@@ -14,6 +14,10 @@ metadata:
 
 # Template Assembly
 
+## Offline behavior
+
+Read [contract v1](references/offline-runtime-v1.md). Offline templates must package their UI assets and selected data dependencies, retain definition-only Git exports, and include a capability report for every assembled playbook and action.
+
 Assemble complete Page Builder applications from templates. This skill covers template selection, collection linking, app assembly patterns, and environment management.
 
 ## How Templates Work

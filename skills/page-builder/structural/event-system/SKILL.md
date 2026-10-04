@@ -12,6 +12,10 @@ metadata:
 
 # Event System
 
+## Offline behavior
+
+Read [contract v1](references/offline-runtime-v1.md). Classify event actions before enabling them. Local mutations require stable operation IDs. Connectivity-dependent actions remain visibly blocked and must not fire on reconnect, data pull, or conflict resolution.
+
 Configure interactive events and actions on Page Builder components. Events trigger one or more actions when the user interacts with a component.
 
 ## Core Interfaces

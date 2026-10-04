@@ -1,14 +1,27 @@
 ---
 name: application
-description: "Build and maintain Gabriel Operator Applications — git-backed interactive web apps with an app-config.json definition, a full-page index.html (shown in the Applications tab), and a compact mcp-app.html that renders as an interactive MCP App iframe inline in chat when a slash command completes. Use this skill when building dashboards, data visualizers, product pickers, cart viewers, or any result UI tied to a digital twin slash command. Each Application reads live pipeline data via its API key."
-compatibility: Node.js 18+ for scripts. mcp-app.html uses ESM CDN — no bundler needed.
+description: >
+  Build and maintain Gabriel Operator Applications — git-backed interactive web apps
+  with an app-config.json definition, a full-page index.html (shown in the Applications
+  tab), and a compact mcp-app.html that renders as an interactive MCP App iframe inline
+  in chat when a slash command completes. Use this skill when building dashboards,
+  data visualizers, product pickers, cart viewers, or any result UI tied to a digital
+  twin slash command. Each Application reads live pipeline data via its API key.
+metadata:
+  author: gabriel-operator
+  version: "1.0"
+  compatibility: Node.js 18+ for scripts. mcp-app.html uses ESM CDN — no bundler needed.
 ---
 
 # Application Skill
 
+## Offline-first applications
+
+Read [the embedded runtime contract](references/offline-runtime-v1.md). When hosted inside Gabriel mobile or desktop local mode, bind reads and writes to the local repository and render queued, blocked, conflict, and partially available states. CDN modules and live API-key reads still require connectivity, so a fully offline application must package its UI assets and declare only compatible local data/actions.
+
 ## Using this skill in coding agents
 
-Gabriel Operator skills are designed for Claude Code, Codex, Cursor, Hermes, OpenClaw, and any agent that supports skill packs. Work in the git-backed Application repository connected to your digital twin slash command.
+Gabriel Operator skills are designed for Claude Code, Codex, Cursor, Hermes, OpenClaw, and any agent that supports skill packs. Work in the git-backed Application repository connected to your AI Persona slash command.
 
 ### Install the skill pack
 
@@ -21,7 +34,7 @@ Gabriel Operator skills are designed for Claude Code, Codex, Cursor, Hermes, Ope
 | **OpenClaw** | Copy `server/skills/application/` into your OpenClaw workspace skills directory, then `openclaw gateway connect --url https://your-openclaw-gateway` |
 | **Gabriel Operator monorepo** | `cp -R server/skills/application ./your-git-repo/` |
 
-Gabriel scaffolds this tree when you connect Git to an Application in the digital twin configure flow.
+Gabriel scaffolds this tree when you connect Git to an Application in the AI Persona configure flow.
 
 ### Modify with your coding agent
 
@@ -39,7 +52,7 @@ Gabriel scaffolds this tree when you connect Git to an Application in the digita
 
 1. Commit and push your changes to the default branch.
 2. **MCP inline view:** Link the Application in a slash command's `resultApp.applicationId`; the updated `mcp-app.html` renders inside chat when the command completes. In development, the server hot-reloads `mcp-app.html` on each request.
-3. **Full-page view:** Open the Applications tab on your digital twin page to preview `public/index.html`.
+3. **Full-page view:** Open the Applications tab on your AI Persona to preview `public/index.html`.
 4. In production, push a new commit to pick up cached content after deploy.
 
 ## Canonical files

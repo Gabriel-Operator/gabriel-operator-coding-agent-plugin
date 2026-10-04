@@ -10,6 +10,10 @@ metadata:
 
 # Collections & Endpoints
 
+## Offline behavior
+
+Read [contract v1](references/offline-runtime-v1.md). Collections that support local mode need stable entity IDs, revisions, tombstones, and explicit local CRUD bindings. Live HTTP endpoints remain blocked offline; runtime synchronization is distinct from the endpoint action.
+
 Define data collections (schemas + storage) and API endpoints (handlers + routing) for Page Builder applications.
 
 ## Collection Interfaces

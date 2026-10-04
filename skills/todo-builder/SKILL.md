@@ -1,10 +1,21 @@
 ---
 name: todo-builder
-description: "Build, validate, and maintain Git-backed Gabriel Operator personal To-Do workspaces by editing assets/todos.json. Use this skill when defining goals, boards, and To-Dos that sync from Git into Gabriel Operator and can be imported onto any persona."
-compatibility: Requires Node.js 16+ for validation scripts.
+description: >
+  Build, validate, and maintain Git-backed Gabriel Operator personal To-Do
+  workspaces by editing assets/todos.json. Use this skill when defining goals,
+  boards, and To-Dos that sync from Git into Gabriel Operator and can be
+  imported onto any persona.
+metadata:
+  author: gabriel-operator
+  version: "1.0"
+  compatibility: Requires Node.js 16+ for validation scripts.
 ---
 
 # Todo Builder
+
+## Offline routines, schedules, and signals
+
+Read [the embedded runtime contract](references/offline-runtime-v1.md). Goals, tasks, boards, routines, schedule definitions, signal baselines, occurrence IDs, and run checkpoints may be stored locally. Assign one owner device per automation. Desktop runs while its runtime is alive; phones checkpoint on suspension and resume in the active app. Coalesce missed recurrences once and never retry uncertain external side effects without review.
 
 ## Using this skill in coding agents
 
@@ -117,3 +128,17 @@ node scripts/validate-todos.js assets/todos.json
 
 The validator rejects missing required fields, duplicate ids, invalid schedule
 types, and malformed wrappers.
+
+## Triggers and command routines
+
+Runtime To-Dos expose one canonical `trigger`: `manual`, `schedule`, `webhook`, or `list_change`. Existing `scheduleType`, schedule fields, and `monitor` remain readable and are maintained as a compatibility projection. Never commit a generated webhook token. List-change triggers may reference only a declared list owned by the runner and use bounded create/update/delete events and validated scalar conditions.
+
+A persona routine is the same To-Do resource with `executionTarget.type: "command_routine"`, a published Chat App revision, and 1–24 ordered steps. Every step uses a stable declared Chat App action ID, `saved` or `request_at_run` inputs, and an `approvalAfter` gate. Do not store secrets, runtime integration IDs, or raw executable commands. A changed app revision requires review before the routine runs again. Runtime run state, approvals, notifications, and audit history remain outside Git.
+
+Signals and Schedule use `executionTarget.type: "playbook_automation"` at runtime. Do not seed those runner-owned definitions in `assets/todos.json`. A persona may instead publish disabled starter cards as `chatApp.dataPoints[].signalPresets`; configuring a starter creates the runner's ordinary To-Do definition. Signal presets carry only portable list resource keys and declared command action IDs. Their enabled state, field rules, baselines, observations, linked runs, approvals, audit logs, and ROI stay in runtime storage.
+
+## Offline Signals and Schedule
+
+`playbook_automation` definitions remain portable, but `executionOwner` is runtime state and must never be committed to Git. A signal owned by a device watches that device's encrypted local list records, stores the first observation as a baseline without firing actions, suppresses unchanged fingerprints, and runs only locally compatible refresh/action playbooks. Web, SaaS, notification, browser, and other connected steps remain blocked for review. Optional AI judging uses the selected installed local model.
+
+Schedule definitions run on their one selected owner: desktop while the runtime is open and the computer is awake, or mobile while an app shell is active. Missed recurring occurrences coalesce into one catch-up run. Move ownership with the runtime's **Run Signals here** or **Run in cloud** action. The device keeps a transfer inactive until manual sync acknowledges it; a failed or interrupted ownership mutation must never activate local dispatch. Never activate the same definition on multiple runtimes.
