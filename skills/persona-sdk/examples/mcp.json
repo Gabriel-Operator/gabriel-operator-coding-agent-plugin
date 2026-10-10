@@ -1,0 +1,12 @@
+{
+  "$comment": "Add this to .mcp.json (Claude Code), claude_desktop_config.json (Claude Desktop), or your MCP client config. The persona-scoped key exposes ONLY this persona's tools (persona_chat, persona_get_capabilities, commands, media when enabled, and persona_get_ontology with digital-twin:app:read consent).",
+  "mcpServers": {
+    "gabriel-persona": {
+      "type": "http",
+      "url": "https://gabrieloperator.com/mcp/persona",
+      "headers": {
+        "Authorization": "Bearer gabi_your-persona-scoped-key"
+      }
+    }
+  }
+}

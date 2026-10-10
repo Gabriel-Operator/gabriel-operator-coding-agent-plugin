@@ -11,6 +11,10 @@ Read [the embedded runtime contract](references/offline-runtime-v1.md). Bind pre
 
 Use this for the signed-in persona app, independently of the anonymous landing page builder. The reusable web/native renderers contain component implementations; persona navigation, layout, copy and source selection live in `assets/chat-app.json`.
 
+## Standard Persona dashboard format
+
+For every new signed-in Persona app, read [the dashboard format](references/dashboard-first.md): Home contains the review-only `Meet <persona>` coach and the domain workspace tabs. The primary sidebar is Home, named chat history/playbooks, Signals, Data Feed and Media. Keep the coach and domain records/results/decisions in Home. Playbooks stays in the sidebar, milestones/goals in the Coach control, and routines/Signals/Schedule in Signals. Never duplicate those as Home tabs; retain standard shell utilities. Match Kai’s composition while adapting the actual persona domain. Honor a user-requested alternative and preserve an existing explicitly chosen layout.
+
 ## Authoring workflow
 
 1. Read `assets/chat-config.json`, `assets/chat-app.json`, `references/registry.json` and the effective List/Pipeline schemas. Read `references/chat-app-contract.json`.
@@ -77,6 +81,27 @@ Workspace components: `assistant-panel`, `cart-items`, `record-cards`, `nutritio
 
 `routine-list` is a runner-scoped projection of ordinary To-Dos whose execution target is `command_routine`. Declare `routine.create`, `routine.update`, `routine.run`, `routine.pause`, and `routine.delete` actions on the component. Each ordered step references a declared command action; do not embed command triggers, workflow IDs, credentials, or executable code in the routine. Routine mutations use the normal To-Do store, scheduler, webhook/list monitor, run lifecycle, approvals, notifications, audit trail, and revision checks.
 
+For Chakri's seller assessment, bind the landing capability command to the same
+`guided-upload` primary action and `sessionMode: "stepper"`. Reuse the guided host
+for the hero, landing widget, signed-in chat and signed-in widget; pass the active
+chat session and profile mode so reopening restores server progress. The seller
+package and its source-backed quote/buyer blocks are described in
+[the workflow contract](../workflow-builder/references/CAPABILITY-PREVIEW-V2.md#scrap-seller-journeys).
+Keep private account profiles in a separate portable List from pickup requests.
+Author `scrap-seller` and `scrap-buyer` modes in `peopleMatchingConfig.profileExperience`,
+default searchability to false, and bind the seller's private request destination
+through its active mode. Buyer marketplace discovery and notifications require a
+separate implemented process; a role label does not grant that capability.
+
+For the standard Meet Persona coach, use Home's existing `coach` tab with an
+`assistant-panel` backed by `source: "workspace", provider: "coach"` and configure
+`chatApp.coach`. Keep milestones/goals in that Coach control, not a separate Home
+tab. Add a standalone Coach page only when the user explicitly requests a different
+layout. A review coach may read the
+runner's requests and discuss goals without operational actions. Preserve enabled
+sessions, playbooks, signals and other shell utilities. Saved estimates and selected
+businesses are pending requests, not accepted payouts or registered partners.
+
 Use `provider: "automations"` for the Signals destination. Pair `signal-list` and `schedule-calendar` with the same data point and declare the supported `automation.create`, `automation.update`, `automation.run`, `automation.pause`, `automation.delete`, and `automation.test` actions. Signals and Schedule are runner-owned `playbook_automation` To-Dos: Signals react to observed list changes and optional refresh playbooks, while Schedule launches ordered playbooks at a time. Runtime definitions, observations, check history, approvals, and enabled state stay outside Git.
 
 An automations data point may include up to 50 portable `signalPresets`. Each preset is a disabled starter card with a stable slug `id`, `title`, optional `description`, optional `sourceListRef: { kind: "list", resourceKey }`, and optional declared command `actionId`. Add one useful preset for each eligible playbook when the persona should ship with starters. A preset never enables monitoring by itself; the runner must open it, complete its fields, save it, and explicitly enable it. Do not put local list IDs, credentials, sample customer rows, observations, runtime automation IDs, schedules, or history in a preset. If a persona has no eligible playbook, a monitoring-only preset may omit `actionId`.
@@ -103,3 +128,45 @@ Prompts adapt editable copy through the existing country generation jobs and
 policies; complete layouts are authored validated config. Translations and
 generated assets live under their matched variant and cannot use a shared global
 translation cache. Preserve human approvals, real-data boundaries and access checks.
+
+For a new standard Persona dashboard, also run `node scripts/validate-chat-app.js --dashboard-first assets/chat-app.json assets/chat-config.json` from its scaffold. The optional format check rejects a missing Home coach and sidebar clutter; do not apply it to an explicitly different layout or migrate unrelated legacy apps.
+
+Never add duplicate Playbooks, Signals, Schedule, routines or milestones/goal tabs to Home. The registered component type determines ownership even when a tab is renamed. Verify sidebar Playbooks, Coach milestones and Signals routines remain reachable; hide the duplicates without deleting saved runtime data.
+
+## Context-aware ontology
+
+Use the parent persona’s `assets/ontology.json` for Global → country/region → one authenticated audience → language → terminology. Refer to [the ontology skill](../persona-ontology/SKILL.md) for snapshots, stable IDs, validation, preview and gateway/MCP authoring. Child resources reference that contract; stored instances and credentials remain in existing runtime storage. Preserve captured ontology selections during retries and downstream mappings. Saving an ontology candidate is separate from activation.
+
+## Evidence-backed ROI
+
+For a standard Persona app, include the domain ROI/Impact sidebar destination and connect it to the same landing calculator definitions via `publishedConfig.roiMonitoring`. Read [the ROI algorithm and evidence contract](references/roi-evidence.md) or Gateway topic `persona-roi`: map committed output/List fields to the parent ontology, capture the semantic revision at execution, deduplicate stable identities, preserve acceptance/withdrawal boundaries and measure value with explicit runner baselines or evidenced economic rules. Credits/tokens/top-up funding are distinct; never sum them as one cost or call a budget/row count cash savings. Missing evidence/currency conversion keeps financial ROI unknown. Validate the model and real runner ROI before publication.
+
+Signals uses the shared panel’s inner Signals/Planning controls; never add or show a duplicate outer Signals/Routines tab strip. Scheduled and legacy routines remain in that panel’s existing controls. Meet/Coach tabs must prefix the label with the current persona portrait, even when an older model has a generic AI icon. Configure the actual persona avatar, not the author’s photo.
+
+ROI/Impact is sidebar-only. Use canonical `agents` (existing Kai `grocery-agents`) metadata as the standalone target; never display an ROI tab beside Meet/Coach.
+
+## Persona Google Maps configuration
+
+Google Maps configuration is always per persona. Configure it on Edit Persona →
+Super Connector → Google Maps, or Publish App → Persona Apps. Never instruct the
+user to put Maps keys or a Maps feature flag in a build environment. The shared
+editor saves encrypted web/Android/iOS keys and map ID outside portable Git.
+
+Author-only MCP: `gabriel_get_persona_maps_config` and
+`gabriel_update_persona_maps_config` (`pageId`, optional `webApiKey`,
+`androidApiKey`, `iosApiKey`, `mapId`), requiring `digital-twin:admin`.
+GET/PUT `/api/gateway/pages/:pageId/maps-config` expose status/fingerprints and
+save keys. Blank key inputs preserve current credentials. Runner discovery reads
+only the chosen persona's settings; it cannot change author credentials.
+
+Branded app manifest: `integrations.googleMaps = { enabled: true,
+configurationSource: "persona" }`. This portable setting contains no raw key.
+The publishing pipeline resolves saved persona settings into its native packaging
+snapshot and stamps Android SDK metadata and iOS Info.plist automatically. Local
+packaging resolves the same author-only `/maps-config/runtime` endpoint with the
+existing Gabriel account authentication; it does not accept Maps environment keys.
+Publish an updated mobile package after changing native SDK keys. SDK metadata is
+checked through the native persona Maps bridge, not a Dart environment flag.
+Web uses an isolated per-persona map frame so SPA navigation cannot reuse a different
+persona's Google key. Match visibility, geofence and school gates remain server-owned.
+Keep raw keys out of portable repositories, public landing repos, logs and prompts.

@@ -2,7 +2,7 @@
 
 The canonical parent file is `assets/ontology.json`. It holds definitions only:
 
-The optional `primitives: ["Source"]` imports the platform's stable Source entity into the effective contract. Do not redeclare `Source` locally when imported. `ontologyEntities()` expands primitives programmatically; the parent file retains one ontology across every region/language. Source attributes include identity/name/URL, provider/access method, regions/languages, capabilities/data types, logical connector/authentication slot references, freshness/quality/reliability/coverage, last check, status, and provenance. Instances and per-user Source audiences live only in private registry Lists. See the workflow action's Source registry reference for registration/evaluation policies.
+The optional `primitives: ["Source"]` imports the platform's stable Source entity into the effective contract. Do not redeclare `Source` locally when imported. `ontologyEntities()` expands primitives programmatically; the parent file retains one manifest with context-selected model variants. Source attributes include identity/name/URL, provider/access method, regions/languages, capabilities/data types, logical connector/authentication slot references, freshness/quality/reliability/coverage, last check, status, and provenance. Instances and per-user Source audiences live only in private registry Lists. See the workflow action's Source registry reference for registration/evaluation policies.
 
 ```json
 {
@@ -43,3 +43,5 @@ The **playbook** separately maps returned fields to an authorized List's column 
 For new stored objects, the optional shape is `{ "id": "...", "entityType": "Person", "attributes": {}, "relations": { "HAS_INTENT": ["..."] } }`. Those IDs are runtime data and never belong in the definition file.
 
 See [contextual views](contextual-views.md) for Signal projections, optional playbook/feed dependency metadata, read-only inspection, and historical evidence limits.
+
+For country, audience, language and terminology variants, read [context variants](context-variants.md).
