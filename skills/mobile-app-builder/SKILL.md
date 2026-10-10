@@ -120,3 +120,39 @@ checked through the native persona Maps bridge, not a Dart environment flag.
 Web uses an isolated per-persona map frame so SPA navigation cannot reuse a different
 persona's Google key. Match visibility, geofence and school gates remain server-owned.
 Keep raw keys out of portable repositories, public landing repos, logs and prompts.
+
+### Google photorealistic 3D Maps
+
+Choose `renderMode: "3d"` in the persona's saved Maps configuration (Edit Persona or
+Publish App), or pass it to `gabriel_update_persona_maps_config` / PUT
+`/api/gateway/pages/:pageId/maps-config`. The default is `"standard"`; omitting the
+field preserves the saved value. This opt-in applies to that persona only. Never
+enable it globally for Juno or other personas. Masked author settings, browser
+runtime settings and the native packaging snapshot all expose the selected mode.
+
+Use Google's actual 3D SDKs: web Maps JavaScript `maps3d`, Android
+`play-services-maps3d:0.2.2`, and iOS `GoogleMaps3D` Swift Package pinned to 1.0.0.
+Native 3D is experimental; Android needs API 26+ and iOS needs 16+. A 2D switch
+remains available. The app generator links the iOS package only for 3D personas,
+initializes both SDKs from the saved persona key, registers native platform views,
+and stamps Android's `com.google.android.geo.maps3d.API_KEY`. No Maps keys or
+feature flags belong in environment variables or public portable repositories.
+Changing native configuration requires publishing a new app package.
+
+Draw a terrain-clamped great-circle polygon from the saved center and radius.
+Use the same server-scoped activity and approximate adult-profile pins in 2D and
+3D. Panning, tilt, or switching views must never broaden a search. Schools retain
+school ID and active-profile isolation. Hide all pins during an unsaved area
+preview; clear old activity pins immediately after saving an area, ignore stale
+callbacks, and reload even when the saved coordinates are unchanged. Category
+filters must filter map pins too. Activity markers open their activity details.
+Keep Google attribution and SDK errors visible. Never present generated artwork
+as an accurate geographic layer. AI image generation is not required for 3D Maps.
+
+Enable billing and the Maps JavaScript API / Maps SDKs / Maps 3D SDKs in the key's
+Google Cloud project and apply web referrer, Android package+signing SHA-1 and iOS
+bundle restrictions as appropriate. Key presence is not proof of authorization.
+Test Neighborhood and Schools on iOS and Android with native controllers, geocoding,
+markers, radius previews/saves and mode changes. Report simulator fixture/API tests
+separately from live imagery and physical-device coverage; Google authorization
+failures must remain explicit blockers for live rendering verification.
