@@ -90,3 +90,33 @@ Read `mobile/README.md` for platform prerequisites and manual store signing.
 Test sign-in, fixed-persona chat, history, attachments, supported execution,
 credits and logout. Report configuration validation separately from compilation
 and device acceptance. Local tests use the configured backend and account credits.
+
+## Context-aware ontology
+
+Use the parent persona’s `assets/ontology.json` for Global → country/region → one authenticated audience → language → terminology. Refer to [the ontology skill](../persona-ontology/SKILL.md) for snapshots, stable IDs, validation, preview and gateway/MCP authoring. Child resources reference that contract; stored instances and credentials remain in existing runtime storage. Preserve captured ontology selections during retries and downstream mappings. Saving an ontology candidate is separate from activation.
+
+## Persona Google Maps configuration
+
+Google Maps configuration is always per persona. Configure it on Edit Persona →
+Super Connector → Google Maps, or Publish App → Persona Apps. Never instruct the
+user to put Maps keys or a Maps feature flag in a build environment. The shared
+editor saves encrypted web/Android/iOS keys and map ID outside portable Git.
+
+Author-only MCP: `gabriel_get_persona_maps_config` and
+`gabriel_update_persona_maps_config` (`pageId`, optional `webApiKey`,
+`androidApiKey`, `iosApiKey`, `mapId`), requiring `digital-twin:admin`.
+GET/PUT `/api/gateway/pages/:pageId/maps-config` expose status/fingerprints and
+save keys. Blank key inputs preserve current credentials. Runner discovery reads
+only the chosen persona's settings; it cannot change author credentials.
+
+Branded app manifest: `integrations.googleMaps = { enabled: true,
+configurationSource: "persona" }`. This portable setting contains no raw key.
+The publishing pipeline resolves saved persona settings into its native packaging
+snapshot and stamps Android SDK metadata and iOS Info.plist automatically. Local
+packaging resolves the same author-only `/maps-config/runtime` endpoint with the
+existing Gabriel account authentication; it does not accept Maps environment keys.
+Publish an updated mobile package after changing native SDK keys. SDK metadata is
+checked through the native persona Maps bridge, not a Dart environment flag.
+Web uses an isolated per-persona map frame so SPA navigation cannot reuse a different
+persona's Google key. Match visibility, geofence and school gates remain server-owned.
+Keep raw keys out of portable repositories, public landing repos, logs and prompts.

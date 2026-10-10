@@ -62,3 +62,7 @@ On `POST /chat/completions`, `model` also accepts a desktop-local provider id �
 - Prefer the `GabrielPersona` client (`typescript/src/index.ts`) over raw fetch when working in this kit.
 - Thread `sessionId` between calls that belong to one conversation.
 - This key intentionally cannot create/delete personas or reach workspace resources — do not try the `/api/gateway` endpoints with it; they reject persona keys by design.
+
+## Context-aware ontology
+
+Use the parent persona’s `assets/ontology.json` for Global → country/region → one authenticated audience → language → terminology. Refer to [the ontology skill](../persona-ontology/SKILL.md) for snapshots, stable IDs, validation, preview and gateway/MCP authoring. Child resources reference that contract; stored instances and credentials remain in existing runtime storage. Preserve captured ontology selections during retries and downstream mappings. Saving an ontology candidate is separate from activation.

@@ -298,3 +298,7 @@ totalDuration = max(
 ```
 
 `actualTransitionOverlap` for scene N = `transitionInFrames` if `transitionIn !== "none"`, else 0. First scene always has 0 overlap regardless of its `transitionIn` value.
+
+## Persona integration support
+
+Connected agent filesystems are separate from the generated asset library. Use published integration bindings for file reads/writes; bindings and connections default to read-only. Browser/desktop screenshots can supply current vision context. Live camera/screen frames are temporary and do not become library assets automatically.
