@@ -40,7 +40,12 @@
     "monitor.webhookToken"
   ],
   "scheduleTypes": ["manual", "one_time", "recurring"],
-  "executionTargetTypes": ["canvas_playbook", "checkin_call", "workflow"],
+  "executionTargetTypes": ["canvas_playbook", "checkin_call", "workflow", "command_routine", "playbook_automation"],
+  "playbookAutomation": {
+    "schemaVersion": 1,
+    "kinds": ["signal", "schedule"],
+    "note": "Portable definitions contain list/playbook references and input mappings. Checks, snapshots, credentials, approvals, and run history stay outside Git."
+  },
   "workflowExecutionTarget": {
     "fields": ["type", "appId", "endpointSlug", "inputs", "inputMode"],
     "note": "Points at a page-builder workflow endpoint (same invoke path as webhook triggers)."

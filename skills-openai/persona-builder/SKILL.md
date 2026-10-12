@@ -5,6 +5,15 @@ description: Interview the user and author a local Gabriel AI Persona draft cove
 
 # Persona Builder
 
+When a requested draft includes a landing page or prototype, put all persona
+copy, subtitles, artwork references, sample activities, form options and initiation
+prompts in its model definitions. Platform templates supply layout and interactions;
+do not propose hard-coded English or a platform persona-defaults dictionary.
+Distinguish the portrait used by AI preview headings from the brand logo. Include
+both audience tabs, mobile menus, confirmation/error states and stable option IDs
+in the translation handoff. Live generation and publishing still require the
+authorized live builder workflow; this review pack remains draft-only.
+
 Design one Gabriel AI Persona as local draft files for human review.
 
 This public skill covers the same draft files as `digital-twin-page`,
@@ -268,6 +277,8 @@ This review pack does not collect tokens or call Gateway. For a live persona:
 4. Connect that token to ChatGPT/Codex MCP (`Authorization: Bearer gabi_…`) or `GABRIEL_TOKEN`
 5. Use the live Persona Builder pack, not this local-draft skill
 
+Live audio generation is text-to-speech. Music generation is a separate text-to-music capability on the Capabilities and pipeline step, next to Audio generation. Its provider list is Lyria, Suno, ElevenLabs Music, Beatoven, and Apiframe Music, stored as chatCommandSettings.music and chatCommandModels.music. Course narration uses the speech provider.
+
 Do not request, store, or use the token inside this skill.
 
 ## UI fallback for live configure
@@ -285,3 +296,29 @@ https://gabrieloperator.com/workspace/edit-persona/{pageId}
 - GitHub: https://gabrieloperator.com/workspace/developer-settings
 
 Give the full URL. Name the tab and the control.
+
+## Authenticated Persona app draft
+
+Draft the signed-in app as `assets/chat-app.json` (schema version 3, `runtimeDataPolicy: definitions_only`) and mirror the same object in `publishedConfig.chatApp` with its stable `chatAppRef`. Home’s first/default `coach` tab is Meet Persona: an `assistant-panel` backed by a named workspace/coach data point, review-only coach settings, read-only evidence and optional goals. Put only domain records/results/decisions in Home tabs. Playbooks belongs in the sidebar, milestones/goals in the Coach control, and routines/Signals/Schedule in Signals. Never duplicate any of those utility managers as Home tabs or panels. The primary sidebar is Home, named chat history/playbooks, Signals, Data Feed and Media. Avoid extra top-level Coach, Goals, Connections, To-Dos, Canvas or Mobile destinations unless requested. Preserve the theme, avatar, locale, human approvals and existing sessions; never use public sample runs as private records. Guided commands use a stepper experience and real declared commands. Validate the JSON, references and exact mirror locally. List the Home/Coach/sidebar checks for the user’s later live verification. This remains a local draft: do not authenticate, invoke Gateway, provision, run or publish it from this public skill.
+
+## Drafting ROI mappings
+
+Include a standalone domain ROI/Impact sidebar destination in a signed-in Persona design and link its monitoring profile to the public calculator. Map committed List/workflow fields to parent ontology attributes, declare accepted outcomes and stable identities, and record evidence/provenance requirements. Use explicit user time baselines or separately evidenced monetary amounts. Tokens and credits are usage; top-ups are funding and must not be counted again as consumption. Missing evidence, prices or currency conversion leaves financial ROI unknown. Use Gateway topic `persona-roi` for the maintained algorithm when an authorized coding environment is available. This skill remains draft-only; it does not authorize accessing private records, executing workflows or publishing.
+
+Draft a single Signals panel with inner Signals/Planning controls, without duplicate outer Signals/Routines tabs. Use the persona portrait as the Meet/Coach tab prefix.
+
+ROI/Impact is sidebar-only. Use canonical `agents` (existing Kai `grocery-agents`) metadata as the standalone target; never display an ROI tab beside Meet/Coach.
+
+ROI setup places one optional planning baseline below its title, ahead of the metric cards: use a slim themed collapsible, concise single-line labels with full question help, aligned controls and explicit saving. Never duplicate it below the charts. Default to collapsed, preview the same editable values on the right, and mark unsaved drafts clearly.
+
+
+## Persona workspace instances
+
+Read [Persona Workspaces](references/persona-workspaces.md) or fetch gateway topic `persona-workspaces` for switching, sharing and subscriber editing. A workspace is an instance of the existing persona, not a new public persona, business company or harness workspace. Use `personaWorkspaceId` throughout data, immutable execution authority, tokens/credits, ontology-backed ROI and agent keys. Owners manage definitions/team within author policy; Members operate shared records/playbooks using owner access and credits. Private Coach/profile/memory and credentials remain per actor. Invitations join an existing workspace and create no personal workspace or branches.
+
+For workspace changes, follow the [workspace validation and frontend packaging contract](references/persona-workspaces.md#validation): run the disposable Lane browser/API test in the platform checkout, verify both Docker frontend input lists for imported shared contracts, and distinguish local fixture coverage from real invitation delivery, account registration and model generation.
+
+
+## Command governance and cost handoff
+
+For slash-command authoring, read [command governance and estimated cost](references/command-governance.md). Report warnings and the selected review profile with cost comparisons before handing off the command.

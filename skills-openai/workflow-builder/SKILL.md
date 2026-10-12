@@ -141,3 +141,8 @@ Example:
 - `references/SAFETY.md` — authoring boundary and handoff requirements.
 - `assets/workflow-template.json` — copyable safe starting point.
 - `scripts/validate-workflow.mjs` — local deterministic validator; it performs no network operations.
+
+
+## Command governance and cost handoff
+
+For slash-command authoring, read [command governance and estimated cost](references/command-governance.md). Report warnings and the selected review profile with cost comparisons before handing off the command.

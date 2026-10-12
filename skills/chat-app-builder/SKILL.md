@@ -5,6 +5,11 @@ description: Author versioned authenticated persona Chat Apps with model-defined
 
 # Chat App Builder
 
+For authenticated persona workspace creation, switching, sharing, or agent setup, load the gateway skill topic `persona-workspaces` (canonical [`Persona Workspaces`](../persona-workspaces/SKILL.md)). Keep `personaWorkspaceId` separate from business/harness IDs. Each explicitly created owned workspace gets author-owned definition branches and private runtime bindings. Invitees join the existing workspace; joining creates no copy or branch, and it becomes their default only when none existed. Owner-only definition/member management, private Coach/profile/memory, owner-funded execution and workspace-scoped ROI are required. Keep the standard dashboard/sidebar composition. Workspace setup is mandatory and appears alone first; personal profile questions follow as a separate skippable step. Disable onboarding in author playground/editor/chat-only embeds and consume the confirmed save immediately, discarding older reads.
+
+For workspace changes, follow the [workspace validation and frontend packaging contract](../persona-workspaces/SKILL.md#validation): run the disposable Lane browser/API test in the platform checkout, verify both Docker frontend input lists for imported shared contracts, and distinguish local fixture coverage from real invitation delivery, account registration and model generation.
+
+
 ## Offline-first rendering
 
 Read [the embedded runtime contract](references/offline-runtime-v1.md). Bind prepared screens and guided journeys to device repositories in local mode. Components and actions must render pending, blocked, conflict, and partially available states from the capability report. Never make connectivity-dependent controls appear successfully completed while offline, and never trigger synchronization merely because connectivity returned.

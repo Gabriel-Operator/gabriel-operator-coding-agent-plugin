@@ -512,5 +512,12 @@
       "weightReviewThresholdPercent",
       "maxPickupDays"
     ]
-  }
+  },
+  "optionalMarkets": [
+    "AU",
+    "DE",
+    "CA",
+    "SG",
+    "JP"
+  ]
 }

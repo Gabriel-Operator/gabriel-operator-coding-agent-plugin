@@ -2756,6 +2756,7 @@ var SOURCE_REVISION2 = /^[a-f0-9]{64}$/;
 var SUPPORTED_LANGUAGES = new Set(languages.map((language) => language.id));
 var isRecord3 = (value) => Boolean(value) && typeof value === "object" && !Array.isArray(value);
 var isDirectImageSource = (value) => typeof value === "string" && IMAGE_EXTENSION.test(value) && (/^https:\/\//i.test(value) || SAFE_APP_IMAGE_PATH.test(value));
+var isDirectVideoSource = (value) => typeof value === "string" && VIDEO_EXTENSION.test(value) && (/^https:\/\//i.test(value) || /^\/(?:(?:assets|landing-pages)\/[a-z0-9][a-z0-9/_-]*|persona-course-media\/[a-z0-9][a-z0-9-]*\/[a-z0-9][a-z0-9._-]*)\.(?:m4v|mov|mp4|webm)(?:[?#]|$)/i.test(value));
 function validateBoliLearningContent(content) {
   const issues = [];
   const prefix = "landingPage.boliLearning";
@@ -2818,9 +2819,12 @@ function validateBoliLearningContent(content) {
     if (course.ageContent !== void 0 && record(course.ageContent, `${path}.ageContent`, ages)) {
       for (const age of ages) {
         const entry = course.ageContent[age];
-        if (entry === void 0 || !record(entry, `${path}.ageContent.${age}`, ["title", "island", "subject", "goal", "description", "lessons", "puzzle", "gameTitle", "storyboardImage", "storyboardAlt"])) continue;
+        if (entry === void 0 || !record(entry, `${path}.ageContent.${age}`, ["title", "island", "subject", "goal", "description", "lessons", "puzzle", "gameTitle", "storyboardImage", "storyboardAlt", "pathImage", "evidenceImage", "introVideo"])) continue;
         for (const key of ["title", "island", "subject", "goal", "description", "gameTitle", "storyboardAlt"]) text(entry[key], `${path}.ageContent.${age}.${key}`);
         if (!isDirectImageSource(entry.storyboardImage)) issue(`${path}.ageContent.${age}.storyboardImage`, "Use a direct HTTPS or bundled application image URL.");
+        if (entry.pathImage !== void 0 && !isDirectImageSource(entry.pathImage)) issue(`${path}.ageContent.${age}.pathImage`, "Use a direct HTTPS or bundled application image URL.");
+        if (entry.evidenceImage !== void 0 && !isDirectImageSource(entry.evidenceImage)) issue(`${path}.ageContent.${age}.evidenceImage`, "Use a direct HTTPS or bundled application image URL.");
+        if (entry.introVideo !== void 0 && !isDirectVideoSource(entry.introVideo)) issue(`${path}.ageContent.${age}.introVideo`, "Use a direct HTTPS or bundled application video URL.");
         if (!Array.isArray(entry.lessons) || entry.lessons.length < 1 || entry.lessons.length > 6) issue(`${path}.ageContent.${age}.lessons`, "Provide between 1 and 6 lessons.");
         else entry.lessons.forEach((lesson, lessonIndex) => text(lesson, `${path}.ageContent.${age}.lessons[${lessonIndex}]`));
         if (record(entry.puzzle, `${path}.ageContent.${age}.puzzle`, ["title", "prompt", "choices", "correct", "hint", "unlockQuestion"])) {

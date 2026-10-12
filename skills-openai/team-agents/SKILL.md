@@ -88,3 +88,8 @@ Minimal `assets/task-orchestration.json` shape:
   "commitMessage": "Draft task orchestration"
 }
 ```
+
+
+## Command governance and cost handoff
+
+For slash-command authoring, read [command governance and estimated cost](references/command-governance.md). Report warnings and the selected review profile with cost comparisons before handing off the command.

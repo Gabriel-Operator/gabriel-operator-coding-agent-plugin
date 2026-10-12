@@ -176,7 +176,7 @@
           "key": "icon",
           "type": "text",
           "required": false,
-          "description": "One of the allowed icon tokens — see SKILL.md"
+          "description": "One of the allowed icon tokens \u2014 see SKILL.md"
         },
         {
           "key": "title",
@@ -712,9 +712,9 @@
           "electricity"
         ],
         "ageGroups": [
-          "9–11",
-          "12–14",
-          "15–18"
+          "9\u201311",
+          "12\u201314",
+          "15\u201318"
         ],
         "lessonsPerCourseMinimum": 1,
         "lessonsPerCourseMaximum": 6,
@@ -1090,6 +1090,41 @@
         "monthly",
         "yearly"
       ]
+    },
+    "localization.mobile": {
+      "optional": true,
+      "contract": "references/mobile-content.md",
+      "precedence": [
+        "mobile",
+        "country",
+        "language",
+        "base"
+      ],
+      "breakpointCssPixels": 640,
+      "partialCopyOnly": true,
+      "runtimeSideEffects": false,
+      "validation": "scripts/landing-page-mobile.cjs",
+      "desktopTranslationRevisionAffected": false
+    },
+    "mirav": {
+      "requiredWhen": {
+        "design.variant": "community-connections"
+      },
+      "schemaVersion": 1,
+      "contract": "references/model-owned-content.md",
+      "validation": "scripts/mirav-landing-copy.cjs",
+      "uiKeys": "scripts/mirav-copy-keys.json",
+      "contentOwner": "persona_model_repository",
+      "platformContentDefaults": false,
+      "profileModes": [
+        "neighborhood",
+        "schools"
+      ],
+      "aiIdentityImage": "media.portraitImage",
+      "displayTranslation": "indexed_split_assets",
+      "optionIdsTranslated": false,
+      "operationalCommandsTranslated": false,
+      "prototypeRuntimeSideEffects": false
     }
   }
 }

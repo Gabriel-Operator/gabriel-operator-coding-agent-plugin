@@ -49,8 +49,8 @@ function validateTodo(todo, index) {
       fail(`${label} executionTarget must be an object`);
     }
     const type = String(todo.executionTarget.type || '').trim();
-    if (type !== 'canvas_playbook' && type !== 'checkin_call' && type !== 'workflow') {
-      fail(`${label} executionTarget.type must be canvas_playbook, workflow, or checkin_call`);
+    if (type !== 'canvas_playbook' && type !== 'checkin_call' && type !== 'workflow' && type !== 'command_routine' && type !== 'playbook_automation') {
+      fail(`${label} executionTarget.type must be canvas_playbook, workflow, command_routine, playbook_automation, or checkin_call`);
     }
     if (type === 'canvas_playbook' && !String(todo.executionTarget.playbookId || '').trim()) {
       fail(`${label} canvas_playbook executionTarget requires playbookId`);
@@ -61,6 +61,17 @@ function validateTodo(todo, index) {
       }
       if (!String(todo.executionTarget.endpointSlug || '').trim()) {
         fail(`${label} workflow executionTarget requires endpointSlug`);
+      }
+    }
+    if (type === 'command_routine') {
+      if (!String(todo.executionTarget.appRevision || '').trim() || !Array.isArray(todo.executionTarget.steps) || todo.executionTarget.steps.length === 0) {
+        fail(`${label} command_routine requires appRevision and steps`);
+      }
+    }
+    if (type === 'playbook_automation') {
+      const definition = todo.executionTarget.definition;
+      if (!definition || typeof definition !== 'object' || definition.schemaVersion !== 1 || !['signal', 'schedule'].includes(definition.kind)) {
+        fail(`${label} playbook_automation requires a version 1 signal or schedule definition`);
       }
     }
   }

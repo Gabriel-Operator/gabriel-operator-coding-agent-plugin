@@ -27,8 +27,9 @@ function validateChakriLandingContent(content) {
     if (record(content.labels, `${base}.labels`, chakri_scrap_copy_schema_json_1.default.labels))
         for (const key of chakri_scrap_copy_schema_json_1.default.labels)
             text(content.labels[key], `${base}.labels.${key}`);
-    if (record(content.markets, `${base}.markets`, chakri_scrap_copy_schema_json_1.default.markets))
-        for (const code of chakri_scrap_copy_schema_json_1.default.markets) {
+    const marketCodes = [...chakri_scrap_copy_schema_json_1.default.markets, ...chakri_scrap_copy_schema_json_1.default.optionalMarkets];
+    if (record(content.markets, `${base}.markets`, marketCodes))
+        for (const code of marketCodes.filter(code => chakri_scrap_copy_schema_json_1.default.markets.includes(code) || Object.prototype.hasOwnProperty.call(content.markets, code))) {
             const market = content.markets[code];
             if (record(market, `${base}.markets.${code}`, chakri_scrap_copy_schema_json_1.default.marketFields))
                 for (const key of chakri_scrap_copy_schema_json_1.default.marketFields)

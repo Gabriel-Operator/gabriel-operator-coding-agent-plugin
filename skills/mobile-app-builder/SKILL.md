@@ -51,6 +51,9 @@ seed palettes from the model repo, and optional inline PNG iconPng. Prepare and
 CI expand those seeds into Flutter tokens and fail the build on invalid hex or
 contrast. Local prepare also copies landing-page brand colors into the snapshot
 config when `branding.theme` is omitted.
+An optional normalized `accentHover` seed in each light/dark palette preserves
+the model's interaction tone in native and desktop snapshots. Keep it aligned
+with `landingPage.design.brand.colors`; do not replace it with a platform color.
 Local prepare and GitHub CI also stamp `assets/mobile/<current>/logo.png` and
 `splash.png` onto the generated app icon, splash, and in-app login image.
 Optimize an icon derivative to the upload limit before embedding `iconPng`;

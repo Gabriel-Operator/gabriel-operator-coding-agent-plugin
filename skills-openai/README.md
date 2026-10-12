@@ -24,6 +24,7 @@ Included skills:
 - `digital-twin-embed`
 - `digital-twin-page`
 - `list-builder`
+- `persona-ontology`
 - `page-builder`
 - `pipeline-builder`
 - `team-agents`

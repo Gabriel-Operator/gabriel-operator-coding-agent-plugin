@@ -24,6 +24,7 @@ Create-from-scratch vs edit-existing:
 - `pipeline-builder` for Git-backed pipeline state machines, included as a submodule from `go-code-bot/pipeline-builder`.
 - `list-builder` for Git-backed personal data list schemas, included as a submodule from `go-code-bot/list-builder`.
 - `digital-twin-page` for Git-backed public chat and digital twin page configuration, included as a submodule from `go-code-bot/go-digital-twin-page-skills`.
+- `persona-ontology` for the parent Persona's `assets/ontology.json`, entity/attribute/relationship definitions, and Data Feed semantic references. Includes a standalone local validator.
 - `todo-builder` for Git-backed personal To-Do workspaces (`assets/todos.json`). Copied from the Gabriel Operator monorepo until a dedicated public skill repository exists.
 - `application` for Applications (`app-config.json`, `mcp-app.html`, Applications tab UI). Copied from the monorepo until a dedicated skill repository exists.
 - `digital-twin-embed` for embed appearance (`assets/embed-config.json`). Copied from the monorepo until a dedicated skill repository exists.
