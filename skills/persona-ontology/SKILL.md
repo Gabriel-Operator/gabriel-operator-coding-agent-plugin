@@ -7,6 +7,18 @@ metadata:
 ---
 
 # Persona ontology
+## Persona operating framework
+
+Read [the source-to-outcome contract](references/persona-framework.md) when
+connecting domain evidence and actions. Ontology supplies stable semantics;
+Persona Data Feeds acquire validated JSON; Signals explain a change and prepare
+declared playbooks; human approvals control effects; accepted outcomes and
+attributed cost drive ROI. Keep definitions in model repositories and private
+runtime state outside portable Git. Discover `persona-framework`,
+`persona-data-feeds`, `persona-signals`, `persona-playbooks`, `persona-ontology`
+and `persona-roi` through `gabriel_get_skill_instructions`; load the topics
+relevant to the requested work.
+
 
 Edit **`assets/ontology.json` in the parent Persona app repo**. Each Persona owns one versioned manifest with optional country, audience, language, and terminology variants, shared by Signals, playbooks, state machines and UI. A child workflow, List, or Pipeline repo may reference types but does not own another ontology.
 

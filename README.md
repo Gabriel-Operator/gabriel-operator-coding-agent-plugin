@@ -14,6 +14,13 @@ Antigravity, Hermes, OpenClaw, Copilot, and peers consume the same `skills/<name
 
 ## Included Skills
 
+Version 1.6.0 makes the Persona operating framework explicit: source evidence
+and ontology → Signals → reviewed playbooks → committed outcomes → ROI and
+reviewable feedback. `persona-framework` routes to `persona-ontology`,
+`persona-data-feeds`, `persona-signals`, `persona-playbooks`, and `persona-roi`.
+The full coding-agent skills and reduced ChatGPT draft skills describe the same
+contracts while retaining their respective live-operation permissions.
+
 Create-from-scratch vs edit-existing:
 
 - `persona-builder` interviews a user and **provisions** a new AI Persona (page, lists, pipeline, workflows, git, team agents, publish). Submodule from [`Gabriel-Operator/persona-builder`](https://github.com/Gabriel-Operator/persona-builder). Also listed as its own marketplace plugin so Codex/Claude/Cursor/Grok can install it without relying on the child-editing skills alone.

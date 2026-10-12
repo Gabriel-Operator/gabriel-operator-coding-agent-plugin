@@ -5,6 +5,17 @@ description: Interview the user and author a local Gabriel AI Persona draft cove
 
 # Persona Builder
 
+## Persona operating framework
+
+Use `persona-framework` to connect the domain's ontology, Data Feeds, disabled
+Signals, reviewed playbooks and ROI definitions. The specialist skills in this
+package cover those draft contracts. Read
+[the shared operating contract](references/persona-framework.md) before adding
+connections. Keep source provenance, semantic identity, approval boundary and
+accepted outcome measurable; optional capabilities remain explicit when not
+configured. Append the catalog/ontology/monitoring draft files relevant to the
+confirmed requirements rather than inventing live providers or realized ROI.
+
 When a requested draft includes a landing page or prototype, put all persona
 copy, subtitles, artwork references, sample activities, form options and initiation
 prompts in its model definitions. Platform templates supply layout and interactions;

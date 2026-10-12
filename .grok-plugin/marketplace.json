@@ -56,5 +56,8 @@
         "name": "Gabriel Operator"
       }
     }
-  ]
+  ],
+  "metadata": {
+    "version": "1.6.0"
+  }
 }

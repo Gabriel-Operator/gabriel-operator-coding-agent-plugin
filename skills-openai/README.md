@@ -3,9 +3,13 @@
 This directory contains reduced, public-directory-safe skill bundles prepared
 for OpenAI review. It does not replace the full multi-client skills in `../skills/`.
 
-For the current OpenAI directory draft, upload the single-skill ZIP at
+For the current OpenAI directory listing, upload the versioned framework ZIP at
 [`../openai-submission/gabriel-operator-openai.zip`](../openai-submission/gabriel-operator-openai.zip)
-(`persona-builder` only). Add other bundles later if a scan stays green.
+(`persona-builder`, `persona-framework`, `persona-ontology`, `persona-data-feeds`,
+`persona-signals`, `persona-playbooks`, and `persona-roi`). Build it with
+`python3 scripts/package-submissions.py`; verify it with `--check` before upload.
+The existing listing is skills-only. Live Gateway/MCP tools are a separately
+authorized connection and are not added implicitly by uploading these drafts.
 
 Upload a plugin ZIP built only from these `skills-openai/` bundles. Every skill
 here is intentionally authoring-only:
@@ -25,6 +29,11 @@ Included skills:
 - `digital-twin-page`
 - `list-builder`
 - `persona-ontology`
+- `persona-framework`
+- `persona-data-feeds`
+- `persona-signals`
+- `persona-playbooks`
+- `persona-roi`
 - `page-builder`
 - `pipeline-builder`
 - `team-agents`

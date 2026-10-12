@@ -1,7 +1,7 @@
 {
   "name": "gabriel-operator",
-  "version": "1.4.0",
-  "description": "Gabriel Operator skills for creating AI Personas from a Gabi token, plus workflows, Page Builder apps, team agents, pipelines, lists, todos, applications, asset libraries, embeds, and digital twin pages.",
+  "version": "1.6.0",
+  "description": "Gabriel Operator skills for domain-specific Personas: ontology, Data Feeds, Signals, approved playbooks and evidence-backed ROI, plus model-owned apps, workflows and assets.",
   "author": {
     "name": "Gabriel Operator",
     "email": "hello@gabrieloperator.com",
@@ -21,13 +21,18 @@
     "application",
     "asset-library",
     "digital-twin-embed",
-    "persona-builder"
+    "persona-builder",
+    "ontology",
+    "data-feeds",
+    "signals",
+    "playbooks",
+    "roi"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Gabriel Operator",
     "shortDescription": "Sign up + copy Gabi token",
-    "longDescription": "Sign up at https://gabrieloperator.com/signup. Open Workspace, go to Dashboard, and copy your Gabi token (the key that starts with gabi_). Connect that token in ChatGPT before you run this plugin. Do not paste the raw token into chat.\n\nThis plugin interviews you and helps you build your dream AI persona faster. Extra skills are included so you can keep editing it afterward.",
+    "longDescription": "Design and maintain a complete domain-specific AI Persona. Connect ontology, Data Feeds, Signals, reviewed playbooks and evidence-backed ROI. Author model-owned apps and workflows; keep live credentials and runtime evidence in Gabriel Operator. Use the installed gateway setup when authorized live provisioning is required.",
     "developerName": "Gabriel Operator",
     "category": "Productivity",
     "capabilities": [
@@ -38,10 +43,9 @@
     "privacyPolicyURL": "https://github.com/Gabriel-Operator/gabriel-operator-coding-agent-plugin",
     "termsOfServiceURL": "https://github.com/Gabriel-Operator/gabriel-operator-coding-agent-plugin",
     "defaultPrompt": [
-      "I signed up on Gabriel Operator and connected my Gabi token. Create a persona from this description.",
-      "Build a Gabriel workflow from this task.",
-      "Create a Page Builder app config.",
-      "Define personal To-Dos in assets/todos.json."
+      "Design a domain-specific Persona with ontology, Data Feeds, Signals, playbooks and ROI.",
+      "Connect this Persona model\u2019s sources, approved actions and outcome evidence.",
+      "Review the Persona\u2019s planning calculator and accepted-evidence ROI mappings."
     ],
     "brandColor": "#2563EB",
     "composerIcon": "./assets/icon.png",
