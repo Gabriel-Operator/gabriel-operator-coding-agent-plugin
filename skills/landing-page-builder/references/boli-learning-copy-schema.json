@@ -433,6 +433,14 @@
     "parentStep2Alt",
     "parentStep3Alt",
     "parentStep4Alt",
-    "parentStep5Alt"
+    "parentStep5Alt",
+    "filmPlay",
+    "filmPause",
+    "filmReplay",
+    "filmMute",
+    "filmUnmute",
+    "filmFullscreen",
+    "filmExitFullscreen",
+    "filmProgress"
   ]
 }

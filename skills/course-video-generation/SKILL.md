@@ -22,7 +22,7 @@ assets/course-media/<persona>-course-<slug>-intro.mp4
 assets/course-media/<persona>-course-<slug>-intro-picture.mp4
 ```
 
-`<slug>` is a short course id such as `ai` or `matter`. The picture file is the same film with the audio track removed. Playback asks the app for `/persona-course-media/<persona>/<file>`. The app reads `assets/course-media/` from the persona checkout (`persona-<persona>` under `GO_CHATS_ROOT`, or the sibling `pipelines/go-chats` directory).
+`<slug>` is a short course id such as `ai` or `matter`. The picture file is the same film with the audio track removed. Playback asks the app for `/persona-course-media/<persona>/<file>`. The app reads `assets/course-media/` from the persona checkout (`persona-<persona>` under `GO_CHATS_ROOT`, or the sibling `pipelines/go-chats` directory). Where there is no checkout, as in production, it reads the same file from the persona's bound git repository (default branch), so a film plays there only after it is committed and pushed. Each file is kept on disk under its git object id and a push is picked up within about a minute.
 
 Set `introVideo` on every age of the course to that playback URL, in `assets/landing-page.json` and every `assets/landing-page.<language>.json`. Do not leave a `?v=` cache key on the URL.
 

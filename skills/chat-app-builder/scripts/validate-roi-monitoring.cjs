@@ -371,7 +371,7 @@ function validateRoiMonitoring(value) {
     issues.push("Metric IDs must be unique.");
   const bindings = Array.isArray(c.bindings) ? c.bindings.map(record) : [];
   if (!bindings.length || bindings.length > 30 || bindings.some(
-    (b) => !metrics.some((m) => m.id === b.metricId) || !(typeof b.commandId === "string" && /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,100}$/.test(b.commandId) || record(b.workflowRef).kind === "workflow" && /^workflow\.[a-zA-Z0-9._-]+$/.test(String(record(b.workflowRef).resourceKey || ""))) || !["pipeline_stage", "execution_completed"].includes(String(b.source)) || typeof b.requiresAcceptance !== "boolean" || b.source !== "execution_completed" && (!Array.isArray(b.stageIds) || !b.stageIds.length) || b.source === "execution_completed" && !b.requiresAcceptance
+    (b) => !metrics.some((m) => m.id === b.metricId) || !(typeof b.commandId === "string" && /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,100}$/.test(b.commandId) || record(b.workflowRef).kind === "workflow" && /^workflow\.[a-zA-Z0-9._-]+$/.test(String(record(b.workflowRef).resourceKey || ""))) || !["pipeline_stage", "execution_completed", "activity_occurrence"].includes(String(b.source)) || typeof b.requiresAcceptance !== "boolean" || b.source === "pipeline_stage" && (!Array.isArray(b.stageIds) || !b.stageIds.length) || b.source === "execution_completed" && !b.requiresAcceptance
   ))
     issues.push(
       "Bindings require stable workflow refs, known metrics, and explicit acceptance for execution outputs."

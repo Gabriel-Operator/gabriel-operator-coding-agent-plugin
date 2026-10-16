@@ -23,7 +23,18 @@
     "gabriel_get_canvas_playbook",
     "gabriel_upsert_canvas_playbook",
     "gabriel_run_canvas_playbook",
-    "gabriel_get_persona_roi"
+    "gabriel_get_persona_roi",
+    "gabriel_get_playbook_team",
+    "gabriel_propose_playbook_team",
+    "gabriel_update_playbook_team",
+    "gabriel_validate_playbook_team",
+    "gabriel_get_activity_loop_context",
+    "gabriel_get_activity_outcomes",
+    "gabriel_get_activity_impact",
+    "gabriel_set_activity_check_in",
+    "gabriel_configure_activity_signals",
+    "gabriel_set_activity_baseline",
+    "gabriel_calculate_persona_roi"
   ],
   "persona": [
     "persona_get_skill_instructions",
@@ -35,13 +46,22 @@
     "persona_coach_get_app",
     "persona_coach_query_app",
     "persona_coach_run_app_action",
-    "persona_get_roi"
+    "persona_get_roi",
+    "persona_get_playbook_team",
+    "persona_get_activity_loop_context",
+    "persona_get_activity_outcomes",
+    "persona_get_activity_impact",
+    "persona_set_activity_check_in",
+    "persona_configure_activity_signals",
+    "persona_set_activity_baseline",
+    "persona_calculate_roi"
   ],
   "api": [
     "GET /api/gateway/skill-instructions?topic=persona-framework",
     "GET /api/gateway/pages/{pageId}/data-feeds",
     "GET /api/gateway/pages/{pageId}/data-feeds/{feedId}/versions/{revision}",
-    "GET /api/gateway/pages/{pageId}/roi"
+    "GET /api/gateway/pages/{pageId}/roi",
+    "POST /api/gateway/pages/{pageId}/roi/calculate"
   ],
   "boundaries": {
     "definitions": "Model Git definitions and stable resource keys",

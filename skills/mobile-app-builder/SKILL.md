@@ -26,8 +26,18 @@ Resolve the deployed page ID from the persona's published model or platform.
 Do not use the repository UUID or a `persona.*` resource key as a page ID.
 If only a resource key is available, keep a clearly named draft until resolved.
 Preserve existing chat behavior in `assets/chat-config.json` and web modules in
-`chat-app.json`; do not invent a mobile menu schema. The supported preset is
-signed-in `persona-chat` with fixed-persona navigation.
+`chat-app.json`. By default the app draws the same Chat App as the web, with
+fixed-persona navigation (the signed-in `persona-chat` preset).
+
+A Persona that wants a different phone experience (a camera-first companion, a
+smaller menu) declares it in `chat-app.json`, never in a mobile-only manifest: routes
+marked `surface: "mobile"` plus a `chatApp.mobile` section with the home screen, the
+menu and an optional `minimumAppVersion`. Read
+[the persona routes contract](../chat-app-builder/references/persona-routes.md#mobile-companion)
+for the components the app can draw (`heading`, `text`, `image`, `link-button`,
+`qr-scanner`, `persona-web-route`) and how the in-app browser is signed in. A new
+mobile component needs an app release, so set `minimumAppVersion` when a screen
+uses one.
 
 Signals and Schedule are defined by the shared Chat App automations contract,
 not by a mobile-only manifest. Preserve `signalPresets` and declared automation

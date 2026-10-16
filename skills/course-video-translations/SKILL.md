@@ -26,7 +26,7 @@ assets/course-media/<persona>-course-<slug>-intro.<region>.<language>.<terminolo
 assets/course-media/manifest.json                           keys such as "ai:es" and "ai:india.hi"
 ```
 
-Playback URL: `/persona-course-media/<persona>/<file>`. The app serves that path from the persona checkout. It does not read `public/assets/`.
+Playback URL: `/persona-course-media/<persona>/<file>`. The app serves that path from the persona checkout, or from the persona's bound git repository when there is no checkout (production). It does not read `public/assets/`. Commit and push the files; production does not see an uncommitted local file.
 
 Resolver order, matching landing pages:
 
@@ -50,7 +50,7 @@ Saving a landing-page translation for a language that does not yet have course n
 
 Audio generation is text-to-speech. Music generation is a separate text-to-music list: Lyria, Suno, ElevenLabs Music, Beatoven, and Apiframe Music. Landing narration uses the speech provider only. Do not use a music provider for these tracks.
 
-The spoken text is the translated course copy already on that landing page. This is text-to-speech. The English film is not transcribed. ElevenLabs receives `language_code` and is retried once without it when that model rejects the code. The mp3 is generated in memory, then committed with an updated `assets/course-media/manifest.json` through the same temporary clone used for landing translations. A copy into the local checkout happens when that folder is writable. Playback keeps using `/persona-course-media/<persona>/<file>` and reads the checkout, so the new language plays after the checkout contains the file. English is skipped. A track that is already present is left in place. A regional translation is stored as `<region>.<language>` and does not replace the plain language track.
+The spoken text is the translated course copy already on that landing page. This is text-to-speech. The English film is not transcribed. ElevenLabs receives `language_code` and is retried once without it when that model rejects the code. The mp3 is generated in memory, then committed with an updated `assets/course-media/manifest.json` through the same temporary clone used for landing translations. A copy into the local checkout happens when that folder is writable. Playback keeps using `/persona-course-media/<persona>/<file>` and reads the checkout, so the new language plays after the checkout contains the file. Production reads the bound repository instead, where the commit above is already enough. English is skipped. A track that is already present is left in place. A regional translation is stored as `<region>.<language>` and does not replace the plain language track.
 
 The offline script below is for generating a whole catalogue in one run. Its key stays in the process environment.
 
