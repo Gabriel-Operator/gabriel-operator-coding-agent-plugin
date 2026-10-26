@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "gabriel-operator",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Gabriel Operator skills for domain-specific Personas: ontology, Data Feeds, Signals, approved playbooks and evidence-backed ROI, plus model-owned apps, workflows and assets.",
   "author": {
     "name": "Gabriel Operator",
