@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "market": "NL",
+  "teams": [
+    {
+      "id": "lane-calendar-check",
+      "name": "Lane Calendar check",
+      "goal": "Verify one private Google Calendar read and publish only a success flag.",
+      "revision": 1,
+      "budget": {
+        "dailyCredits": 0,
+        "episodeCredits": 0
+      },
+      "apps": [],
+      "automationPolicies": [],
+      "bots": [
+        {
+          "id": "calendar-check",
+          "playbookId": "studio:calendar-read-check",
+          "sourceFingerprint": "17192e05e10f5e8767f6bd821f25bff7ce83c7715aeb212b252e1d8d317ebe7a",
+          "name": "Check Calendar connection",
+          "objective": "Verify a read-only Calendar connection",
+          "completionCriteria": "One successful read receipt and readSucceeded true; no external writes.",
+          "position": {
+            "x": 120,
+            "y": 140
+          }
+        }
+      ],
+      "connections": []
+    }
+  ],
+  "playbooks": [
+    {
+      "schemaVersion": 1,
+      "key": "calendar-read-check",
+      "name": "Check Calendar connection",
+      "revision": 1,
+      "inputs": [],
+      "requirements": [
+        {
+          "id": "calendar",
+          "label": "Google Calendar",
+          "context": "personal",
+          "providers": [
+            "googlecalendar"
+          ],
+          "operations": [
+            "list-calendars"
+          ],
+          "optional": false
+        }
+      ],
+      "outputFields": [
+        "readSucceeded"
+      ],
+      "kind": "structured",
+      "steps": [
+        {
+          "id": "read-calendars",
+          "title": "Read Google Calendar",
+          "instruction": "Read the initiating members calendar list once. Do not create, edit or delete calendars or events. Return only the verified read success flag, never calendar details.",
+          "dependsOn": [],
+          "type": "connector_operation",
+          "operation": {
+            "requirementId": "calendar",
+            "operationId": "list-calendars",
+            "values": {},
+            "effect": "read"
+          },
+          "inputMappings": {},
+          "outputFields": {
+            "readSucceeded": "/readSucceeded"
+          },
+          "requiresApproval": false
+        }
+      ]
+    }
+  ]
+}

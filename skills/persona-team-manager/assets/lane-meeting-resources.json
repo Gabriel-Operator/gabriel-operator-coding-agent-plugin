@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "lists": [
+    {
+      "schemaVersion": 2,
+      "resourceKey": "list.lane.meeting-cycles",
+      "runtimeDataPolicy": "definitions_only",
+      "list": {
+        "name": "Meeting cycles",
+        "description": "Accepted meeting outcomes shared by enrolled members. No raw email, transcript, phone, meeting URL or credentials.",
+        "language": "en",
+        "columns": [
+          {
+            "key": "cycle_id",
+            "label": "Cycle",
+            "type": "text",
+            "required": false,
+            "options": null
+          },
+          {
+            "key": "attendee_email",
+            "label": "Attendee email",
+            "type": "text",
+            "required": false,
+            "options": null
+          },
+          {
+            "key": "start_at",
+            "label": "Meeting starts",
+            "type": "date",
+            "required": false,
+            "options": null
+          },
+          {
+            "key": "status",
+            "label": "Relationship status",
+            "type": "text",
+            "required": false,
+            "options": null
+          },
+          {
+            "key": "summary",
+            "label": "Summary",
+            "type": "text",
+            "required": false,
+            "options": null
+          },
+          {
+            "key": "next_action",
+            "label": "Next action",
+            "type": "text",
+            "required": false,
+            "options": null
+          }
+        ]
+      }
+    }
+  ],
+  "publishers": [
+    {
+      "key": "meeting-cycles",
+      "kind": "list",
+      "destination": "list.lane.meeting-cycles",
+      "fields": [
+        "cycle_id",
+        "attendee_email",
+        "start_at",
+        "status",
+        "summary",
+        "next_action"
+      ]
+    },
+    {
+      "key": "leads",
+      "kind": "list",
+      "destination": "list.lane.leads",
+      "fields": [
+        "status",
+        "notes"
+      ]
+    },
+    {
+      "key": "relationship-meetings",
+      "kind": "list",
+      "destination": "list.lane.relationship-meetings",
+      "fields": [
+        "at",
+        "state",
+        "evidence"
+      ]
+    },
+    {
+      "key": "relationship-observations",
+      "kind": "list",
+      "destination": "list.lane.relationship-observations",
+      "fields": [
+        "identity",
+        "event_kind",
+        "confirmed",
+        "result"
+      ]
+    },
+    {
+      "key": "relationship-outcomes",
+      "kind": "list",
+      "destination": "list.lane.relationship-outcomes",
+      "fields": [
+        "kind",
+        "learning",
+        "nextAction",
+        "evidence"
+      ]
+    },
+    {
+      "key": "live-results",
+      "kind": "page",
+      "destination": null,
+      "fields": [
+        "brief",
+        "summary",
+        "learning",
+        "next_action"
+      ]
+    }
+  ],
+  "providerContracts": {
+    "calendar": {
+      "operation": "upcoming",
+      "output": "meetings: accepted occurrences with id, startAt, endAt, attendeeEmails, meetingUrl and accepted=true"
+    },
+    "briefing": {
+      "operation": "call",
+      "input": "destination: verified member number; maxSeconds <=180; occurrence: stable cycle ID; brief: authorized projection",
+      "completion": "status completed or explicit failure; stable call id"
+    },
+    "capture": {
+      "operation": "schedule",
+      "input": "explicitly consented meeting URL and occurrence",
+      "completion": "status ready, exact meetingUrl, recordingPermission allowed, endedAt in past, nonempty transcript and evidence references"
+    },
+    "contacts": {
+      "operation": "update",
+      "identity": "explicit email → Notion page/revision → Lane record/revision",
+      "fields": [
+        "status",
+        "summary",
+        "next_action"
+      ]
+    }
+  }
+}

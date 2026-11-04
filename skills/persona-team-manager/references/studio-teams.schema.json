@@ -1,0 +1,1189 @@
+{
+  "$ref": "#/definitions/StudioTeams",
+  "definitions": {
+    "StudioTeams": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "market": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "teams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]*$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "goal": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 12000
+              },
+              "revision": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "budget": {
+                "type": "object",
+                "properties": {
+                  "dailyCredits": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "episodeCredits": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "dailyCredits",
+                  "episodeCredits"
+                ],
+                "additionalProperties": false
+              },
+              "apps": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                },
+                "maxItems": 50,
+                "default": []
+              },
+              "automationPolicies": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "playbookKey": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "intervalMinutes": {
+                      "type": "integer",
+                      "minimum": 5,
+                      "maximum": 1440
+                    },
+                    "maxCredits": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "maxModelCalls": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 128
+                    },
+                    "sharedFields": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                      },
+                      "maxItems": 100,
+                      "default": []
+                    },
+                    "meetingCycle": {
+                      "type": "object",
+                      "properties": {
+                        "researcher": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "caller": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "scribe": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "analyst": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "steward": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "publisher": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "prepareMinutes": {
+                          "type": "number",
+                          "const": 30,
+                          "default": 30
+                        },
+                        "lookbackDays": {
+                          "type": "number",
+                          "const": 90,
+                          "default": 90
+                        },
+                        "maxCallSeconds": {
+                          "type": "number",
+                          "const": 180,
+                          "default": 180
+                        },
+                        "signalRules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                              },
+                              "field": {
+                                "type": "string",
+                                "maxLength": 1000
+                              },
+                              "equals": {
+                                "type": [
+                                  "string",
+                                  "number",
+                                  "boolean"
+                                ]
+                              },
+                              "targetPlaybookKey": {
+                                "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "field",
+                              "equals"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "maxItems": 20,
+                          "default": []
+                        }
+                      },
+                      "required": [
+                        "researcher",
+                        "caller",
+                        "scribe",
+                        "analyst",
+                        "steward",
+                        "publisher"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "playbookKey",
+                    "intervalMinutes",
+                    "maxCredits",
+                    "maxModelCalls"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 20,
+                "default": []
+              },
+              "pagePositions": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "additionalProperties": false
+                },
+                "propertyNames": {
+                  "minLength": 1,
+                  "maxLength": 160,
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]*$"
+                }
+              },
+              "hiddenPageIds": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                },
+                "maxItems": 256
+              },
+              "bots": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "playbookId": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "sourceFingerprint": {
+                      "type": "string",
+                      "maxLength": 128
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "objective": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/goal"
+                    },
+                    "completionCriteria": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/goal"
+                    },
+                    "position": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "playbookId",
+                    "sourceFingerprint",
+                    "name",
+                    "objective",
+                    "completionCriteria",
+                    "position"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 64
+              },
+              "connections": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "sourceBotId": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "targetBotId": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "pageId": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "delegate",
+                        "handoff",
+                        "update_page",
+                        "read_page"
+                      ]
+                    },
+                    "instruction": {
+                      "type": "string",
+                      "maxLength": 4000,
+                      "default": ""
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "sourceBotId",
+                    "kind"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 200
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "goal",
+              "revision",
+              "budget",
+              "bots",
+              "connections"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100
+        },
+        "playbooks": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "teamId": {
+                    "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                  },
+                  "schemaVersion": {
+                    "type": "number",
+                    "const": 1
+                  },
+                  "key": {
+                    "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "revision": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  },
+                  "inputs": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        "required": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "label",
+                        "required"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "maxItems": 50,
+                    "default": []
+                  },
+                  "requirements": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
+                        },
+                        "context": {
+                          "type": "string",
+                          "enum": [
+                            "personal",
+                            "app"
+                          ]
+                        },
+                        "providers": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                          },
+                          "minItems": 1,
+                          "maxItems": 100
+                        },
+                        "operations": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                          },
+                          "minItems": 1,
+                          "maxItems": 50
+                        },
+                        "optional": {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        "appId": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "label",
+                        "context",
+                        "providers",
+                        "operations"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "maxItems": 30,
+                    "default": []
+                  },
+                  "outputFields": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "maxItems": 100,
+                    "default": []
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "structured"
+                  },
+                  "steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        "instruction": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/goal"
+                        },
+                        "dependsOn": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                          },
+                          "maxItems": 32,
+                          "default": []
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "reason",
+                            "connector_operation",
+                            "playbook",
+                            "wait_until",
+                            "publish_page",
+                            "publish_list"
+                          ]
+                        },
+                        "operation": {
+                          "type": "object",
+                          "properties": {
+                            "requirementId": {
+                              "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                            },
+                            "operationId": {
+                              "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                            },
+                            "values": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                              },
+                              "default": {}
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "read",
+                                "write",
+                                "process"
+                              ]
+                            },
+                            "safety": {
+                              "type": "string",
+                              "enum": [
+                                "member_briefing",
+                                "consented_meeting"
+                              ]
+                            },
+                            "remoteId": {
+                              "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                            },
+                            "expectedRevision": {
+                              "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                            },
+                            "completion": {
+                              "type": "object",
+                              "properties": {
+                                "operationId": {
+                                  "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                                },
+                                "values": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                                  },
+                                  "default": {}
+                                },
+                                "statePath": {
+                                  "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                                },
+                                "success": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "minItems": 1
+                                },
+                                "failure": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "default": []
+                                },
+                                "intervalSeconds": {
+                                  "type": "integer",
+                                  "minimum": 15,
+                                  "maximum": 3600,
+                                  "default": 60
+                                },
+                                "deadlineSeconds": {
+                                  "type": "integer",
+                                  "minimum": 30,
+                                  "maximum": 604800
+                                }
+                              },
+                              "required": [
+                                "operationId",
+                                "statePath",
+                                "success",
+                                "deadlineSeconds"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "requirementId",
+                            "operationId",
+                            "effect"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "playbookKey": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                        },
+                        "inputMappings": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                          },
+                          "default": {}
+                        },
+                        "outputFields": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                          },
+                          "default": {}
+                        },
+                        "waitUntil": {
+                          "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                        },
+                        "requiresApproval": {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        "publication": {
+                          "type": "object",
+                          "properties": {
+                            "target": {
+                              "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                            },
+                            "fields": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                              }
+                            },
+                            "recordId": {
+                              "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                            },
+                            "expectedUpdatedAt": {
+                              "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                            }
+                          },
+                          "required": [
+                            "target",
+                            "fields"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "instruction",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 1,
+                    "maxItems": 32
+                  }
+                },
+                "required": [
+                  "schemaVersion",
+                  "key",
+                  "name",
+                  "revision",
+                  "kind",
+                  "steps"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "teamId": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/teamId"
+                  },
+                  "schemaVersion": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/schemaVersion"
+                  },
+                  "key": {
+                    "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                  },
+                  "name": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/name"
+                  },
+                  "revision": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/revision"
+                  },
+                  "inputs": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/inputs"
+                  },
+                  "requirements": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/requirements"
+                  },
+                  "outputFields": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/outputFields"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "goal"
+                  },
+                  "objective": {
+                    "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/goal"
+                  },
+                  "completionCriteria": {
+                    "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/goal"
+                  },
+                  "allowedSkills": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "maxItems": 30,
+                    "default": []
+                  },
+                  "limits": {
+                    "type": "object",
+                    "properties": {
+                      "maxDepth": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3,
+                        "default": 3
+                      },
+                      "maxAgents": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 12,
+                        "default": 12
+                      },
+                      "maxTasks": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 32,
+                        "default": 32
+                      },
+                      "maxConcurrentAgents": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 4,
+                        "default": 4
+                      },
+                      "activeMinutes": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 60,
+                        "default": 60
+                      },
+                      "elapsedDays": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 7,
+                        "default": 7
+                      }
+                    },
+                    "additionalProperties": false,
+                    "default": {}
+                  },
+                  "allowedPlaybooks": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "maxItems": 30,
+                    "default": []
+                  },
+                  "procedureRef": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                      },
+                      "revision": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0
+                      },
+                      "sourceRunId": {
+                        "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "revision",
+                      "sourceRunId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "schemaVersion",
+                  "key",
+                  "name",
+                  "revision",
+                  "kind",
+                  "objective",
+                  "completionCriteria"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "maxItems": 128
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "maxLength": 160,
+                    "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$"
+                  },
+                  "teamId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$"
+                  },
+                  "revision": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  },
+                  "archived": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "list"
+                  },
+                  "definition": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      "description": {
+                        "type": "string",
+                        "maxLength": 4000,
+                        "default": ""
+                      },
+                      "language": {
+                        "type": "string",
+                        "maxLength": 30,
+                        "default": "en"
+                      },
+                      "columns": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 160
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "text",
+                                "number",
+                                "boolean",
+                                "date",
+                                "select",
+                                "image",
+                                "json"
+                              ]
+                            },
+                            "required": {
+                              "type": "boolean",
+                              "default": false
+                            },
+                            "options": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "maxLength": 160
+                              },
+                              "maxItems": 100
+                            }
+                          },
+                          "required": [
+                            "key",
+                            "label",
+                            "type"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1,
+                        "maxItems": 100
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "columns"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "key",
+                  "teamId",
+                  "revision",
+                  "kind",
+                  "definition"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/key"
+                  },
+                  "teamId": {
+                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                  },
+                  "revision": {
+                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/revision"
+                  },
+                  "archived": {
+                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/archived"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "pipeline"
+                  },
+                  "definition": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      "description": {
+                        "type": "string",
+                        "maxLength": 4000,
+                        "default": ""
+                      },
+                      "listRef": {
+                        "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                      },
+                      "stages": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 160
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "initial",
+                                "intermediate",
+                                "terminal"
+                              ]
+                            },
+                            "description": {
+                              "type": "string",
+                              "maxLength": 4000
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "type"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1,
+                        "maxItems": 50
+                      },
+                      "transitions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 160
+                            },
+                            "fromStageId": {
+                              "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                            },
+                            "toStageId": {
+                              "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                            },
+                            "connectorOperation": {
+                              "type": "object",
+                              "properties": {
+                                "spaceId": {
+                                  "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                                },
+                                "playbookKey": {
+                                  "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                                },
+                                "sourceFingerprint": {
+                                  "type": "string",
+                                  "minLength": 64,
+                                  "maxLength": 64
+                                },
+                                "inputMappings": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string",
+                                    "maxLength": 1000
+                                  },
+                                  "default": {}
+                                },
+                                "maxCredits": {
+                                  "type": "number",
+                                  "exclusiveMinimum": 0
+                                },
+                                "maxModelCalls": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 128
+                                },
+                                "sharedFields": {
+                                  "type": "array",
+                                  "items": {
+                                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                                  },
+                                  "maxItems": 100,
+                                  "default": []
+                                }
+                              },
+                              "required": [
+                                "spaceId",
+                                "playbookKey",
+                                "sourceFingerprint",
+                                "maxCredits",
+                                "maxModelCalls"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "fieldMappings": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "targetField": {
+                                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                                  },
+                                  "sourcePath": {
+                                    "type": "string",
+                                    "maxLength": 1000
+                                  },
+                                  "required": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "targetField",
+                                  "sourcePath"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "maxItems": 100,
+                              "default": []
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "fromStageId",
+                            "toStageId"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 100,
+                        "default": []
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "listRef",
+                      "stages"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "key",
+                  "teamId",
+                  "revision",
+                  "kind",
+                  "definition"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/key"
+                  },
+                  "teamId": {
+                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                  },
+                  "revision": {
+                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/revision"
+                  },
+                  "archived": {
+                    "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/archived"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "app"
+                  },
+                  "definition": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      "description": {
+                        "type": "string",
+                        "maxLength": 4000,
+                        "default": ""
+                      },
+                      "listRef": {
+                        "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                      },
+                      "view": {
+                        "type": "string",
+                        "enum": [
+                          "grid",
+                          "board"
+                        ],
+                        "default": "grid"
+                      },
+                      "fields": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                        },
+                        "minItems": 1,
+                        "maxItems": 100
+                      },
+                      "pipelineRef": {
+                        "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                      },
+                      "requirements": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/definitions/StudioTeams/properties/resources/items/anyOf/0/properties/teamId"
+                        },
+                        "maxItems": 30,
+                        "default": []
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "listRef",
+                      "fields"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "key",
+                  "teamId",
+                  "revision",
+                  "kind",
+                  "definition"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "teams",
+        "playbooks"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
