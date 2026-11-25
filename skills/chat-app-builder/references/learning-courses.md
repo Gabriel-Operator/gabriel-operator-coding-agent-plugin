@@ -96,6 +96,7 @@ These components use the `learning` workspace provider, one view each. Declare a
 | `course-publications` | `publications` | Publish approved runs, choose the audience, copy the link, show the QR code, turn a link off |
 | `verification-queue` | `verifications` | A linked adult reviews answers beside the key and verifies, asks for more practice, or declines |
 | `learning-links` | `links` | Invite learners, accept an invitation, end a link, delete data |
+| `learning-home` | `home` | The signed-in adult’s learner progress, or the invited learner’s own courses |
 | `badge-shelf` | `badges` | Badges earned or supervised, with certificate links |
 
 Put them wherever suits the Persona. Notifications deep-link into the app by finding where the layout puts `verification-queue` and `badge-shelf` (page, tab and sub-tab), so tab and section names are free. Data always belongs to the signed-in person, not to a shared persona workspace owner; do not bind these components to lists.

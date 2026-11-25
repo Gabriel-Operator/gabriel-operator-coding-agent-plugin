@@ -1,0 +1,497 @@
+{
+  "$ref": "#/definitions/ConnectorPackage",
+  "definitions": {
+    "ConnectorPackage": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "number",
+              "const": 1
+            },
+            "kind": {
+              "type": "string",
+              "const": "studio-connector-app"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "icon": {
+              "type": "object",
+              "properties": {
+                "viewBox": {
+                  "type": "string",
+                  "pattern": "^-?[\\d.]+ -?[\\d.]+ [\\d.]+ [\\d.]+$",
+                  "maxLength": 60
+                },
+                "paths": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4000,
+                    "pattern": "^[MmZzLlHhVvCcSsQqTtAa0-9.,+\\-\\seE]+$"
+                  },
+                  "minItems": 1,
+                  "maxItems": 16
+                },
+                "style": {
+                  "type": "string",
+                  "enum": [
+                    "outline",
+                    "solid"
+                  ]
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?$"
+                }
+              },
+              "required": [
+                "paths"
+              ],
+              "additionalProperties": false
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "endpoint": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "toolkit": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]{0,79}$"
+                },
+                "documentation": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "additionalProperties": false
+            },
+            "connectors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "maxLength": 300
+                  },
+                  "required": {
+                    "type": "boolean"
+                  },
+                  "endpoint": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "toolkit": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                  }
+                },
+                "required": [
+                  "key",
+                  "label",
+                  "required"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 10
+            },
+            "view": {
+              "type": "string",
+              "enum": [
+                "table",
+                "files",
+                "documents",
+                "conversation",
+                "calendar",
+                "map",
+                "board",
+                "crm",
+                "research",
+                "forms",
+                "commerce",
+                "finance",
+                "support",
+                "campaigns",
+                "social",
+                "design",
+                "media",
+                "content",
+                "development",
+                "analytics",
+                "learning",
+                "inventory"
+              ]
+            },
+            "entities": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                        },
+                        "label": {
+                          "type": "string",
+                          "maxLength": 80
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "text",
+                            "number",
+                            "boolean",
+                            "date",
+                            "url"
+                          ]
+                        },
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "title",
+                            "body",
+                            "url",
+                            "thumbnail",
+                            "mimeType",
+                            "status",
+                            "start",
+                            "end",
+                            "latitude",
+                            "longitude",
+                            "value",
+                            "category",
+                            "author",
+                            "timestamp"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "label",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "maxItems": 80
+                  },
+                  "read": {
+                    "type": "object",
+                    "properties": {
+                      "connector": {
+                        "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                      },
+                      "tool": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "additionalProperties": {}
+                      },
+                      "schemaFingerprint": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "resultPath": {
+                        "type": "string",
+                        "maxLength": 500
+                      },
+                      "idPath": {
+                        "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/entities/items/properties/read/properties/resultPath"
+                      },
+                      "revisionPath": {
+                        "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/entities/items/properties/read/properties/resultPath"
+                      },
+                      "cursorPath": {
+                        "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/entities/items/properties/read/properties/resultPath"
+                      },
+                      "cursorArgument": {
+                        "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                      }
+                    },
+                    "required": [
+                      "tool",
+                      "arguments",
+                      "schemaFingerprint"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "write": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/entities/items/properties/read"
+                  },
+                  "writeEffect": {
+                    "type": "string",
+                    "enum": [
+                      "write",
+                      "process"
+                    ]
+                  },
+                  "writeConcurrency": {
+                    "type": "string",
+                    "enum": [
+                      "conditional",
+                      "read-check"
+                    ]
+                  },
+                  "fieldsMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/entities/items/properties/read/properties/resultPath"
+                    },
+                    "propertyNames": {
+                      "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]{0,79}$"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "fields",
+                  "read",
+                  "fieldsMap"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 20
+            },
+            "actions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 80
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "read",
+                      "write",
+                      "process"
+                    ]
+                  },
+                  "operation": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/entities/items/properties/read"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "effect",
+                  "operation"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 50
+            },
+            "ui": {
+              "type": "object",
+              "properties": {
+                "connector": {
+                  "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "generated",
+                    "bundle",
+                    "mcp-resource"
+                  ]
+                },
+                "entrypoint": {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "resourceUri": {
+                  "type": "string",
+                  "pattern": "^ui:\\/\\/",
+                  "maxLength": 500
+                },
+                "tool": {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "imageOrigins": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "maxItems": 20
+                },
+                "mediaOrigins": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/ui/properties/imageOrigins/items"
+                  },
+                  "maxItems": 20
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "additionalProperties": false
+            },
+            "resources": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "maxItems": 50
+            },
+            "monitoring": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 80
+                  },
+                  "entityId": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                  },
+                  "detection": {
+                    "type": "string",
+                    "enum": [
+                      "poll",
+                      "webhook",
+                      "none"
+                    ]
+                  },
+                  "event": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "entityId",
+                  "detection",
+                  "event"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 30
+            },
+            "state": {
+              "type": "boolean"
+            },
+            "playbooks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "inputFields": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/ConnectorPackage/properties/manifest/properties/source/properties/toolkit"
+                    },
+                    "maxItems": 50,
+                    "default": []
+                  },
+                  "maxCredits": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "maxModelCalls": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 128
+                  }
+                },
+                "required": [
+                  "key",
+                  "label",
+                  "maxCredits",
+                  "maxModelCalls"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 20
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "kind",
+            "name",
+            "description",
+            "source",
+            "view",
+            "entities",
+            "actions",
+            "ui",
+            "monitoring"
+          ],
+          "additionalProperties": false
+        },
+        "files": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        },
+        "fixtures": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "manifest"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -2,18 +2,38 @@
 name: landing-page-builder
 description: >
   Build, validate, and maintain the Git-backed marketing landing page for a
-  Gabriel Operator Persona's public /chat/:agentId page by editing
+  Gabriel Operator Persona's public /persona/<slug> page by editing
   assets/landing-page.json. Use this skill when the user wants to write or
   update a persona's landing page copy (headline, subheadline, feature
   highlights, call-to-action label), including when generating that copy
   from within ChatGPT Sites, Claude Design, or any other AI site builder.
 metadata:
   author: gabriel-operator
-  version: "1.6"
+  version: "1.7"
   compatibility: Requires Node.js 16+ for the validation script.
 ---
 
 # Landing Page Builder
+
+## Existing templates and a new persona identity
+
+Read [the registered template catalog](references/template-catalog.json) and follow
+[template selection and character creation](references/template-and-identity.md).
+Honor the user's template choice, or recommend a catalog match when asked to
+choose. State the catalog name and exact ID in the plan, then persist that ID in
+`landingPage.design.variant` and author its complete required content model.
+The `landing-page-builder` Gateway response includes the catalog, landing contract
+and identity guide so remote authoring agents can read them without the platform checkout.
+
+For a new branded persona, create its own name, portrait, separate logo, consistent
+hero character and required supporting images unless the user supplies artwork or
+opts out. Use the connected image-generation capability, upload/register the actual
+results through the existing asset tools and wire their hosted URLs into the profile,
+generic hero/header and selected template-specific fields. Preserve approved artwork
+when editing an existing persona. Reusing a layout must never retain its source
+persona's face, branding, private data or specialized command authority. Missing
+generation capability is a pending media task; fabricated URLs and silent source-art
+reuse do not complete the build.
 
 For persona templates, authored content belongs in the model repository, not in
 platform TSX or a platform English defaults file. This includes header subtitles,
@@ -30,7 +50,7 @@ For workspace changes, follow the [workspace validation and frontend packaging c
 
 ## What this actually renders
 
-A persona's public page at `/chat/:agentId` shows this content as a real,
+A persona's public page at `/persona/<slug>` shows this content as a real,
 built-in marketing landing page: a model-driven header (persona name, brand
 mark, authored same-page nav items, and an optional CTA), a two-column hero (headline/subheadline/CTAs
 on the left, a chat-window mockup with a scripted sample conversation and a
@@ -41,7 +61,7 @@ mockup's input, any CTA button, or the floating widget all expand into the
 persona's full chat experience. There is no separate rendering step to run;
 once the content below reaches the persona's `chat-config.json` (see
 **Getting content live**), the app renders it automatically. If a persona has
-no `landingPage` content configured, its `/chat/:agentId` page falls back to
+no `landingPage` content configured, its `/persona/<slug>` page falls back to
 a plain hero-form chat entry instead — this skill is what turns that on.
 
 The FAQ, Contact, and Business Impact sections only render when you provide
@@ -60,11 +80,14 @@ Read Gateway topic `persona-roi` and its `references/compact-calculator.md` for 
 schema, offers, three-input formulas, evidence boundaries and planning tools.
 
 Use **Pricing** as the localized navigation label and **Pricing & ROI** as the
-section heading. Author a capped monthly offer and at most three persona-specific
-one investment slider with read-only authored forecasts. Results update live and compare daily/weekly/
-monthly cost, benefit and net. Daily and weekly figures are averages; billing stays
-monthly. Keep one collapsed methodology disclosure. Unsupported benefits remain
-null, negative values remain negative, and optional time value is not cash received.
+section heading. Follow Paya/Klok's shared `CompactRoiCalculator`: one calculator,
+with the monthly payment and a single investment slider on the left, and a dark
+results panel showing estimated work, time returned and value on the right. Stack
+the same panels in that order on mobile. Day/Week/Month buttons only change the
+forecast view. Put fixed assumptions in one collapsed methodology disclosure;
+never add editable time, workload or valuation fields alongside a monthly offer.
+Unknown benefits stay null and negative values stay negative. Time value is not
+cash received. If no price is supported, use the compact quote variant.
 
 The platform owns rendering and arithmetic. The model owns copy, audience profiles,
 prices, VAT treatment, allowances and disclosed assumptions. Version 2 `compact`
@@ -79,6 +102,38 @@ profile selection and visitor edits. Country/region selects the economic context
 use the platform's dated FX conversion and keep missing conversions unknown.
 Validate all audience sections and Pricing links, source/child mirrors and existing
 translation catalogs. Deploy compatible platform support before publishing new fields.
+
+## Coding-agent entry point (required)
+
+Every new or revised persona landing-page template must include the shared
+`PersonaAgentsHeroButton` in its hero CTA row, alongside the primary action.
+In the platform, import it from `landing-page/sections/AgentsHeroButton` and pass
+`uiLanguage={headerProps.selectedLanguage || undefined}`. Use the current theme's
+button treatment without changing its layout. When a theme has a mobile navigation
+menu, also include the same component there with `showLabel` so the entire
+localized label is clickable. `EventIntroductionsLandingPage.tsx` and
+`IndustrialProductionLandingPage.tsx` demonstrate the shared integration.
+
+Keep `landingPage.agentAccess` enabled by default; set `enabled: false` only for
+an explicit user opt-out. The renderer must consume the existing
+`PersonaAgentInstallProvider`: it centrally hides the control for ineligible
+private, unpublished, password-protected or editor-preview pages. Do not bypass
+those checks or invent an install slug, public token, workspace ID or hand-built
+install command to make a missing button appear. The public popover immediately
+shows the OAuth MCP Gateway connection command/config and the coding-agent icon
+row, including for anonymous visitors. Reuse `getAgentMcpConnectionProfile`, also
+used by the full Try with Agents setup, with the canonical `getMcpGatewayUrl`.
+Clients without an add CLI get their native configuration and login snippets.
+Let the client's MCP authentication flow handle sign-in and permission review;
+do not gate this public setup information behind a landing-page sign-in or
+workspace picker. Keep backend authorization and workspace-bound persona
+connections unchanged. Opening or copying setup never creates a connection.
+
+Before handoff, check that an eligible public persona shows the hero trigger on
+desktop and mobile, opens the shared agent picker, and changes its connection command
+when another agent is selected. Check the mobile menu's labeled trigger, translated
+accessible names, keyboard dismissal and immediate anonymous access to setup. These controls
+must not run the command, create credentials or execute a playbook merely by opening.
 
 ## Portable Git contract (schema v2)
 
@@ -187,7 +242,7 @@ calculator and navigation link. Read `references/business-impact.md` for househo
 valuation rules and translate both configurations independently.
 
 - `landingPage.design` (optional, object) — explicitly selects the renderer's visual treatment; presentation is never inferred from the persona name.
-  - `variant` (optional, `default`, `signature`, `banking`, `form-operations`, `logistics-portal`, `cinematic-campaigns`, `recruiting-operations`, `grocery-twin`, `wardrobe-twin`, `boli-learning`, `event-introductions`, `home-introductions`, or `chakri-scrap`) — each non-default variant selects one registered, versioned presentation and requires its bounded content object. `wardrobe-twin` enables Cole's Home/Retail presentation with the pinned language → region → person progression; `logistics-portal` enables Emil's governed logistics portal-twin presentation, and `home-introductions` enables Nest's private buyer/seller introduction presentation.
+  - `variant` (optional, `industrial-production`, `default`, `signature`, `banking`, `form-operations`, `logistics-portal`, `cinematic-campaigns`, `recruiting-operations`, `grocery-twin`, `wardrobe-twin`, `boli-learning`, `event-introductions`, `home-introductions`, or `chakri-scrap`) — each non-default variant selects one registered, versioned presentation and requires its bounded content object. `wardrobe-twin` enables Cole's Home/Retail presentation with the pinned language → region → person progression; `logistics-portal` enables Emil's governed logistics portal-twin presentation, and `home-introductions` enables Nest's private buyer/seller introduction presentation.
   - `defaultThemeMode` (optional, `light` or `dark`) — initial mode for the landing page and matching chat/embed; a visitor's explicit mode selection still wins.
   - `theme` (optional, theme object) — authored `palette`, required `primaryColor`, and optional `secondaryColor`/`accentColor` used by the landing page.
   - `brand` (optional, object) — bounded exact brand seeds shared by landing, chat, embed, and portalled dialogs. This is the model-generated branding surface; never generate CSS or Tailwind classes.
@@ -258,7 +313,7 @@ valuation rules and translate both configurations independently.
   - When set, every other section's background becomes translucent so the video reads through continuously as the visitor scrolls — this is automatic, nothing else to configure.
   - `backgroundImage` and `backgroundVideo` are mutually exclusive; choose one.
 - `landingPage.closing` (optional, object) — authored final-section `heading`, optional `kicker`/`body`, and optional `ctaLabel`. Newlines in `heading` are preserved.
-- `landingPage.agentAccess` (optional, object) — the hero "Also works with" coding-agent button. It shows only agent icons (the label appears as a tooltip); a click reveals `curl -fsSL <origin>/chat/<slug>/install.sh | bash -s -- --agent <agent>`, with agent icons to switch the command. It is shown by default in every presentation template's hero for public, published, non-password-protected personas. Set `enabled: false` to hide it, or `label` (at most 80 characters) to change the tooltip.
+- `landingPage.agentAccess` (optional, object) — the shared coding-agent button, enabled by default for eligible public personas. Hero icons expose a localized tooltip; mobile navigation uses a fully clickable label. The public picker immediately shows each client's native OAuth MCP Gateway command/config plus the agent icons. Authentication and permission review happen in the MCP client; the landing page needs no preselected workspace. Follow the [required entry-point contract](#coding-agent-entry-point-required), including its provider and visibility checks. Set `enabled: false` only for an explicit opt-out, or use `label` (at most 80 characters) to customize the tooltip.
 
 Write in the persona's own voice — read `assets/chat-config.json`'s
 `publishedConfig.systemPrompt`/`name`/`description` first so the headline and
@@ -538,7 +593,7 @@ critical decision notices and validate the paired SDK plus phone/desktop renderi
 
 ## Signed-in app companion
 
-When the persona includes a signed-in app, use [the dashboard format](../chat-app-builder/references/dashboard-first.md) through `chat-app-builder`. The anonymous hero/widget and marketing sections stay separate from private app data. After login, Home contains the review-only Meet Persona coach and domain records/results/decisions, with a minimal sidebar. Playbooks is sidebar-only, milestones/goals stays in Coach, and routines/Signals/Schedule stays in Signals; never add duplicate Home tabs for them. Carry the same theme, portrait and selected language into the app; do not reuse illustrative landing runs as saved results. Verify the login transition into the actual app, not only the public landing renderer.
+When the persona includes a signed-in app, use [the dashboard format](../chat-app-builder/references/dashboard-first.md) through `chat-app-builder`. The anonymous hero/widget and marketing sections stay separate from private app data. After login, Home contains domain records/results/decisions, with the review-only Coach in the shared floating chat/right sidebar and no duplicate inline Meet tab. Playbooks is sidebar-only, milestones/goals stays in Coach, and routines/Signals/Schedule stays in Signals; never add duplicate Home tabs for them. Carry the same theme, portrait and selected language into the app; do not reuse illustrative landing runs as saved results. Verify the login transition into the actual app, not only the public landing renderer.
 
 ## Evidence-backed ROI
 
@@ -549,3 +604,39 @@ ROI/Impact is sidebar-only. Use canonical `agents` (existing Kai `grocery-agents
 For a family activity or school-workshop flagship, read [the community activity loop contract](../persona-framework/references/community-activity-loop.md). It covers shared guided state, scoped refreshable feeds, opt-in Signals, reviewed team execution and adult-confirmed occurrence ROI.
 
 Public pricing widgets expose customer investment only. Outputs (work delivered, time returned and value) are read-only. Author bounded free access for every audience and seven-day trials for paid plans; planning quotes do not change billing. Source fixed forecast assumptions and disclose benchmark limitations, human review, full-use assumptions and negative returns. See the compact-calculator reference.
+
+## Industrial production presentation
+
+`design.variant: "industrial-production"` selects the versioned technical manufacturing layout: an off-white canvas, charcoal utility bar, orange actions, condensed display type, engineering hero, numbered capability grid, five-step process, application grid, human-control section and character introduction. Author it with the existing generic landing fields; no Fabio copy or media is embedded in the platform. `backgroundImage` supplies the engineering drawing, `gallery.items` supplies capability artwork, `features` supplies capabilities, `deployment` supplies factory applications, `trust` supplies controls and `heroCharacterImage` supplies the character. Keep demonstration results explicitly illustrative in `stories`.
+
+The shared language selector remains visible in the desktop and mobile header. Primary actions use the existing persona chat handoff and the composer uses the shared styled Input. Register the same variant, typography and exact brand seeds in the persona model and signed-in Chat App.
+
+For an explorable factory model, author `howItWorks.factoryExplorer` with the
+localized scene/control labels, interaction hint, illustrative-data note and all
+five stable part IDs: `materials`, `laser`, `press`, `weld`, `flow`. Each part owns
+its title, body and one to three `{ label, value }` facts. The shared contract is
+[`references/industrial-factory-explorer-schema.json`](references/industrial-factory-explorer-schema.json).
+Keep these descriptions in the landing model and generated language assets; never
+bake text into the canvas or invent live telemetry, availability or savings. The
+renderer supplies picking, camera focus, opt-in orbit/touch, bounded zoom, component
+reveal and reset. Verify equivalent keyboard/HTML controls and static descriptions
+when WebGL is unavailable. Retain any existing film/editor sources.
+
+### Industrial factory approval simulation
+
+For `industrial-production`, an optional `landingPage.factorySimulation` replaces the six capability cards with a local six-step replay. Keep the six authored `features` (titles, bodies and unique images; gallery supplies missing early images). Author the bounded copy, three labeled metrics and six contextual preview descriptions defined by `references/industrial-factory-simulation-schema.json`. The list shows production activity and thumbnails, and the right panel shows the inspected preview and exact illustrative approval. The fifth step is a mandatory demo decision: timers and the next-step control cannot cross it. Approval advances; rejection stops; restarting clears the decision. Start automatically on the first viewport entry without a Start button. Keep the supporting step preview and description below the confirmation panel. Pause when out of view or in a background tab and use manual advance under reduced motion. Never send these marketing decisions to a real command, ERP, scheduler, payment or authorization service. Label all numbers as illustrative and translate the entire copy object through the maintained translation workflow.
+
+## Stayor editorial layout
+
+`design.variant: "stayor"` selects the cream-and-teal editorial composition with sticky pill navigation, serif headlines, a right-hand flagship chat, selectable specialists, photographed process steps, governance, FAQs and the shared calculator. All copy and media remain in the authored model.
+
+- `heroCharacterImage` supplies the chat artwork and supporting full-character scene; `backgroundImage` is retained as a supporting introduction scene, and `heroChat.avatarImageUrl` remains the separate chat portrait.
+- `heroChart` contains `heading`, `note`, `unitLabel` and 2–8 `{label, value}` bars. Values are finite and non-negative. Clearly label authored examples as illustrative; this is never a live HR data source.
+- `howItWorks.teamPlacement: "steps"` merges specialists into the numbered process and suppresses the separate team section. Supply translated `agentsLabel` and `applicationsLabel`, and 1–8 `agents` per step: `{name, image, alt?, task, apps: [{name, image}]}`. Each agent describes its concrete task and the applications it uses; each application image is an official logo with provenance retained in the landing repository. Every `platform.items` specialist must appear in at least one step. Hero mascot selection scrolls to the first relevant step. Keep application choices and copy authored, never hardcoded in the shared renderer.
+- `platform.items` supplies specialist names, descriptions and individual transparent head artwork. Optional `platform.narrative` contains one more sentence fragment than the 2–8 specialist items. A sticky scene starts with half-cropped heads along its bottom, reveals the heads fully on early scroll, then shrinks each into an inline sentence gap while the words darken. Targets are measured from the authored translated text and recalculated after font/layout changes. Reduced motion renders static heads and the complete sentence. Keyboard-operable buttons reveal each specialist's authored description. This presentation grants no execution authority.
+- In the company intelligence theme, a specialist can opt into gaze and bounce with `platform.items[].mascotEyes: { width, height, eyes: [{ x, y, rx, ry }, { x, y, rx, ry }] }`. Use the intrinsic image size and two eye ellipses measured in image pixels. Keep those coordinates identical across languages. Pointer tracking only runs for visible mascots, and reduced motion keeps the original static artwork.
+- `howItWorks.steps[].image` and `alt` supply process scenes. Keep original artwork and prompts in the landing-page child repository and register hosted images through the existing asset tools. Use returned HTTPS URLs or the supported public `/api/page-builder/media/<persona>/<asset>/content/<image>` path. Never bundle persona artwork or persona-specific copy into the marketplace.
+- `heroChat.openingMessage` supplies the localized welcome used by the shared real conversation, independently of illustrative `demoConversation` notifications. Follow the shared language selector for page, chat, Coach and voice; language never determines jurisdiction.
+- `roiCalculator.compact` supplies the same one-slider pricing calculator as Paya/Klok. Localize `compact.copy` and keep forecast assumptions fixed in the model. Show time and value as read-only estimates and distinguish them from observed results.
+
+Use the canonical guided host for hero, floating and signed-in chat, following the Paya/Klok pattern. Resolve the flagship from `chatApp.experience` command IDs; bind `capabilityPreview` to the same existing command's pinned workflow-owned guided package. Keep questions, graph, schemas and EN/PL catalogues in that workflow repository. Display the command, shared progress, editable intake, explicit review and private continuation. A confirmed intake grants no operational approval. Keep shared language controls, one host-owned conversation and styled form controls. Preview examples never authorize operational actions or substitute for actual records.

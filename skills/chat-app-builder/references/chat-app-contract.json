@@ -1,0 +1,987 @@
+{
+  "schemaVersion": 3,
+  "runtimeDataPolicy": "definitions_only",
+  "allowedModuleIds": [
+    "chat-sessions",
+    "matches",
+    "assets",
+    "movie-editor",
+    "meetings",
+    "ai-resources",
+    "connections",
+    "todos",
+    "canvas",
+    "avatar",
+    "mobile"
+  ],
+  "allowedAssetTabs": [
+    "all",
+    "images",
+    "pdfs",
+    "videos",
+    "audio",
+    "other"
+  ],
+  "allowedModuleFields": [
+    "id",
+    "enabled",
+    "label",
+    "icon",
+    "assetTabs",
+    "kind",
+    "pageId"
+  ],
+  "knowledgeBase": {
+    "fixedFooterEntry": true,
+    "allowedProvisioningModes": [
+      "managed",
+      "author",
+      "runner",
+      "ask"
+    ],
+    "privateCredentialStorage": true,
+    "forbiddenPortableFields": [
+      "token",
+      "credential",
+      "credentialRef",
+      "username",
+      "remoteUrl"
+    ]
+  },
+  "requiredUtilities": [
+    "feedback",
+    "invite",
+    "settings"
+  ],
+  "forbiddenDefinitionKeys": [
+    "javascript",
+    "script",
+    "css",
+    "tailwind",
+    "runtimeData",
+    "records",
+    "credentials",
+    "apiUrl"
+  ],
+  "supportedSchemaVersions": [
+    1,
+    2,
+    3
+  ],
+  "customModulePattern": "page:<stable-page-id>",
+  "limits": {
+    "pages": 10,
+    "sectionsPerPage": 8,
+    "componentsPerPage": 24,
+    "tableRowsDefault": 25,
+    "tableRowsMaximum": 100
+  },
+  "components": [
+    "assistant-panel",
+    "cart-items",
+    "record-cards",
+    "nutrition-summary",
+    "execution-status",
+    "playbook-list",
+    "routine-list",
+    "signal-list",
+    "data-feed-list",
+    "schedule-calendar",
+    "goal-list",
+    "meal-plan",
+    "stat-card",
+    "workforce-overview",
+    "table",
+    "outcome-metrics",
+    "outcome-trend",
+    "outcome-baseline",
+    "outcome-observations",
+    "outcome-check-in",
+    "outcome-activity",
+    "outcome-usage",
+    "outcome-signals",
+    "meal-calendar",
+    "recipe-detail",
+    "nutrition-profile",
+    "shopping-list",
+    "inventory-list",
+    "course-publications",
+    "learning-home",
+    "lane-home",
+    "chakri-home",
+    "kai-home",
+    "openui-home",
+    "relationship-workspace",
+    "prospecting-workspace",
+    "campaign-workspace"
+  ],
+  "dataPoints": {
+    "sources": [
+      "list",
+      "outcomes",
+      "workspace"
+    ],
+    "operations": [
+      "rows",
+      "count",
+      "sum",
+      "average"
+    ],
+    "filters": [
+      "eq",
+      "neq",
+      "in",
+      "exists",
+      "gte",
+      "lte"
+    ],
+    "virtualFields": [
+      "$stage",
+      "$createdAt",
+      "$updatedAt"
+    ],
+    "runnerScope": "server_required",
+    "externalUrls": false
+  },
+  "workspace": {
+    "template": "workspace",
+    "tabs": "ordered section references with optional heroicon:* icons",
+    "defaultTab": "required",
+    "maximumTabs": 8,
+    "sectionTabs": "optional ordered component references with a required defaultTab",
+    "presentation": {
+      "sidebar": [
+        "brand",
+        "surface"
+      ],
+      "secondaryAccent": "six digit hex"
+    },
+    "providers": [
+      "chat",
+      "cart",
+      "catalog",
+      "recipes",
+      "nutrition",
+      "meal-plan",
+      "executions",
+      "routines",
+      "automations",
+      "goals",
+      "coach",
+      "data-feeds",
+      "kai-inventory",
+      "kai-recipes",
+      "kai-meal-plan",
+      "kai-nutrition",
+      "kai-shopping-list",
+      "learning",
+      "relationship-lifecycle",
+      "campaign-lifecycle"
+    ],
+    "executionViews": [
+      "workflows",
+      "executions",
+      "playbooks",
+      "signals",
+      "schedule",
+      "legacy"
+    ],
+    "actions": [
+      "chat",
+      "voice",
+      "upload",
+      "command",
+      "cart.add",
+      "cart.remove",
+      "cart.quantity",
+      "cart.review",
+      "meal-plan.save",
+      "routine.create",
+      "routine.update",
+      "routine.run",
+      "routine.pause",
+      "routine.delete",
+      "automation.create",
+      "automation.update",
+      "automation.run",
+      "automation.pause",
+      "automation.delete",
+      "automation.test",
+      "meal-plan.consume",
+      "recipe.save",
+      "shopping-list.add",
+      "shopping-list.update",
+      "nutrition.profile.save",
+      "nutrition.measurement.save",
+      "nutrition.activity.save",
+      "nutrition.target.save",
+      "relationship.update",
+      "campaign.measurement.save",
+      "lifecycle.observation.import"
+    ],
+    "recipeCapture": {
+      "workflowRef": "declared workflow",
+      "outputKey": "committed structured output"
+    },
+    "previewMutations": false,
+    "signalPresets": {
+      "location": "workspace data point with provider automations",
+      "fields": [
+        "id",
+        "title",
+        "description",
+        "sourceListRef",
+        "actionId"
+      ],
+      "state": "disabled draft until the runner configures and saves it",
+      "maximum": 50
+    },
+    "lifecycleSource": "A lifecycle workspace references its existing scoped row data point through sourceDataPoint; no parallel campaign or research store."
+  },
+  "experience": {
+    "schemaVersion": 1,
+    "independentOfChatAppSchemaVersion": true,
+    "sessionMode": {
+      "values": [
+        "stepper",
+        "chat"
+      ],
+      "newPersonaDefault": "stepper",
+      "stepper": "restore the server-owned guided snapshot for every new, active, resumed, edited, and completed authenticated chat session",
+      "chat": "legacy empty-session start screen followed by the normal transcript"
+    },
+    "hosts": [
+      "authenticated-full-chat",
+      "native-persona-app"
+    ],
+    "excludedHosts": [
+      "full-embed",
+      "compact-widget",
+      "anonymous-landing",
+      "internal-playground"
+    ],
+    "startTemplates": [
+      "guided-upload",
+      "guided-intake",
+      "guided-choice",
+      "guided-prompt"
+    ],
+    "actionKinds": [
+      "command",
+      "chat",
+      "voice"
+    ],
+    "resultTemplates": [
+      "narrative",
+      "spotlight",
+      "review",
+      "card-grid",
+      "media-gallery",
+      "timeline"
+    ],
+    "resultSources": [
+      "assistant-message",
+      "structured-response",
+      "bundle-proposal",
+      "item-search",
+      "pipeline-result",
+      "task-summary",
+      "pipeline-record",
+      "artifacts"
+    ],
+    "appearanceSources": [
+      "landing-page",
+      "chat-app"
+    ],
+    "commandArguments": "optional declarative text passed to the declared command",
+    "localization": "experience-owned plain-text dictionaries, independent of the parent Chat App version",
+    "referenceExample": "references/experience-example.json",
+    "previewMutations": false
+  },
+  "learning": {
+    "block": "chatApp.learning (schemaVersion 3)",
+    "course": {
+      "required": [
+        "commands",
+        "tasks"
+      ],
+      "commands": "1-8 of { commandId, audience: parent|school, visibility? }",
+      "tasks": {
+        "required": [
+          "brief",
+          "script",
+          "quiz",
+          "approve",
+          "publish"
+        ],
+        "optional": [
+          "film",
+          "narration",
+          "frames"
+        ]
+      },
+      "intake": [
+        "ageBand",
+        "accessMode"
+      ],
+      "ageBands": "1-12 labels of at most 20 characters",
+      "minimumMastery": "0 to 1, default 0.7",
+      "visibilities": [
+        "link",
+        "family",
+        "class",
+        "private"
+      ]
+    },
+    "links": {
+      "roles": [
+        "parent",
+        "teacher"
+      ],
+      "inviteTtlDays": "1-30, default 7",
+      "eraseRoles": [
+        "parent",
+        "teacher"
+      ]
+    },
+    "views": {
+      "course-publications": "publications",
+      "verification-queue": "verifications",
+      "learning-links": "links",
+      "learning-home": "home",
+      "badge-shelf": "badges"
+    },
+    "reference": "references/learning-courses.md"
+  },
+  "routes": {
+    "block": "chatApp.routes (schemaVersion 3)",
+    "max": 12,
+    "route": {
+      "required": [
+        "id",
+        "path",
+        "title",
+        "access",
+        "template",
+        "components"
+      ],
+      "path": "up to four segments; :name captures one; first segment not 'report'",
+      "access": [
+        "public",
+        "signed-in"
+      ],
+      "template": [
+        "focus",
+        "page"
+      ],
+      "components": "1-12",
+      "surface": "web (default) or mobile; a mobile route has only id, surface, title, components"
+    },
+    "components": {
+      "heading": [
+        "text",
+        "level"
+      ],
+      "text": [
+        "text"
+      ],
+      "image": [
+        "src",
+        "alt",
+        "width"
+      ],
+      "link-button": [
+        "label",
+        "href (mobile: route:<id> or https)",
+        "variant"
+      ],
+      "course-player": [
+        "param",
+        "copy"
+      ],
+      "certificate": [
+        "param",
+        "copy"
+      ]
+    },
+    "address": "/persona/<slug>/<path>",
+    "reference": "references/persona-routes.md",
+    "mobileComponents": {
+      "heading": [
+        "text",
+        "level"
+      ],
+      "text": [
+        "text"
+      ],
+      "image": [
+        "src",
+        "alt",
+        "width"
+      ],
+      "link-button": [
+        "label",
+        "href",
+        "variant"
+      ],
+      "qr-scanner": [
+        "openRoute",
+        "hint"
+      ],
+      "persona-web-route": [
+        "path | source (scanned|app)",
+        "view",
+        "tab",
+        "sectionTab"
+      ]
+    }
+  },
+  "mobile": {
+    "block": "chatApp.mobile (schemaVersion 3)",
+    "home": "id of a mobile route",
+    "menu": "1-5 of { id, label, icon, routeId }",
+    "icons": [
+      "home",
+      "qr-code",
+      "camera",
+      "book",
+      "badge",
+      "chat",
+      "info",
+      "user",
+      "settings"
+    ],
+    "minimumAppVersion": "x.y.z, optional",
+    "reference": "references/persona-routes.md#mobile-companion"
+  },
+  "organizationMap": {
+    "schemaVersion": 1,
+    "chatAppVersion": 3,
+    "optional": true,
+    "surface": "web",
+    "hierarchy": [
+      "company-campus",
+      "department-interior",
+      "process-workspace",
+      "playbook-details"
+    ],
+    "maximumNodes": 100,
+    "nodeFields": [
+      "id",
+      "kind",
+      "label",
+      "description",
+      "parentId",
+      "color",
+      "actionIds",
+      "position",
+      "scene"
+    ],
+    "maximumActionsPerProcess": 30,
+    "actionBinding": "declared command action offered by playbook-list; resolved against current workspace catalogue",
+    "position": {
+      "x": "10..90 relative to parent",
+      "y": "10..90 relative to parent"
+    },
+    "maximumConnections": 200,
+    "connectionFields": [
+      "from",
+      "to",
+      "label"
+    ],
+    "geographic": false,
+    "runtimeDataPolicy": "definitions_only",
+    "scenes": {
+      "levels": [
+        "organization",
+        "department",
+        "process",
+        "playbook"
+      ],
+      "fields": [
+        "imageUrl",
+        "alt",
+        "aspectRatio"
+      ],
+      "nodeOverride": true,
+      "fallback": "generic isometric buildings",
+      "assets": "Persona assets/organization-map/ PNG/JPEG/WebP/AVIF at the active repository pin; HTTPS and public /images/ raster URLs remain supported",
+      "aspectRatio": "0.5..3"
+    },
+    "valueChains": {
+      "maximumPerspectives": 12,
+      "stageCount": "2..40 unique department/process IDs",
+      "fields": [
+        "id",
+        "label",
+        "description",
+        "nodeIds"
+      ],
+      "meaning": "authored end-to-end perspective, not execution dependencies or mined event logs"
+    },
+    "enabled": {
+      "default": false,
+      "activation": "explicit enabled: true; persona organization scene required",
+      "disabledEntryPoints": [
+        "header marker button",
+        "list/map switch",
+        "map deep links"
+      ]
+    }
+  },
+  "processMaps": {
+    "optional": true,
+    "surface": "web, admin Organization map page only",
+    "location": "top-level chatApp.processMaps, keyed by organizationMap node ID (organization, department or process)",
+    "maximumUnits": 100,
+    "mapFields": [
+      "summary",
+      "basis",
+      "whenUsed",
+      "howPeopleUseIt",
+      "evidence",
+      "lanes",
+      "phases",
+      "variants"
+    ],
+    "basis": [
+      "authored",
+      "playbook"
+    ],
+    "maximumEvidence": 10,
+    "maximumLanes": 12,
+    "laneFields": [
+      "id",
+      "label",
+      "role",
+      "kind"
+    ],
+    "laneKinds": [
+      "person",
+      "team",
+      "playbook",
+      "system"
+    ],
+    "maximumPhases": 8,
+    "maximumVariants": 6,
+    "maximumStepsPerVariant": 60,
+    "stepFields": [
+      "id",
+      "label",
+      "laneId",
+      "phaseId",
+      "kind",
+      "description",
+      "actionId"
+    ],
+    "stepKinds": [
+      "step",
+      "decision",
+      "start",
+      "end"
+    ],
+    "placement": "one step per lane and phase cell",
+    "actionBinding": "declared chatApp.actions command action; the step offers to open that playbook",
+    "maximumFlowsPerVariant": 150,
+    "flowFields": [
+      "from",
+      "to",
+      "label",
+      "kind"
+    ],
+    "flowKinds": [
+      "flow",
+      "loop"
+    ],
+    "reference": "persona-organization-map skill, references/process-map.json",
+    "runtimeDataPolicy": "definitions_only",
+    "meaning": "documentation of how a unit works, never an execution dependency; stripped from the app served to people using it"
+  },
+  "personaFeatures": {
+    "source": "chatApp",
+    "environmentFeatureGates": false,
+    "settings": {
+      "coach.groupCalls": "boolean; requires Coach enabled and voice not disabled",
+      "studio.knowledge": "boolean; requires Studio module not disabled",
+      "studio.obsidianSync": "boolean; requires team knowledge and owner-approved account/vault binding",
+      "studio.interactiveWork": "boolean; disabled by default; enables the Interactive 3D environment view on the Studio Work tab",
+      "studio.interactiveTheme": "studio | organization-map | village; selects the default 3D theme when interactiveWork is enabled",
+      "studio.interactiveTemplate": "optional custom interactive village/world template with styleGuide, backgroundImageUrl, townHall, characters, houses (with 1/5 roomCharacterScale interior rooms), walkableZones and ambientEffects",
+      "coach.computerUse": "boolean; default false. Enables browser goals in the signed-in Coach sidebar with tab sharing.",
+      "coach.browserRecipes": "boolean; default false. With Coach and browser tasks enabled, lets the signed-in person save and replay their private in-app demonstrations.",
+      "coach.groupCallTransport": "auto | direct | livekit; auto uses direct for Gemini, xAI and connected voice adapters, and preserves LiveKit rooms for LiveKit personas",
+      "studio.apps": "array of {id, template, label?, description?, enabled?, connectors?, dataPoint?, commandId?, columns?, pageId?}; campaigns and leads need their workspace on a dashboard page, records apps bind a list data point (rows) and a command, workspace-view apps link to an existing prospecting page"
+    },
+    "default": "off until explicitly enabled in the published persona",
+    "editors": [
+      "Persona wizard Experience",
+      "Chat App editor Utilities"
+    ]
+  },
+  "studioApps": {
+    "optional": true,
+    "location": "chatApp.studio.apps",
+    "templates": {
+      "campaigns": {
+        "shows": "the persona's campaign-workspace",
+        "defaultConnectors": [
+          "instagram (required)",
+          "facebook",
+          "youtube",
+          "tiktok"
+        ]
+      },
+      "leads": {
+        "shows": "the persona's relationship-workspace",
+        "defaultConnectors": [
+          "googlemeet (required)",
+          "gmail",
+          "linkedin",
+          "googlecalendar"
+        ]
+      },
+      "records": {
+        "shows": "a table of one of the persona's own list data points (operation rows), limited to what each team's runs made",
+        "defaultConnectors": [],
+        "connectorsRequired": false
+      },
+      "workspace-view": {
+        "shows": "an existing Leads, Campaigns, Analytics or Inbox prospecting view for the open team",
+        "pageId": "an existing page containing one supported prospecting-workspace component backed by a relationship-lifecycle data point",
+        "defaultConnectors": [],
+        "connectorsRequired": false
+      }
+    },
+    "appFields": [
+      "id",
+      "template",
+      "label",
+      "description",
+      "enabled",
+      "connectors",
+      "dataPoint",
+      "commandId",
+      "columns",
+      "pageId"
+    ],
+    "recordsAppBinds": {
+      "dataPoint": "a list data point with operation rows",
+      "commandId": "a command action's commandId, or its slash trigger when it has no commandId",
+      "columns": "optional, 1 to 8 of the data point's select fields with a label and optional format; defaults to its first six fields",
+      "label": "required"
+    },
+    "maximumApps": 12,
+    "eachLifecycleTemplateOnce": true,
+    "recordsApps": "any number",
+    "connectorFields": [
+      "toolkit",
+      "label",
+      "purpose",
+      "required"
+    ],
+    "maximumConnectors": 8,
+    "connectorsReplaceTemplateDefaults": true,
+    "toolkit": "lowercase Composio toolkit slug the persona publishes in composioEnabledToolkitSlugs",
+    "workspaceRequirement": "an enabled campaigns or leads app needs a dashboard component of its type whose dataPoint is a command action's dataPoint",
+    "omittedMeans": "the campaigns and leads apps the persona's workspaces already imply; an empty list means none",
+    "connectorGuard": "a required connector that is not connected holds back every action in the app that starts work or publishes: in the app, and on the server for a command started from a team for a record of the app's workspace (409 STUDIO_APP_CONNECTOR_REQUIRED). The same playbook started from the team's canvas, the Coach or an API is not held back. An unreadable connection state holds nothing back.",
+    "teamScope": "list table controls accept teamId; the server keeps only rows the team's own runs made (pipeline cases the team's executions opened, plus accepted committed record intents) and a team that made nothing sees none",
+    "registry": {
+      "platform": "STUDIO_APP_REGISTRY in the shared model: the 15 apps the personas offer, read-only, shown to every author under Experience > Studio Apps > App registry",
+      "saved": {
+        "where": "Edit Persona > Experience > Studio Apps > My saved apps",
+        "api": "GET/POST /api/studio-apps/registry, DELETE /api/studio-apps/registry/:id",
+        "entry": "name (max 80) and an app definition without id or enabled",
+        "scope": "private to the author and shared across the author's own personas; at most 100 entries; saving the same name replaces it"
+      },
+      "mcp": {
+        "gabriel_list_studio_apps": "platform registry, templates and the author's saved apps",
+        "gabriel_register_studio_app": "name, app, optional sourcePageId; author token with digital-twin:admin"
+      },
+      "copy": "adding or starting from an app copies it; a records app is rebound to a list data point and command the persona has, and its columns travel only while the bound data point has those fields; nothing stays linked"
+    },
+    "credentials": "never in the definition; each person connects their own account",
+    "editors": [
+      "Persona wizard Experience > Studio Apps"
+    ],
+    "reference": "persona-builder skill, references/studio-apps.md"
+  },
+  "studioFeaturedApps": {
+    "optional": true,
+    "location": "chatApp.studio.featuredApps",
+    "purpose": "The Featured tab of a Studio team's Add app catalog. It opens first and lists the market apps for the country shown in the page header.",
+    "fields": {
+      "apps": "apps featured in every market: [{ appId, edition? }], public catalog IDs, at most 40",
+      "layers": "market layers: [{ layer, edition? }]; the platform fills each layer per country",
+      "edition": "optional label of at most 40 characters, such as Store or Investors"
+    },
+    "markets": "US, CN, DE, JP, IN, GB, FR, IT, CA, BR, ES, NL, PL, BE, IE, SE, AT, DK, RO, CZ, CH; any other country gets only the apps featured everywhere",
+    "marketRules": "EU-wide layer entries apply to every EU member. China swaps blocked or unused apps (Google, Meta, Slack, Stripe...) for local ones; India swaps TikTok for Moj.",
+    "layers": {
+      "messaging": {
+        "label": "Customer messaging",
+        "reachedBy": "connector"
+      },
+      "maps": {
+        "label": "Maps",
+        "reachedBy": "connector"
+      },
+      "payRail": {
+        "label": "Local payments",
+        "reachedBy": "connector"
+      },
+      "bookkeeping": {
+        "label": "Bookkeeping",
+        "reachedBy": "connector"
+      },
+      "taxPortal": {
+        "label": "Tax authority portal",
+        "reachedBy": "portal"
+      },
+      "eInvoicing": {
+        "label": "E-invoicing",
+        "reachedBy": "connector"
+      },
+      "eID": {
+        "label": "Business login (eID)",
+        "reachedBy": "portal"
+      },
+      "tenders": {
+        "label": "Tenders and grants",
+        "reachedBy": "portal"
+      },
+      "companyRegistry": {
+        "label": "Company registry",
+        "reachedBy": "portal"
+      },
+      "startupData": {
+        "label": "Startup and investor data",
+        "reachedBy": "platform"
+      },
+      "events": {
+        "label": "Local events",
+        "reachedBy": "platform"
+      },
+      "jobs": {
+        "label": "Job boards",
+        "reachedBy": "platform"
+      },
+      "ats": {
+        "label": "Local hiring software",
+        "reachedBy": "connector"
+      },
+      "schools": {
+        "label": "School platforms",
+        "reachedBy": "platform"
+      },
+      "schoolPay": {
+        "label": "School payments",
+        "reachedBy": "connector"
+      },
+      "culture": {
+        "label": "Culture and activity funding",
+        "reachedBy": "portal"
+      },
+      "weather": {
+        "label": "Weather",
+        "reachedBy": "platform"
+      },
+      "reservations": {
+        "label": "Restaurant booking",
+        "reachedBy": "platform"
+      },
+      "delivery": {
+        "label": "Food delivery",
+        "reachedBy": "platform"
+      },
+      "social": {
+        "label": "Local social",
+        "reachedBy": "platform"
+      },
+      "grocery": {
+        "label": "Grocery ordering",
+        "reachedBy": "platform"
+      },
+      "foodLoss": {
+        "label": "Food-loss marketplace",
+        "reachedBy": "connector"
+      },
+      "nutrition": {
+        "label": "Nutrition tracking",
+        "reachedBy": "platform"
+      },
+      "recipes": {
+        "label": "Recipe source",
+        "reachedBy": "platform"
+      },
+      "property": {
+        "label": "Property portals",
+        "reachedBy": "platform"
+      },
+      "landRegistry": {
+        "label": "Sale prices and land registry",
+        "reachedBy": "portal"
+      },
+      "eSign": {
+        "label": "Local e-signature",
+        "reachedBy": "connector"
+      },
+      "resale": {
+        "label": "Resale marketplaces",
+        "reachedBy": "platform"
+      },
+      "fashion": {
+        "label": "Fashion marketplaces",
+        "reachedBy": "platform"
+      },
+      "storefront": {
+        "label": "Storefront platform",
+        "reachedBy": "connector"
+      },
+      "marketplaces": {
+        "label": "Marketplaces",
+        "reachedBy": "platform"
+      },
+      "tickets": {
+        "label": "Ticket marketplaces",
+        "reachedBy": "platform"
+      },
+      "priceCompare": {
+        "label": "Price history and comparison",
+        "reachedBy": "platform"
+      },
+      "customs": {
+        "label": "Customs system",
+        "reachedBy": "portal"
+      },
+      "portCommunity": {
+        "label": "Port community system",
+        "reachedBy": "connector"
+      },
+      "freight": {
+        "label": "Freight booking",
+        "reachedBy": "connector"
+      },
+      "transportDocs": {
+        "label": "Transport documents",
+        "reachedBy": "portal"
+      },
+      "erp": {
+        "label": "Manufacturing ERP",
+        "reachedBy": "connector"
+      },
+      "mes": {
+        "label": "Shop-floor system (MES)",
+        "reachedBy": "connector"
+      },
+      "creditBureau": {
+        "label": "Credit and risk registers",
+        "reachedBy": "connector"
+      },
+      "openBanking": {
+        "label": "Account data (open banking)",
+        "reachedBy": "connector"
+      },
+      "coreBanking": {
+        "label": "Core banking",
+        "reachedBy": "connector"
+      },
+      "idv": {
+        "label": "Identity verification",
+        "reachedBy": "connector"
+      },
+      "regulator": {
+        "label": "Regulator reporting",
+        "reachedBy": "portal"
+      },
+      "wasteRegistry": {
+        "label": "Waste tracking",
+        "reachedBy": "portal"
+      },
+      "metalPrices": {
+        "label": "Local metal prices",
+        "reachedBy": "platform"
+      },
+      "creativeTools": {
+        "label": "Local design and video editing",
+        "reachedBy": "platform"
+      },
+      "localAds": {
+        "label": "Local advertising",
+        "reachedBy": "connector"
+      },
+      "pressRelease": {
+        "label": "Press release distribution",
+        "reachedBy": "portal"
+      },
+      "eventPromotion": {
+        "label": "Event listings and ticketing",
+        "reachedBy": "platform"
+      },
+      "printMarketing": {
+        "label": "Print and promotion",
+        "reachedBy": "portal"
+      },
+      "musicRights": {
+        "label": "Music licensing",
+        "reachedBy": "portal"
+      },
+      "payroll": {
+        "label": "Payroll and HR",
+        "reachedBy": "connector"
+      },
+      "cardPayments": {
+        "label": "Card and payment processors",
+        "reachedBy": "connector"
+      },
+      "spendManagement": {
+        "label": "Spend management",
+        "reachedBy": "connector"
+      },
+      "revenueApps": {
+        "label": "Billing and revenue",
+        "reachedBy": "connector"
+      },
+      "expenses": {
+        "label": "Travel and expenses",
+        "reachedBy": "connector"
+      },
+      "planningReports": {
+        "label": "Planning and reports",
+        "reachedBy": "connector"
+      },
+      "ledgerOps": {
+        "label": "Ledger operations",
+        "reachedBy": "connector"
+      },
+      "procurement": {
+        "label": "Procurement and inventory",
+        "reachedBy": "connector"
+      },
+      "complianceFilings": {
+        "label": "Compliance and audit",
+        "reachedBy": "portal"
+      }
+    },
+    "personasNeverListCountries": true,
+    "listedServices": "Public apps with provider 'directory' are listed for discovery and cannot be installed; teams build them as My apps."
+  },
+  "workforceOverview": {
+    "source": "three named List row queries with explicit select projections",
+    "configuration": [
+      "timeZone",
+      "view",
+      "employees",
+      "availability",
+      "requests"
+    ],
+    "views": [
+      "overview",
+      "calendar"
+    ],
+    "fieldMappings": "source column names only",
+    "authorization": "existing actor/workspace List queries; no new access grants",
+    "partialReads": "unknown affected metrics; never infer working/non-working days",
+    "readOnly": true
+  }
+}

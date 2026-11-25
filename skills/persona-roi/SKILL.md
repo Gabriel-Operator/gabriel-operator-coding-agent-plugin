@@ -43,15 +43,15 @@ values, currency mismatch and runner/workspace isolation.
 ## Public planning calculators
 
 For new or updated public calculators, read [compact pricing and ROI](references/compact-calculator.md).
-Use three authored calculation assumptions and a single public investment input, capped monthly pricing, Pricing navigation and
+Use three authored calculation assumptions and a single public input: investment for priced plans, or request count for quoted pilots. Keep time and valuation read-only, along with capped monthly pricing, Pricing navigation and
 the shared deterministic evaluator. Unknown inputs remain null; free plans have no
 ROI percentage. `gabriel_calculate_persona_roi` / `persona_calculate_roi` return
 planning estimates, never accepted outcomes or measured ROI. Keep the existing
 read-only measured tools and historical calculator pins intact.
 
-## Required playbook team protocol
+## Multi-agent playbook team protocol
 
-Every slash command and directly runnable saved Canvas playbook owns a human-reviewed schema-v1 `team`. Generate or validate it after defining steps with `gabriel_propose_playbook_team` / `gabriel_validate_playbook_team`, then return the authenticated review URL. Use `gabriel_update_playbook_team` with the current `expectedFingerprint` to save a draft. API/MCP clients cannot confirm, import or manufacture human approval. Activation and new launches fail with `TEAM_REVIEW_REQUIRED` or `TEAM_REVIEW_STALE` until the author/owner confirms.
+An ordinary slash command or saved Canvas workflow uses its existing steps, permissions and approval rules; do not generate a team merely to make it executable. Configure a schema-v1 `team` only when the author chooses multi-agent execution. Generate or validate that explicit team with `gabriel_propose_playbook_team` / `gabriel_validate_playbook_team`, then return the authenticated review URL. Use `gabriel_update_playbook_team` with the current `expectedFingerprint` to save a draft. API/MCP clients cannot confirm, import or manufacture human approval. Saving, enabling and viewing history do not require team confirmation. Only a new run with a configured team fails with `TEAM_REVIEW_REQUIRED` or `TEAM_REVIEW_STALE` until reviewed. Published persona users inherit an original author’s acceptance only for the exact matching executable/team/framework/registry fingerprint; private credentials, permissions and effect approvals remain actor-scoped. Previous runs retain their captured configuration and remain readable independently of current readiness. Team editing belongs in the author’s Advanced: multi-agent team tabs, never in execution history.
 
 Define contextual specialist sub-agents with explicit goals, start conditions, outputs, completion criteria, approved stage IDs, hierarchy, recipients and finite invocation/step/time limits. Coordinator, reviewer, scorer, independent judge, auditor and memory steward are always present. Assign one integration owner. Preserve ontology usage, feed revision references, declared record operations, optional recorded Signal triggers and authored outcome metric bindings; missing semantics or capabilities block affected work. Deterministic actions remain tools of the appropriate specialist.
 
@@ -68,4 +68,4 @@ Real navigation and transformations require owned work products. An opaque capab
 
 For a family activity or school-workshop flagship, read [the community activity loop contract](../persona-framework/references/community-activity-loop.md). It covers shared guided state, scoped refreshable feeds, opt-in Signals, reviewed team execution and adult-confirmed occurrence ROI.
 
-Public pricing widgets expose customer investment only. Outputs (work delivered, time returned and value) are read-only. Author bounded free access for every audience and seven-day trials for paid plans; planning quotes do not change billing. Source fixed forecast assumptions and disclose benchmark limitations, human review, full-use assumptions and negative returns. See the compact-calculator reference.
+Priced widgets expose customer investment only; quoted pilots expose a bounded request count instead. Outputs (work delivered, time returned and value) are read-only. Author bounded free access for every audience and seven-day trials for paid plans; planning quotes do not change billing. Source fixed forecast assumptions and disclose benchmark limitations, human review, full-use assumptions and negative returns. See the compact-calculator reference.

@@ -7,10 +7,8 @@ function validatePersonaDashboardLayout(app) {
   if (JSON.stringify(modules.map(module => module.id)) !== JSON.stringify(expected)) issues.push('Keep primary navigation to Home, chat history/playbooks, Signals, Data Feed and Media in that order.');
   if (app?.navigation?.defaultModule !== 'page:dashboard') issues.push('Home must be the default app destination.');
   const page = app?.pages?.find(page => page.id === 'dashboard');
-  const tab = page?.tabs?.find(tab => tab.id === 'coach');
-  if (page?.template !== 'workspace' || page?.defaultTab !== 'coach' || !tab) issues.push('Home requires a default coach tab.');
-  const panels = (page?.sections || []).filter(section => tab?.sectionIds?.includes(section.id)).flatMap(section => section.components || []);
-  if (!panels.some(component => component.type === 'assistant-panel' && (component.width === undefined || component.width === 'full') && app?.dataPoints?.some(point => point.id === component.dataPoint && point.source === 'workspace' && point.provider === 'coach'))) issues.push('The Home coach needs a full-width assistant-panel backed by the coach provider.');
+  if (page?.template !== 'workspace' || !page?.defaultTab || page.defaultTab === 'coach') issues.push('Home requires a non-coach default workspace tab.');
+  if ((page?.tabs || []).some(tab => tab.id === 'coach')) issues.push('Do not author an inline Meet/coach tab on Home; Coach opens in the right-hand sidebar from the floating chat.');
   if (app?.coach?.enabled !== true || app.coach.mode !== 'review' || !Array.isArray(app.coach.allowedActionIds) || app.coach.allowedActionIds.length || !app.coach.reviewDataPointIds?.length) issues.push('Configure an enabled review-only coach with declared evidence and no operational actions.');
   const duplicateTypes = new Set(['goal-list','routine-list','signal-list','schedule-calendar']);
   if (page?.sections?.some(section => section.components?.some(component => duplicateTypes.has(component.type)))) issues.push('Home must not contain milestones/goals, routines, Signals or Schedule panels. Use the Coach milestones control and the Signals destination.');
@@ -25,8 +23,6 @@ function validatePersonaDashboardLayout(app) {
   for (const signalPage of (app?.pages||[]).filter(page=>page.id.toLowerCase().includes('signal'))) {
     if ((signalPage.tabs||[]).length>1) issues.push('Signals must use its shared inner Signals/Planning controls, never a duplicate outer Signals/Routines tab strip.');
   }
-  const coachIcon = tab?.icon;
-  if (!coachIcon || !(coachIcon.startsWith('/') || coachIcon.startsWith('https://') || coachIcon.startsWith('http://'))) issues.push('The Meet/Coach tab requires the persona portrait, never a generic AI icon.');
   return issues;
 }
 module.exports = { validatePersonaDashboardLayout };

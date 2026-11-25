@@ -1,0 +1,624 @@
+{
+  "schemaVersion": 1,
+  "bookingUrl": "https://calendar.app.google/CFa3YF7FKHycJPs27",
+  "contactEmail": "hello@gabrieloperator.com",
+  "demoCommand": "buy",
+  "seo": {
+    "title": "Paya – Your Online Shopping Persona",
+    "description": "Paya is your online shopping persona for expiring deals, releases and limited-stock offers. Set a budget and time window, review the simulated checkout, then approve before purchase."
+  },
+  "household": {
+    "heroTitle": "Catch the right deal.\nKeep the final say.",
+    "heroBody": "Flash deals, ticket releases and limited stock move fast. Paya checks supported online shops and marketplaces, prepares the checkout and brings you the exact plan before the window closes.",
+    "demo": {
+      "command": "/buy 1 standing desk + ergonomic chair\nbudget €900 · sale ends today 20:00",
+      "item": "1 standing desk + ergonomic chair",
+      "budget": 900,
+      "total": 740,
+      "delivery": "Thursday",
+      "logs": [
+        [
+          "09:02:00",
+          "BRIEF",
+          "1 standing desk + chair · budget €900 · online sale ends 20:00"
+        ],
+        [
+          "09:04:00",
+          "SEARCH",
+          "3 online offers compared · stock, fees and expiry checked"
+        ],
+        [
+          "09:06:00",
+          "BUILD",
+          "best option €740 · delivery Thursday"
+        ],
+        [
+          "09:07:00",
+          "SIM",
+          "checkout rehearsed · fees, stock and delivery checked"
+        ],
+        [
+          "09:07:15",
+          "HOLD",
+          "exact plan ready · €160 under budget · needs your approval"
+        ],
+        [
+          "09:15:00",
+          "EXEC",
+          "illustrative approval · confirmation saved · no real payment"
+        ]
+      ],
+      "jobs": [
+        [
+          "Home-office flash deal",
+          900,
+          740,
+          "AWAITING APPROVAL"
+        ],
+        [
+          "Headphone promotion",
+          160,
+          189,
+          "PAUSED"
+        ],
+        [
+          "09:00 ticket release",
+          180,
+          164,
+          "WATCHING"
+        ],
+        [
+          "Limited sneaker drop",
+          220,
+          189,
+          "SIMULATING"
+        ]
+      ],
+      "roster": [
+        [
+          "Understand",
+          "Turn your request into a clear online shopping brief."
+        ],
+        [
+          "Research",
+          "Compare supported online shops and marketplaces."
+        ],
+        [
+          "Compare",
+          "Check seller, total, stock, delivery and offer expiry."
+        ],
+        [
+          "Build",
+          "Prepare the basket before the buying window closes."
+        ],
+        [
+          "Simulate",
+          "Rehearse the complete checkout before commitment."
+        ],
+        [
+          "Approve & buy",
+          "You approve the exact plan and payment. Changed terms require a new approval."
+        ]
+      ],
+      "scenarios": [
+        [
+          "A home-office deal before it ends",
+          "An online desk-and-chair offer ends tonight. Paya checks the total, stock and delivery, rehearses checkout, and brings you the exact plan while it is still available.",
+          "Standing desk + chair · €900 · offer ends 20:00"
+        ],
+        [
+          "The tickets that open at 09:00",
+          "Paya checks the release window and prepares two concert tickets on a supported online marketplace. You approve the exact choice before checkout completes.",
+          "2 concert tickets · €180 · opening at 09:00"
+        ],
+        [
+          "Your size, before it sells out",
+          "A limited sneaker drop has your size back in stock. Paya checks the seller, final total and return terms, then holds the simulated plan for your approval.",
+          "1 pair of sneakers · €220 · while stock lasts"
+        ]
+      ],
+      "holdTotal": 958
+    },
+    "faqs": [
+      [
+        "Does Paya ever buy without my approval?",
+        "No. It simulates, you approve, then it buys. Every payment needs the card holder’s approval."
+      ],
+      [
+        "Can it spend more than my budget?",
+        "Paya refuses plans above your budget and checks the exact amount at checkout. A changed total requires a new simulation and approval."
+      ],
+      [
+        "What if the price changes after I approve?",
+        "It pauses, re-simulates and asks again. An earlier approval cannot authorise a changed purchase."
+      ],
+      [
+        "What if the deadline passes with no good option?",
+        "It buys nothing and tells you why."
+      ],
+      [
+        "Who holds the card and my data?",
+        "You attach your card through AgentCard Vault. Card details stay encrypted in the Vault and are used on the card holder’s device. Paya keeps the purchase plan, approvals and merchant confirmation."
+      ],
+      [
+        "What can it not buy?",
+        "A purchase must fit your restrictions and a supported checkout. Paya stops when it cannot verify the seller, amount, delivery, terms or payment outcome."
+      ]
+    ],
+    "sections": {
+      "klok-roster": [
+        "THE LOOP",
+        "Brief. Simulate.\nApprove. Buy. Report."
+      ],
+      "klok-console": [
+        "A PURCHASE, SIMULATED",
+        "See the purchase before it happens."
+      ],
+      "klok-sites": [
+        "WHERE IT WORKS",
+        "Works where you already buy."
+      ],
+      "klok-scenarios": [
+        "EXAMPLE SCENARIOS",
+        "A budget. A deadline. A reason to act."
+      ],
+      "klok-builder": [
+        "BRIEF BUILDER",
+        "Put a purchase on the clock."
+      ],
+      "klok-faq": [
+        "FAQ",
+        "Questions, answered."
+      ],
+      "paya-meet": [
+        "MEET YOUR ONLINE SHOPPING PERSONA",
+        "Meet Paya."
+      ]
+    },
+    "heroRoleTitle": "Catch the right deal.\nKeep the final say.",
+    "loop": {
+      "title": "Brief. Simulate.\nApprove. Buy. Report.",
+      "body": "Paya checks the online offer and prepares checkout. You control the budget, buying window, exact plan and payment approval.",
+      "steps": [
+        [
+          "Brief",
+          "State the item, budget, buying window and delivery deadline. Tell Paya the conditions that matter."
+        ],
+        [
+          "Simulate",
+          "Compare sellers, prices, stock, offer expiry, delivery and terms. Review the complete checkout before anything is bought."
+        ],
+        [
+          "Approve",
+          "Approve, edit or reject the exact plan. A changed plan needs a new approval."
+        ],
+        [
+          "Buy",
+          "Paya rechecks the conditions. The card holder approves the exact payment through Vault."
+        ],
+        [
+          "Report",
+          "Keep the merchant confirmation, receipt and private purchase record."
+        ]
+      ]
+    }
+  },
+  "business": {
+    "heroTitle": "Good deals move fast.\nKeep the control.",
+    "heroBody": "Paya compares time-limited online offers for your team, checks stock and delivery, and rehearses checkout. You approve the exact plan and payment before the buying window ends.",
+    "demo": {
+      "command": "/buy 40 office chairs\nbudget €4,000 · online offer ends today 18:00",
+      "item": "40 × office chair",
+      "budget": 4000,
+      "total": 3720,
+      "delivery": "11 November",
+      "logs": [
+        [
+          "09:02:00",
+          "BRIEF",
+          "40 office chairs · budget €4,000 · online offer ends 18:00"
+        ],
+        [
+          "09:04:00",
+          "SEARCH",
+          "6 online sellers checked · 3 meet stock and delivery requirements"
+        ],
+        [
+          "09:06:00",
+          "BUILD",
+          "best option €3,720 · delivery 11 Nov"
+        ],
+        [
+          "09:07:00",
+          "SIM",
+          "checkout rehearsed · stock ✓ · delivery slot ✓ · total ✓"
+        ],
+        [
+          "09:07:15",
+          "HOLD",
+          "awaiting your approval · €280 under budget"
+        ],
+        [
+          "09:15:00",
+          "EXEC",
+          "approved by you · order placed · confirmation saved"
+        ]
+      ],
+      "jobs": [
+        [
+          "Office-chair promotion",
+          4000,
+          3720,
+          "AWAITING APPROVAL"
+        ],
+        [
+          "Conference equipment",
+          2400,
+          2180,
+          "WATCHING"
+        ],
+        [
+          "Event supplies",
+          2000,
+          1830,
+          "SIMULATING"
+        ],
+        [
+          "Office consumables",
+          900,
+          950,
+          "PAUSED"
+        ]
+      ],
+      "roster": [
+        [
+          "Understand",
+          "Turn your request into a clear online shopping brief."
+        ],
+        [
+          "Research",
+          "Compare supported online shops and marketplaces."
+        ],
+        [
+          "Compare",
+          "Check seller, total, stock, delivery and offer expiry."
+        ],
+        [
+          "Build",
+          "Prepare the basket before the buying window closes."
+        ],
+        [
+          "Simulate",
+          "Rehearse the complete checkout before commitment."
+        ],
+        [
+          "Approve & buy",
+          "You approve the exact plan and payment. Changed terms require a new approval."
+        ]
+      ],
+      "scenarios": [
+        [
+          "The office-chair offer that ends today",
+          "Your team needs a practical set of chairs, and the online promotion expires at 18:00. Paya compares sellers, checks stock and delivery, and prepares the exact order for approval.",
+          "40 office chairs · €4,000 · offer ends 18:00"
+        ],
+        [
+          "Event supplies before the offer ends",
+          "An online event-supply bundle has a limited promotion. Paya checks the full basket and delivery deadline, then prepares checkout while the offer remains valid.",
+          "Event supplies · €2,000 · promotion ends 16:00"
+        ],
+        [
+          "A marketplace offer with a clock on it",
+          "An online toner-and-paper offer is close to expiry. Paya checks the seller and approved terms, then pauses and asks again if the price or stock changes.",
+          "Office consumables · €900 · before offer expiry"
+        ]
+      ],
+      "holdTotal": 4212
+    },
+    "faqs": [
+      [
+        "Will it ever buy without asking me?",
+        "No. Every purchase needs your approval."
+      ],
+      [
+        "What if the price or stock changes after I approve?",
+        "It re-checks at checkout. If anything differs, it stops and asks again."
+      ],
+      [
+        "Can it go over budget?",
+        "No approved plan may exceed the configured budget. Options over budget can be shown as alternatives and are never ordered."
+      ],
+      [
+        "Does it need API access?",
+        "Paya can use your existing accounts on supported online shops and marketplaces. Payment still needs a supported AgentCard checkout and the card holder’s approval."
+      ],
+      [
+        "What does simulation first mean?",
+        "It rehearses the whole checkout before committing. You approve the real plan, including the final total and terms."
+      ],
+      [
+        "Who sees what it did?",
+        "Every step is recorded: options found, simulation, approval and confirmation. The record belongs to the runner or authorised business workspace."
+      ]
+    ],
+    "sections": {
+      "klok-roster": [
+        "THE LOOP",
+        "One brief.\nSix buying steps."
+      ],
+      "klok-console": [
+        "A PURCHASE, SIMULATED",
+        "See the purchase before it happens."
+      ],
+      "klok-sites": [
+        "WHERE IT WORKS",
+        "Works where you already buy."
+      ],
+      "klok-scenarios": [
+        "EXAMPLE SCENARIOS",
+        "A budget. A deadline. A reason to act."
+      ],
+      "klok-builder": [
+        "THE BUYING COST",
+        "What does the admin cost per purchase?"
+      ],
+      "klok-faq": [
+        "FAQ",
+        "Questions, answered."
+      ],
+      "paya-meet": [
+        "MEET YOUR ONLINE SHOPPING PERSONA",
+        "Meet Paya."
+      ]
+    },
+    "heroRoleTitle": "Good deals move fast.\nKeep the control.",
+    "loop": {
+      "title": "One brief.\nSix buying steps.",
+      "body": "Paya checks the online offer and prepares checkout. You control the budget, buying window, exact plan and payment approval.",
+      "steps": [
+        [
+          "Understand",
+          "Turn a text, voice note or photo into a clear brief: what, budget, buying window and delivery deadline."
+        ],
+        [
+          "Research",
+          "Check your online shops and marketplaces for price, stock and delivery time."
+        ],
+        [
+          "Compare",
+          "Rank options against your budget, offer expiry and delivery deadline. Explain the trade-off."
+        ],
+        [
+          "Build",
+          "Prepare the cart on the supported online checkout, using your existing accounts."
+        ],
+        [
+          "Simulate",
+          "Rehearse stock, delivery, fees and the final total before anything is committed."
+        ],
+        [
+          "Approve & execute",
+          "You approve the exact plan and the card holder approves payment. Paya rechecks, places the order and saves the merchant confirmation."
+        ]
+      ]
+    }
+  },
+  "visuals": {
+    "scenarioImages": [
+      "/assets/gabriel-twins/paya/paya-household-home-office-v1.png",
+      "/assets/gabriel-twins/paya/paya-household-ticket-release-v1.png",
+      "/assets/gabriel-twins/paya/paya-household-limited-drop-v1.png"
+    ],
+    "characterImage": "/assets/gabriel-twins/paya/paya-full-body-v1.png",
+    "portraitImage": "/assets/gabriel-twins/paya/paya-portrait-v1.png",
+    "logoImage": "/assets/gabriel-twins/paya/paya-logo-v3.svg",
+    "bannerImage": "/assets/gabriel-twins/paya/paya-shopping-og-banner-v5.jpg",
+    "scenarioImagesByAudience": {
+      "household": [
+        "/assets/gabriel-twins/paya/paya-household-home-office-v1.png",
+        "/assets/gabriel-twins/paya/paya-household-ticket-release-v1.png",
+        "/assets/gabriel-twins/paya/paya-household-limited-drop-v1.png"
+      ],
+      "business": [
+        "/assets/gabriel-twins/paya/paya-business-timed-office-order-v1.png",
+        "/assets/gabriel-twins/paya/paya-business-event-order-v1.png",
+        "/assets/gabriel-twins/paya/paya-business-quote-watch-v1.png"
+      ]
+    },
+    "scenarioAltsByAudience": {
+      "household": [
+        "Paya compares a standing desk and chair for a practical home-office setup.",
+        "Paya prepares two concert tickets while waiting for human approval.",
+        "Paya checks a limited-stock sneaker drop on an online marketplace."
+      ],
+      "business": [
+        "Paya compares a time-limited online office-chair offer and prepares checkout for review.",
+        "Paya prepares and compares supplies for a small company event.",
+        "Paya checks an expiring online marketplace offer for office consumables."
+      ]
+    }
+  },
+  "meet": {
+    "title": "Meet Paya.",
+    "body": "Your online shopping persona for the deals that will not wait. Paya checks sellers, stock, terms and expiry, prepares a simulated checkout, and brings you the decision while the window is open.",
+    "principle": "Your budget. Your deadline. Your approval. Every time."
+  },
+  "brand": {
+    "name": "Paya",
+    "tagline": "Your Online Shopping Persona"
+  },
+  "ui": {
+    "household": "Household",
+    "business": "Business",
+    "process": "Process",
+    "simulation": "Simulation",
+    "faq": "FAQ",
+    "ledger": "Ledger",
+    "questions": "Questions",
+    "about": "About",
+    "signIn": "Sign in",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "personaType": "Online shopping persona",
+    "monitoring": "Monitoring prices, availability and deadlines",
+    "onWatch": "ON WATCH",
+    "payaOnWatch": "PAYA ON WATCH",
+    "localTime": "LOCAL TIME",
+    "safety": "SIMULATION FIRST · HUMAN APPROVAL ALWAYS",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "sectionsNav": "Paya sections",
+    "audiencesNav": "Paya audiences",
+    "mobileNav": "Mobile sections",
+    "budgetLabel": "Your budget",
+    "deadlineLabel": "Your deadline",
+    "approvalLabel": "Your approval",
+    "startBrief": "Start a buying brief",
+    "meetPaya": "Meet Paya",
+    "bookPilot": "Book a pilot call",
+    "commandSummary": "Brief → simulate → approve → buy",
+    "loopLabel": "THE LOOP",
+    "loopBody": "Paya handles the process. You set the limits and approve the exact plan and payment.",
+    "changedPlan": "If anything changes between simulation and checkout, Paya stops and asks you again.",
+    "replayLabel": "A PURCHASE, SIMULATED",
+    "replayTitle": "See the purchase\nbefore it happens.",
+    "replayBody": "Research the options. Rehearse the checkout. Every purchase needs your approval. The examples below are illustrative; nothing is being bought.",
+    "channelsLabel": "WHERE IT WORKS",
+    "channels": [
+      "Online marketplaces",
+      "Online shops",
+      "Timed promotions",
+      "Product releases",
+      "Limited-stock drops",
+      "Ticket marketplaces"
+    ],
+    "channelsNote": "Use your existing accounts. Checkout coverage is verified before a purchase.",
+    "businessChannelsNote": "Workflow categories; no official partnership claims.",
+    "scenariosLabel": "EXAMPLE SCENARIOS",
+    "scenariosTitle": "A budget. A deadline.\nA reason to act.",
+    "scenariosBody": "The same buying process, applied to the moments when timing matters.",
+    "illustrative": "ILLUSTRATIVE",
+    "scenarioBrief": "THE BRIEF",
+    "businessBuilderLabel": "THE BUYING COST",
+    "householdBuilderLabel": "THE SHOPPING COST",
+    "businessBuilderTitle": "What does the admin\ncost per purchase?",
+    "householdBuilderTitle": "What does shopping\ncost in your time?",
+    "businessBuilderBody": "An estimate from your own inputs. No savings or automation rate assumed.",
+    "householdBuilderBody": "Set your own shopping habits and time value. This is a baseline for judging Paya’s value; no time saved, fees or savings are assumed.",
+    "purchasesPerMonth": "Purchases per month",
+    "hoursPerPurchase": "Hours per purchase",
+    "costPerHour": "Cost per hour (€)",
+    "inputEstimate": "ESTIMATE FROM YOUR INPUTS",
+    "adminCost": "Estimated admin cost per purchase",
+    "hoursUnit": "hours",
+    "estimateExplanation": "%hours% hours × your %rate% hourly rate. Annual hours use %purchases% purchases per month.",
+    "whatToBuy": "What to buy",
+    "budget": "Budget",
+    "deadline": "Deadline",
+    "jobType": "Job type",
+    "jobTypes": [
+      "Flash deal",
+      "Price watch",
+      "Release",
+      "Offer expiry",
+      "Auction",
+      "Limited stock"
+    ],
+    "runDemo": "Run this in the demo",
+    "simulationNotice": "SIMULATION · ILLUSTRATIVE",
+    "yourPurchase": "Your purchase",
+    "budgetSummary": "Budget %budget%.",
+    "deadlineSummary": "By %deadline%.",
+    "missingDeadline": "A deadline is needed before the plan can run.",
+    "nothingBought": "NOTHING BOUGHT · APPROVAL REQUIRED",
+    "chooseDate": "Choose date and time",
+    "timeCaption": "Time",
+    "timezoneHint": "Times use your local timezone.",
+    "pilotLabel": "FIXED-SCOPE PILOT",
+    "businessPilotTitle": "Online offers. Your budget. Your decision.",
+    "householdPilotTitle": "Start with one job and your own budget.",
+    "pilotBody": "One buying workflow. Simulation and approval on every purchase. Full ledger access. Pilot pricing on request.",
+    "faqTitle": "Questions,\nanswered.",
+    "faqBody": "Keep the decision. Let Paya handle the process.",
+    "meetLabel": "MEET YOUR ONLINE SHOPPING PERSONA",
+    "startWithPaya": "Start a brief with Paya",
+    "talkToPaya": "Talk to Paya",
+    "characterAlt": "Paya, your online shopping persona",
+    "onYourSide": "PAYA · ON YOUR SIDE",
+    "footerTitle": "Put your purchases\non the clock.",
+    "footerProcess": "THE PROCESS",
+    "chatTitle": "Your buying brief",
+    "chatRegion": "Buy with Paya",
+    "chatFallback": "What would you like to buy? Tell me your budget and deadline. I’ll simulate the purchase before you decide.",
+    "chatPlaceholder": "What to buy, your budget and when you need it",
+    "chatStart": "Start",
+    "chatSafety": "Simulation first. Your approval before every purchase.",
+    "replayRun": "ILLUSTRATIVE RUN",
+    "replaying": "REPLAYING…",
+    "yourDecision": "YOUR DECISION",
+    "demoComplete": "DEMO COMPLETE",
+    "demoStopped": "DEMO STOPPED",
+    "decisionRequired": "Decision required",
+    "decision": "DECISION",
+    "rejected": "REJECTED",
+    "notRun": "NOT RUN",
+    "replaySummary": "%total% against a %budget% budget · delivery %delivery%.",
+    "completeMessage": "Demo complete. Both decisions were approved; nothing was ordered or charged.",
+    "planRejectedMessage": "You rejected the plan in this demo. Nothing was ordered or charged.",
+    "paymentRejectedMessage": "You rejected the payment in this demo. Nothing was ordered or charged.",
+    "replayDemo": "Replay demo",
+    "recordTitle": "Every purchase, on the record.",
+    "emptyRecord": "No replay steps completed yet.",
+    "recordNotice": "Illustrative replay record · no real order or payment.",
+    "needsDecision": "NEEDS YOUR DECISION",
+    "planReview": "PLAN REVIEW",
+    "cardReview": "CARD HOLDER REVIEW",
+    "purchasePlan": "ILLUSTRATIVE PURCHASE PLAN",
+    "paymentReview": "ILLUSTRATIVE PAYMENT REVIEW",
+    "planBody": "%item%. Budget %budget%. Delivery %delivery%. Checkout is simulated. Review the exact plan before continuing.",
+    "paymentBody": "The approved %total% total, stock and delivery are unchanged. In a real purchase, the card holder must approve the exact payment. This is a local rehearsal with no charge.",
+    "approvePlan": "Approve plan",
+    "rejectPlan": "Reject plan",
+    "approvePayment": "Approve payment",
+    "rejectPayment": "Reject payment",
+    "approveDemoPlan": "Approve demo plan",
+    "rejectDemoPlan": "Reject demo plan",
+    "approveDemoPayment": "Approve demo payment",
+    "rejectDemoPayment": "Reject demo payment",
+    "demoPlanDecision": "Demo plan decision",
+    "demoPaymentDecision": "Demo payment decision",
+    "editBrief": "Edit the brief",
+    "noPayment": "ILLUSTRATIVE DEMO · NO PAYMENT",
+    "priceChanged": "If the total changes to %changed% against your %budget% budget, Paya stops. It cannot use the earlier approval or proceed to payment. Any revised plan needs your decision again.",
+    "briefStep": "BRIEF",
+    "searchStep": "SEARCH",
+    "buildStep": "BUILD",
+    "simulateStep": "SIM",
+    "holdStep": "HOLD",
+    "recheckStep": "RECHECK",
+    "paymentStep": "PAYMENT",
+    "reportStep": "REPORT",
+    "briefRecord": "Brief recorded",
+    "searchRecord": "Online offers compared",
+    "buildRecord": "Exact plan prepared",
+    "simulateRecord": "Checkout simulated",
+    "planRecord": "You approved the demo plan",
+    "recheckRecord": "Approved conditions rechecked",
+    "paymentRecord": "Card holder approved the demo payment",
+    "receiptRecord": "Illustrative receipt prepared; no order or payment",
+    "planRejectedRecord": "You rejected the demo plan; nothing ordered or charged",
+    "paymentRejectedRecord": "You rejected the demo payment; nothing ordered or charged",
+    "recheckText": "Price, stock, fees and delivery unchanged · approved plan still valid",
+    "paymentText": "Card holder reviews %total% · illustrative payment only · no charge",
+    "receiptText": "Demo receipt and purchase record prepared · nothing ordered or charged",
+    "capValue": "CAP",
+    "timeValue": "TIME",
+    "approvalValue": "YES",
+    "householdPurchases": "Online purchases per month",
+    "householdMinutes": "Minutes per online purchase",
+    "householdRate": "Value of your time per hour (€)",
+    "householdCost": "Estimated time value per purchase",
+    "householdExplanation": "%minutes% minutes at your %rate% hourly time value. Annual shopping hours use %purchases% online purchases per month. Time value is not cash savings."
+  }
+}

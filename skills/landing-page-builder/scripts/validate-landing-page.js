@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 const fs = require('fs');
+const { validateLandingEditorial } = require('./landing-page-editorial.cjs');
 const { validateLandingMobileContent } = require('./landing-page-mobile.cjs');
 const { validateChakriLandingContent } = require('./chakri-landing-validation');
 const nodePath = require('path');
 const { createHash } = require('crypto');
 const { validateRoiCalculator } = require('./landing-page-roi');
 const boliCopySchema = require('../references/boli-learning-copy-schema.json');
+const factorySimulationSchema = require('../references/industrial-factory-simulation-schema.json');
+const factoryExplorerSchema = require('../references/industrial-factory-explorer-schema.json');
 const wardrobeCopySchema = require('../references/wardrobe-twin-copy-schema.json');
 const { validateMiravLandingCopy, isMiravPreviewIconPath } = require('./mirav-landing-copy.cjs');
 
@@ -14,7 +17,7 @@ const ALLOWED_ICONS = new Set([
   'search', 'lightbulb', 'user-plus', 'calendar', 'question-mark', 'envelope',
 ]);
 const ALLOWED_ROLES = new Set(['user', 'assistant']);
-const ALLOWED_DESIGN_VARIANTS = new Set(['default', 'signature', 'banking', 'form-operations', 'logistics-portal', 'cinematic-campaigns', 'recruiting-operations', 'grocery-twin', 'wardrobe-twin', 'boli-learning', 'event-introductions', 'home-introductions', 'chakri-scrap', 'klok', 'community-connections']);
+const ALLOWED_DESIGN_VARIANTS = new Set(['company-intelligence', 'stayor', 'industrial-production', 'default', 'signature', 'banking', 'form-operations', 'logistics-portal', 'cinematic-campaigns', 'recruiting-operations', 'grocery-twin', 'wardrobe-twin', 'boli-learning', 'event-introductions', 'home-introductions', 'chakri-scrap', 'klok', 'community-connections']);
 const ALLOWED_BRAND_MARKS = new Set(['heart', 'image', 'initial']);
 const ALLOWED_NAV_TARGETS = new Set([
   'meet', 'about', 'capabilities', 'use-cases', 'trust',
@@ -35,7 +38,7 @@ const BRAND_COLOR_KEYS = ['canvas', 'surface', 'sidebar', 'text', 'accent', 'acc
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const IMAGE_EXTENSION = /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#]|$)/i;
 const VIDEO_EXTENSION = /\.(?:m4v|mov|mp4|webm)(?:[?#]|$)/i;
-const SAFE_APP_IMAGE_PATH = /^\/(?:assets|landing-pages)\/[a-z0-9][a-z0-9/_-]*\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#]|$)/i;
+const SAFE_APP_IMAGE_PATH = /^\/(?:(?:assets|landing-pages)\/[a-z0-9][a-z0-9/_-]*|api\/page-builder\/media\/[a-z0-9_-]+\/[a-z0-9_-]+\/content\/[a-z0-9][a-z0-9._-]*)\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#]|$)/i;
 const REGION_KEY = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const COUNTRY_CODE = /^[A-Z]{2}$/;
 const SOURCE_REVISION = /^[a-f0-9]{64}$/;
@@ -991,6 +994,7 @@ function validateHomeIntroductionCommand(landingPage, chatConfigPath) {
 }
 
 function validateLandingPageModel(landingPage, chatConfigPath, definitionFilePath) {
+  validateLandingEditorial(landingPage).forEach(issue => fail(`${issue.path}: ${issue.message}`));
   if (!landingPage || typeof landingPage !== 'object') fail('landingPage object is required');
   if (landingPage.capabilityPreview !== undefined) {
     const binding = landingPage.capabilityPreview;
@@ -1269,7 +1273,7 @@ function validateLandingPageModel(landingPage, chatConfigPath, definitionFilePat
   if (landingPage.heroChat !== undefined) {
     const heroChat = landingPage.heroChat;
     if (!heroChat || typeof heroChat !== 'object') fail('landingPage.heroChat must be an object');
-    for (const key of ['statusLabel', 'inputPlaceholder']) {
+    for (const key of ['statusLabel', 'inputPlaceholder', 'openingMessage']) {
       if (heroChat[key] !== undefined && typeof heroChat[key] !== 'string') {
         fail(`landingPage.heroChat.${key} must be a string`);
       }
@@ -1296,6 +1300,17 @@ function validateLandingPageModel(landingPage, chatConfigPath, definitionFilePat
     });
   }
 
+  if (landingPage.factorySimulation !== undefined) {
+    const sim = landingPage.factorySimulation;
+    const text = (v, label) => { if (typeof v !== 'string' || !v.trim() || v.length > 500) fail(`${label} requires bounded authored text`); };
+    if (!sim || typeof sim !== 'object') fail('landingPage.factorySimulation must be an object');
+    factorySimulationSchema.copyKeys.forEach(key => text(sim[key], `landingPage.factorySimulation.${key}`));
+    for (const [key, count, fields] of [['metrics',3,['label','value']], ['steps',6,['title','body']]]) {
+      if (!Array.isArray(sim[key]) || sim[key].length !== count) fail(`landingPage.factorySimulation.${key} requires ${count} entries`);
+      sim[key].forEach((row, index) => fields.forEach(field => text(row?.[field], `landingPage.factorySimulation.${key}[${index}].${field}`)));
+    }
+    if (landingPage.features?.length !== 6) fail('Factory simulation requires six capability steps');
+  }
   if (landingPage.gallery !== undefined) {
     const gallery = landingPage.gallery;
     if (!gallery || typeof gallery !== 'object') fail('landingPage.gallery must be an object');
@@ -1463,6 +1478,16 @@ function validateLandingPageModel(landingPage, chatConfigPath, definitionFilePat
         if (!item[key] || !String(item[key]).trim()) fail(`${label}.${key} is required`);
       }
       if (item.alt !== undefined && typeof item.alt !== 'string') fail(`${label}.alt must be a string`);
+      if (item.mascotEyes !== undefined) {
+        const rig = item.mascotEyes;
+        if (!rig || ![rig.width, rig.height].every(size => Number.isInteger(size) && size > 0 && size <= 4096)
+          || !Array.isArray(rig.eyes) || rig.eyes.length !== 2
+          || !rig.eyes.every(eye => eye && [eye.x, eye.y, eye.rx, eye.ry].every(Number.isFinite)
+            && eye.rx > 0 && eye.ry > 0 && eye.x >= eye.rx && eye.y >= eye.ry
+            && eye.x + eye.rx <= rig.width && eye.y + eye.ry <= rig.height)) {
+          fail(`${label}.mascotEyes must contain the image dimensions and two in-bounds eye ellipses`);
+        }
+      }
     });
   }
 
@@ -1512,6 +1537,22 @@ function validateLandingPageModel(landingPage, chatConfigPath, definitionFilePat
     }
     if (!Array.isArray(howItWorks.steps) || howItWorks.steps.length === 0) {
       fail('landingPage.howItWorks.steps must be a non-empty array');
+    }
+    if (howItWorks.factoryExplorer !== undefined) {
+      const explorer = howItWorks.factoryExplorer;
+      const prefix = 'landingPage.howItWorks.factoryExplorer';
+      const text = (value, label, max) => { if (typeof value !== 'string' || !value.trim() || value.length > max) fail(`${label} must be authored text between 1 and ${max} characters`); };
+      if (!explorer || typeof explorer !== 'object' || Array.isArray(explorer)) fail(`${prefix} must be an object`);
+      for (const key of factoryExplorerSchema.copyKeys) text(explorer[key], `${prefix}.${key}`, key === 'interactionHint' || key === 'note' ? 240 : 100);
+      if (!Array.isArray(explorer.parts) || explorer.parts.length !== factoryExplorerSchema.partIds.length) fail(`${prefix}.parts requires all five factory parts`);
+      const ids = new Set();
+      explorer.parts.forEach((part, index) => {
+        const label = `${prefix}.parts[${index}]`;
+        if (!part || !factoryExplorerSchema.partIds.includes(part.id) || ids.has(part.id)) fail(`${label}.id must use a unique registered part`);
+        ids.add(part.id); text(part.title, `${label}.title`, 80); text(part.body, `${label}.body`, 300);
+        if (!Array.isArray(part.facts) || !part.facts.length || part.facts.length > 3) fail(`${label}.facts requires one to three facts`);
+        part.facts.forEach((fact, i) => { if (!fact || typeof fact !== 'object') fail(`${label}.facts[${i}] must be a labeled fact`); text(fact.label, `${label}.facts[${i}].label`, 80); text(fact.value, `${label}.facts[${i}].value`, 300); });
+      });
     }
     howItWorks.steps.forEach((step, index) => {
       const label = `landingPage.howItWorks.steps[${index}]`;

@@ -26,6 +26,206 @@ __export(landing_page_config_util_exports, {
 });
 module.exports = __toCommonJS(landing_page_config_util_exports);
 
+// server/skills/landing-page-builder/references/industrial-factory-simulation-schema.json
+var industrial_factory_simulation_schema_default = {
+  copyKeys: [
+    "eyebrow",
+    "title",
+    "summary",
+    "notice",
+    "startLabel",
+    "pauseLabel",
+    "resumeLabel",
+    "restartLabel",
+    "nextLabel",
+    "readyLabel",
+    "runningLabel",
+    "pendingLabel",
+    "completeLabel",
+    "decisionLabel",
+    "rejectedLabel",
+    "approvalTitle",
+    "approvalBody",
+    "approveLabel",
+    "rejectLabel",
+    "approvalNote",
+    "completedTitle",
+    "completedBody",
+    "rejectedTitle",
+    "rejectedBody"
+  ]
+};
+
+// server/src/shared/industrial-factory-simulation.ts
+var FACTORY_SIMULATION_COPY_KEYS = industrial_factory_simulation_schema_default.copyKeys;
+function validateFactorySimulation(value) {
+  const issues = [];
+  const record3 = (v) => Boolean(v) && typeof v === "object" && !Array.isArray(v);
+  const text2 = (v, path, max = 500) => {
+    if (typeof v !== "string" || !v.trim() || v.length > max) issues.push({ path, message: `Provide authored text between 1 and ${max} characters.` });
+  };
+  if (!record3(value)) return [{ path: "", message: "Provide factory simulation content." }];
+  for (const key of FACTORY_SIMULATION_COPY_KEYS) text2(value[key], key);
+  for (const [key, count, fields] of [["metrics", 3, ["label", "value"]], ["steps", 6, ["title", "body"]]]) {
+    if (!Array.isArray(value[key]) || value[key].length !== count) {
+      issues.push({ path: key, message: `Provide exactly ${count} ${key}.` });
+      continue;
+    }
+    value[key].forEach((row, index) => {
+      if (!record3(row)) {
+        issues.push({ path: `${key}[${index}]`, message: "Provide labeled copy." });
+        return;
+      }
+      fields.forEach((field) => text2(row[field], `${key}[${index}].${field}`, field === "body" ? 500 : 160));
+    });
+  }
+  return issues;
+}
+
+// server/skills/landing-page-builder/references/industrial-factory-explorer-schema.json
+var industrial_factory_explorer_schema_default = {
+  partIds: ["materials", "laser", "press", "weld", "flow"],
+  copyKeys: ["sceneLabel", "partsLabel", "exploreLabel", "resetLabel", "separateLabel", "zoomInLabel", "zoomOutLabel", "rotateLeftLabel", "rotateRightLabel", "interactionHint", "note"]
+};
+
+// server/src/shared/industrial-factory-explorer.ts
+function validateFactoryExplorer(value) {
+  const issues = [];
+  const record3 = (v) => Boolean(v) && typeof v === "object" && !Array.isArray(v);
+  const text2 = (v, path, max = 600) => {
+    if (typeof v !== "string" || !v.trim() || v.length > max) issues.push({ path, message: `Provide authored text between 1 and ${max} characters.` });
+  };
+  if (!record3(value)) return [{ path: "", message: "Provide factory explorer content." }];
+  for (const key of industrial_factory_explorer_schema_default.copyKeys) text2(value[key], key, key === "interactionHint" || key === "note" ? 240 : 100);
+  if (!Array.isArray(value.parts) || value.parts.length !== industrial_factory_explorer_schema_default.partIds.length) {
+    issues.push({ path: "parts", message: "Provide all five factory parts." });
+    return issues;
+  }
+  const ids = /* @__PURE__ */ new Set();
+  value.parts.forEach((part, index) => {
+    const prefix = `parts[${index}]`;
+    if (!record3(part)) {
+      issues.push({ path: prefix, message: "Provide a factory part." });
+      return;
+    }
+    if (typeof part.id !== "string" || !industrial_factory_explorer_schema_default.partIds.includes(part.id) || ids.has(part.id)) issues.push({ path: `${prefix}.id`, message: "Use each registered factory part ID exactly once." });
+    else ids.add(part.id);
+    text2(part.title, `${prefix}.title`, 80);
+    text2(part.body, `${prefix}.body`, 300);
+    if (!Array.isArray(part.facts) || !part.facts.length || part.facts.length > 3) issues.push({ path: `${prefix}.facts`, message: "Provide one to three facts." });
+    else part.facts.forEach((fact, i) => {
+      if (!record3(fact)) {
+        issues.push({ path: `${prefix}.facts[${i}]`, message: "Provide a labeled fact." });
+        return;
+      }
+      text2(fact.label, `${prefix}.facts[${i}].label`, 80);
+      text2(fact.value, `${prefix}.facts[${i}].value`, 300);
+    });
+  });
+  return issues;
+}
+
+// server/src/shared/landing-page-editorial.ts
+function validateLandingEditorial(page) {
+  const issues = [];
+  const record3 = (value) => Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  if (!record3(page)) return issues;
+  const text2 = (value, path, max = 600) => {
+    if (typeof value !== "string" || !value.trim() || value.length > max) issues.push({ path, message: `Provide text between 1 and ${max} characters.` });
+  };
+  const exact = (value, path, keys) => {
+    for (const key of Object.keys(value)) if (!keys.includes(key)) issues.push({ path: `${path}.${key}`, message: "Use only registered editorial fields." });
+  };
+  const image = (value, path) => {
+    if (typeof value !== "string" || !/^(?:https:\/\/|\/(?:assets|landing-pages)\/|\/api\/page-builder\/media\/[a-z0-9_-]+\/[a-z0-9_-]+\/content\/[a-z0-9][a-z0-9._-]*\.)/i.test(value) || !/\.(?:png|webp|avif|gif|jpe?g|svg)(?:[?#]|$)/i.test(value)) issues.push({ path, message: "Use a direct HTTPS or bundled image URL." });
+  };
+  if (record3(page.heroChat) && page.heroChat.openingMessage !== void 0) text2(page.heroChat.openingMessage, "landingPage.heroChat.openingMessage", 2e3);
+  if (record3(page.roiCalculator) && page.roiCalculator.ui !== void 0) {
+    const path = "landingPage.roiCalculator.ui", ui = page.roiCalculator.ui;
+    const keys = ["periodLabel", "monthly", "yearly", "reset", "inputsLabel", "resultsLabel", "profileTab", "workloadTab", "economicsTab", "allocationTab", "returnTab", "impactTab", "yearTab", "methodTab", "decrease", "increase"];
+    if (!record3(ui)) issues.push({ path, message: "Provide calculator display labels." });
+    else {
+      exact(ui, path, keys);
+      for (const key of keys) text2(ui[key], `${path}.${key}`, 120);
+    }
+  }
+  if (page.heroChart !== void 0) {
+    const path = "landingPage.heroChart", chart = page.heroChart;
+    if (!record3(chart)) issues.push({ path, message: "Provide a chart object." });
+    else {
+      exact(chart, path, ["heading", "note", "unitLabel", "items"]);
+      for (const key of ["heading", "note", "unitLabel"]) text2(chart[key], `${path}.${key}`);
+      if (!Array.isArray(chart.items) || chart.items.length < 2 || chart.items.length > 8) issues.push({ path: `${path}.items`, message: "Provide 2 to 8 illustrative bars." });
+      else chart.items.forEach((item, i) => {
+        const at = `${path}.items[${i}]`;
+        if (!record3(item)) issues.push({ path: at, message: "Provide a label and a non-negative finite value." });
+        else {
+          exact(item, at, ["label", "value"]);
+          text2(item.label, `${at}.label`, 80);
+          if (typeof item.value !== "number" || !Number.isFinite(item.value) || item.value < 0) issues.push({ path: `${at}.value`, message: "Provide a non-negative finite value." });
+        }
+      });
+    }
+  }
+  if (record3(page.platform) && page.platform.narrative !== void 0) {
+    const parts = page.platform.narrative;
+    if (!Array.isArray(parts) || !Array.isArray(page.platform.items) || page.platform.items.length < 2 || page.platform.items.length > 8 || parts.length !== page.platform.items.length + 1) {
+      issues.push({ path: "landingPage.platform.narrative", message: "Provide one more sentence fragment than the 2 to 8 specialist items." });
+    } else parts.forEach((part, i) => text2(part, `landingPage.platform.narrative[${i}]`, 500));
+  }
+  if (record3(page.platform) && page.platform.sprite !== void 0) {
+    const path = "landingPage.platform.sprite", sprite = page.platform.sprite;
+    if (!record3(sprite)) issues.push({ path, message: "Provide the horizontal character sheet." });
+    else {
+      exact(sprite, path, ["image", "alt"]);
+      image(sprite.image, `${path}.image`);
+      text2(sprite.alt, `${path}.alt`);
+    }
+    if (!Array.isArray(page.platform.items) || page.platform.items.length < 2 || page.platform.items.length > 8) issues.push({ path: "landingPage.platform.items", message: "Provide 2 to 8 equally spaced character cells." });
+  }
+  if (record3(page.howItWorks)) {
+    const process = page.howItWorks, path = "landingPage.howItWorks";
+    if (process.teamPlacement !== void 0 && process.teamPlacement !== "steps") issues.push({ path: `${path}.teamPlacement`, message: "Place specialists in the process steps." });
+    for (const key of ["agentsLabel", "applicationsLabel"]) if (process[key] !== void 0 || process.teamPlacement === "steps") text2(process[key], `${path}.${key}`, 120);
+    const usedImages = /* @__PURE__ */ new Set();
+    if (Array.isArray(process.steps)) process.steps.forEach((step, i) => {
+      if (!record3(step) || step.agents === void 0 && process.teamPlacement !== "steps") return;
+      const at = `${path}.steps[${i}].agents`;
+      if (!Array.isArray(step.agents) || step.agents.length < 1 || step.agents.length > 8) {
+        issues.push({ path: at, message: "Provide 1 to 8 specialists for this step." });
+        return;
+      }
+      step.agents.forEach((agent, j) => {
+        const here = `${at}[${j}]`;
+        if (!record3(agent)) {
+          issues.push({ path: here, message: "Describe the specialist and their applications." });
+          return;
+        }
+        exact(agent, here, ["name", "image", "alt", "task", "apps"]);
+        text2(agent.name, `${here}.name`, 120);
+        image(agent.image, `${here}.image`);
+        text2(agent.task, `${here}.task`, 1e3);
+        if (agent.alt !== void 0) text2(agent.alt, `${here}.alt`);
+        if (typeof agent.image === "string") usedImages.add(agent.image);
+        if (!Array.isArray(agent.apps) || agent.apps.length < 1 || agent.apps.length > 6) issues.push({ path: `${here}.apps`, message: "Show 1 to 6 applications used by this specialist." });
+        else agent.apps.forEach((app, k) => {
+          const appPath = `${here}.apps[${k}]`;
+          if (!record3(app)) issues.push({ path: appPath, message: "Provide the application name and original logo." });
+          else {
+            exact(app, appPath, ["name", "image"]);
+            text2(app.name, `${appPath}.name`, 120);
+            image(app.image, `${appPath}.image`);
+          }
+        });
+      });
+    });
+    if (process.teamPlacement === "steps" && record3(page.platform) && Array.isArray(page.platform.items)) page.platform.items.forEach((item, i) => {
+      if (record3(item) && typeof item.image === "string" && !usedImages.has(item.image)) issues.push({ path: `landingPage.platform.items[${i}]`, message: "Assign this specialist to at least one process step." });
+    });
+  }
+  return issues;
+}
+
 // server/skills/landing-page-builder/references/chakri-scrap-copy-schema.json
 var chakri_scrap_copy_schema_default = {
   roots: [
@@ -541,14 +741,21 @@ var chakri_scrap_copy_schema_default = {
       "weightReviewThresholdPercent",
       "maxPickupDays"
     ]
-  }
+  },
+  optionalMarkets: [
+    "AU",
+    "DE",
+    "CA",
+    "SG",
+    "JP"
+  ]
 };
 
 // server/src/services/chakri-landing-validation.ts
 function validateChakriLandingContent(content) {
   const issues = [];
   const base = "landingPage.scrapOperations";
-  const record = (value, path, keys) => {
+  const record3 = (value, path, keys) => {
     if (!value || typeof value !== "object" || Array.isArray(value)) {
       issues.push({ path, message: "Provide the complete Chakri content object." });
       return false;
@@ -556,16 +763,17 @@ function validateChakriLandingContent(content) {
     for (const key of Object.keys(value)) if (!keys.includes(key)) issues.push({ path: `${path}.${key}`, message: "Only registered Chakri copy fields are allowed." });
     return true;
   };
-  const text = (value, path) => {
+  const text2 = (value, path) => {
     if (typeof value !== "string" || !value.trim() || value.length > 700) issues.push({ path, message: "Provide non-empty copy up to 700 characters." });
   };
-  if (!record(content, base, chakri_scrap_copy_schema_default.roots)) return issues;
-  if (record(content.labels, `${base}.labels`, chakri_scrap_copy_schema_default.labels)) for (const key of chakri_scrap_copy_schema_default.labels) text(content.labels[key], `${base}.labels.${key}`);
-  if (record(content.markets, `${base}.markets`, chakri_scrap_copy_schema_default.markets)) for (const code of chakri_scrap_copy_schema_default.markets) {
+  if (!record3(content, base, chakri_scrap_copy_schema_default.roots)) return issues;
+  if (record3(content.labels, `${base}.labels`, chakri_scrap_copy_schema_default.labels)) for (const key of chakri_scrap_copy_schema_default.labels) text2(content.labels[key], `${base}.labels.${key}`);
+  const marketCodes = [...chakri_scrap_copy_schema_default.markets, ...chakri_scrap_copy_schema_default.optionalMarkets];
+  if (record3(content.markets, `${base}.markets`, marketCodes)) for (const code of marketCodes.filter((code2) => chakri_scrap_copy_schema_default.markets.includes(code2) || Object.prototype.hasOwnProperty.call(content.markets, code2))) {
     const market = content.markets[code];
-    if (record(market, `${base}.markets.${code}`, chakri_scrap_copy_schema_default.marketFields)) for (const key of chakri_scrap_copy_schema_default.marketFields) text(market[key], `${base}.markets.${code}.${key}`);
+    if (record3(market, `${base}.markets.${code}`, chakri_scrap_copy_schema_default.marketFields)) for (const key of chakri_scrap_copy_schema_default.marketFields) text2(market[key], `${base}.markets.${code}.${key}`);
   }
-  if (content.global !== void 0 && record(content.global, `${base}.global`, chakri_scrap_copy_schema_default.marketFields)) for (const key of chakri_scrap_copy_schema_default.marketFields) text(content.global[key], `${base}.global.${key}`);
+  if (content.global !== void 0 && record3(content.global, `${base}.global`, chakri_scrap_copy_schema_default.marketFields)) for (const key of chakri_scrap_copy_schema_default.marketFields) text2(content.global[key], `${base}.global.${key}`);
   for (const [key, contract] of Object.entries(chakri_scrap_copy_schema_default.arrays)) {
     const values = content[key];
     if (!Array.isArray(values) || values.length !== contract.count) {
@@ -574,21 +782,21 @@ function validateChakriLandingContent(content) {
     }
     values.forEach((value, index) => {
       const path = `${base}.${key}[${index}]`;
-      if (record(value, path, contract.fields)) for (const field of contract.fields) text(value[field], `${path}.${field}`);
+      if (record3(value, path, contract.fields)) for (const field of contract.fields) text2(value[field], `${path}.${field}`);
     });
   }
   if (content.business !== void 0) {
     const business = content.business;
     const path = `${base}.business`;
     const contract = chakri_scrap_copy_schema_default.business;
-    if (record(business, path, contract.roots)) {
+    if (record3(business, path, contract.roots)) {
       if (business.defaultSelected !== void 0 && typeof business.defaultSelected !== "boolean") issues.push({ path: `${path}.defaultSelected`, message: "Choose whether this audience defaults to Business." });
-      if (record(business.labels, `${path}.labels`, contract.labels)) for (const key of contract.labels) text(business.labels[key], `${path}.labels.${key}`);
+      if (record3(business.labels, `${path}.labels`, contract.labels)) for (const key of contract.labels) text2(business.labels[key], `${path}.labels.${key}`);
       for (const [group, keys, fields] of [["sections", contract.sections, contract.sectionFields], ["materials", contract.materials, contract.materialFields]]) {
         const values = business[group];
-        if (record(values, `${path}.${group}`, [...keys])) for (const key of keys) {
+        if (record3(values, `${path}.${group}`, [...keys])) for (const key of keys) {
           const value = values[key];
-          if (record(value, `${path}.${group}.${key}`, [...fields])) for (const field of fields) text(value[field], `${path}.${group}.${key}.${field}`);
+          if (record3(value, `${path}.${group}.${key}`, [...fields])) for (const field of fields) text2(value[field], `${path}.${group}.${key}.${field}`);
         }
       }
       for (const [key, entry] of Object.entries(contract.arrays)) {
@@ -599,16 +807,346 @@ function validateChakriLandingContent(content) {
         }
         values.forEach((value, index) => {
           const p = `${path}.${key}[${index}]`;
-          if (record(value, p, entry.fields)) for (const field of entry.fields) text(value[field], `${p}.${field}`);
+          if (record3(value, p, entry.fields)) for (const field of entry.fields) text2(value[field], `${p}.${field}`);
         });
       }
-      if (record(business.demo, `${path}.demo`, contract.demoFields)) {
+      if (record3(business.demo, `${path}.demo`, contract.demoFields)) {
         const threshold = business.demo.weightReviewThresholdPercent;
         if (typeof threshold !== "number" || !Number.isFinite(threshold) || threshold < 0 || threshold > 100) issues.push({ path: `${path}.demo.weightReviewThresholdPercent`, message: "Provide a review threshold from 0 to 100 percent." });
         if (![1, 3, 5].includes(business.demo.maxPickupDays)) issues.push({ path: `${path}.demo.maxPickupDays`, message: "Choose a sample pickup window of 1, 3 or 5 days." });
       }
     }
   }
+  return issues;
+}
+
+// server/src/shared/mirav-copy-keys.json
+var mirav_copy_keys_default = [
+  "4FamilyPlacesLeft",
+  "800M",
+  "800MAwayInYourCircle",
+  "aClearOfferForPartners",
+  "aClearProgrammeForTeachersAndParents",
+  "aClearViewAtHome",
+  "aDesktopWorkspaceForOrganizersAMobileApp",
+  "aFewNewParentFriends",
+  "aLittleAboutYourSchool",
+  "aLittleClarityBeforeYouSayHello",
+  "aLittleHelpFromMiravAPlanMade",
+  "aLittleIdeaForSaturday",
+  "aMODELTHATWORKSFORTHEWHOLECOMMUNITY",
+  "aNewPossibility",
+  "aPALETTEOFPOSSIBILITIES",
+  "aParentPlanAFewNewFamiliesAnd",
+  "aParentSummaryOfDatesAgeGroupsLearning",
+  "aPlanForEveryGroup",
+  "aQuestionAboutAnActivity",
+  "aSchoolCommunityInsideItsSavedCircle",
+  "aSchoolDayWith",
+  "aSchoolIdeaAProgrammeToReview",
+  "aSchoolLedSessionForDifferentGroupsParents",
+  "aSolutionRequestStartsAConversationYourSchool",
+  "aSustainableSchoolProgramme",
+  "aTeacherKnowsTheChildrenAndChoosesThe",
+  "aWholeWorldOfPossibilities",
+  "aWorkshopMixAndDeliveryPlan",
+  "activities",
+  "activity",
+  "activityDraftForYourReview",
+  "activitySummary",
+  "addToProgramme",
+  "ageGroup",
+  "ages610",
+  "ages610WithAParent",
+  "anActivityToExplore",
+  "appPreviewExampleAIConversation",
+  "appPreviewSampleActivities",
+  "askMirav",
+  "askMiravAboutAnActivity",
+  "askMiravAboutThisSession",
+  "askMiravIfThisFitsOurFamily",
+  "askMiravToDraftMyProgramme",
+  "bigPlansAtSchool",
+  "bringChildrenFromDifferentGroupsTogetherThroughSports",
+  "bringsSchoolsMunicipalitiesAndLocalPartnersTogetherAround",
+  "buildASolutionForMySchool",
+  "buildMySchoolSolution",
+  "canYouHelpUsFindFamilyActivitiesNearby",
+  "cannotDetermineWhetherAChildParticipates",
+  "chatWithMirav",
+  "chooseTheThemesAndGroupsMiravHelpsDraft",
+  "chooseYourCommunity",
+  "chooseYourRadiusKeepItLocal",
+  "cityAndCountry",
+  "closeMenu",
+  "coachesMusiciansArtistsAndTechnologyEducatorsCanOffer",
+  "couldBeRightAroundTheCorner",
+  "createAnActivity",
+  "createAnotherBrief",
+  "cultuureducatieMetKwaliteit",
+  "draftAProgrammeWithMirav",
+  "draftedWithMirav",
+  "everyoneBringsSomething",
+  "example",
+  "exampleWorkspace",
+  "examplesFromTheNetherlands",
+  "explainAnActivity",
+  "explore",
+  "exploreNearbyActivities",
+  "exploreSchoolActivities",
+  "exploreSchoolBudgetsLocalSponsorsCulturalPartnersAnd",
+  "exploreWithMiravInYourCircle",
+  "familyActivities",
+  "familyActivitiesAroundYou",
+  "faq",
+  "findActivitiesWithMirav",
+  "findFamilyActivities",
+  "findTheRightSession",
+  "forEverySchoolDay",
+  "forParentsForKidsRightAroundYou",
+  "forSchoolFamilies",
+  "forSchools",
+  "forSchoolsTeachersLocalExperts",
+  "fri1530",
+  "fromALittleIdea",
+  "fromAnIdeaWithMirav",
+  "fundingApproach",
+  "fundingThatFitsYourLocation",
+  "groupsFamilies",
+  "groupsToDiscuss",
+  "happyKids",
+  "heyIMMiravTellMeYourKids",
+  "heyIMMiravWhatWouldYouLove",
+  "howAboutParkPlayAndParentCoffeeHere",
+  "howItWorks",
+  "iCanExplainTheTimeAgeGroupAnd",
+  "illustrationOfANeighborhoodSearchCircle",
+  "illustrationOfANeighborhoodWithASchoolPark",
+  "inviteAnotherParentToCoHost",
+  "isAnotherRouteToLocalCulturalPartnershipsFor",
+  "joinFamilyActivity",
+  "kidsPlayParentsConnectANeighborhoodFeelsA",
+  "letLookAtYourSchoolSessionsThenCompare",
+  "letMiravHelpWithTheActivityIdeaThe",
+  "letSJOININ",
+  "littleAdventures",
+  "localExpertise",
+  "localPartners",
+  "localTalent",
+  "mapleSchool",
+  "mapleSchoolCommunity",
+  "mapleSchoolFamilies",
+  "meetMirav",
+  "messageMirav",
+  "miravForMapleSchool",
+  "miravHelpsDraftTheProgrammeYourSchoolShapes",
+  "miravHelpsExplainThePlan",
+  "miravHome",
+  "miravIsAIAndCanMakeMistakesPlease",
+  "miravIsAIYouReviewThePlan",
+  "miravMobileNavigation",
+  "miravNeighborhoodMobileAppPreview",
+  "miravProgrammeSuggestion",
+  "miravSHAPEDFORYOURSCHOOL",
+  "miravSchoolDesktopWorkspacePreview",
+  "miravSchoolsMobileAppPreview",
+  "miravSections",
+  "miravSmilesWithHisArmsFoldedLookingToward",
+  "mixMatch",
+  "mixedSchoolGroups",
+  "moreChildrenMorePossibilities",
+  "moreToDiscover",
+  "myKidsAre6And9CouldWe",
+  "neighborhood",
+  "newActivity",
+  "newParentFriends",
+  "officialSchoolWebsite",
+  "oneCOMMUNITYDIFFERENTROLES",
+  "onePlaceForDatesVenuesAndLearningGoals",
+  "oneSchool",
+  "onlyYourSchoolCommunity",
+  "openAskMiravPreview",
+  "openMenu",
+  "organizersDraftTheProgrammeWithMiravInTheir",
+  "ourCommunity",
+  "parentHostedFamiliesNearby",
+  "parentOrganizedFamiliesNearby",
+  "parentsFamilies",
+  "parentsInTheLoop",
+  "parentsManageFamilyParticipation",
+  "parkPlayParentCoffee",
+  "pickALittlePossibility",
+  "planAnActivity",
+  "planAnActivityWithMirav",
+  "planONTHEWEBPARTICIPATEONTHEPHONE",
+  "planProviderFeesAlongsideVenueMaterialsAndCoordination",
+  "planReady",
+  "planWithMiravShapeItWithYourSchool",
+  "previewActivity",
+  "profile",
+  "programme",
+  "programmeFormat",
+  "providerAndBudgetReviewWithTheSchool",
+  "readyToShare",
+  "realLifeStartsWithAHello",
+  "registerMySchoolSolution",
+  "registerYourInterestInASchoolProgrammeBuilt",
+  "requestToParticipate",
+  "reviewANewActivityInPreview",
+  "reviewActivityDraft",
+  "reviewProvider",
+  "reviewTheDetailsYouChooseWhenToShare",
+  "sameSchoolWithin2Km",
+  "saturday1000",
+  "saved",
+  "sayHelloToMirav",
+  "school",
+  "schoolActivities",
+  "schoolCouldBecome",
+  "schoolLedPlans",
+  "schoolName",
+  "schoolOmgevingProgramme",
+  "schoolOrWorkEmail",
+  "schoolSolution",
+  "schoolWorkspacePreviewExampleProgramme",
+  "schools",
+  "schoolsTeachers",
+  "seeTheScheduleMeetingPlaceAgeGroupAnd",
+  "seeYouAround",
+  "sendMessageToMirav",
+  "sending",
+  "setLearningGoalsCombineGroupsChooseAVenue",
+  "sharedValue",
+  "showActivityMapInPreview",
+  "showSchoolActivityInPreview",
+  "smallCirclesBiggerPossibilities",
+  "sourcesChecked10October2026EachSchoolConfirms",
+  "startWithAWorkshopBriefAFeeOr",
+  "startWithActivitiesInsideYourSaved2Km",
+  "teacherReview",
+  "teacherSelectedGroupsAndAgeRanges",
+  "teachersChooseTheGroupsAndAdaptTheSession",
+  "teachersShapeTheFinalActivity",
+  "tellMiravWhatYourKidsLoveShapeAn",
+  "tellUsWhatYour",
+  "the",
+  "theGroupsInterestsAndKindOfLearningYou",
+  "thePark",
+  "theSchoolLeads",
+  "themes",
+  "thisWeekTogether",
+  "toALittleParentCircle",
+  "toASchoolWideProgramme",
+  "tue1530",
+  "useAdultContactDetailsOnlyWeLlUse",
+  "viewSampleActivity",
+  "viewSchoolActivity",
+  "voluntaryParentContributions",
+  "weLlReviewTheBriefAndFollowUp",
+  "wed1400",
+  "whatShouldIKnowBeforeMyChildJoins",
+  "whatWillWeTryNext",
+  "whatWouldYouLikeToMakePossible",
+  "when",
+  "where",
+  "whichGroupsWillLearnTogether",
+  "whichSchoolActivitiesCouldSuitMyChild",
+  "willowPark",
+  "withAParent",
+  "workshopPalette",
+  "workshopPartners",
+  "years34Years56",
+  "years56Years78",
+  "you",
+  "yourAIActivityHelper",
+  "yourAISchoolGuide",
+  "yourCircle",
+  "yourIdea",
+  "yourIdeaALittleHelpWithThePlan",
+  "yourIdeaAnActivityDraftNearbyFamilyConnections",
+  "yourName",
+  "yourNextFamilyAfternoon",
+  "yourRequestCouldNotBeSentPleaseTry",
+  "yourRole",
+  "yourSCHOOLYOURPROGRAMME",
+  "yourSavedCircle2Km",
+  "yourSchoolActivityPlan",
+  "yourSchoolGroupsAndGoals",
+  "yourSchoolRequestIsIn",
+  "yourWORKSPACE"
+];
+
+// server/src/shared/mirav-landing-copy.ts
+var record = (value) => !!value && typeof value === "object" && !Array.isArray(value);
+var text = (value) => typeof value === "string" && !!value.trim() && value.length <= 4e3;
+var isMiravPreviewIconPath = (path) => /^landingPage\.mirav\.(?:activities\.(?:neighborhood|schools)|workshops)(?:\[\d+\]|\.\d+)\.icon$/.test(path);
+function validateMiravLandingCopy(value) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+  const issues = [];
+  const fail = (path) => issues.push({ path: `landingPage.mirav.${path}`, message: "Provide the complete authored Mirav presentation field." });
+  if (!record(value) || value.schemaVersion !== 1) {
+    fail("schemaVersion");
+    return issues;
+  }
+  if (!record(value.brand) || !text(value.brand.name)) fail("brand.name");
+  if (!record(value.ui) || Object.keys(value.ui).length > 500) fail("ui");
+  else for (const key of mirav_copy_keys_default) if (!text(value.ui[key])) fail(`ui.${key}`);
+  if (!record(value.media) || !text(value.media.portraitImage) || !/^https:\/\/[^\s]+\.(png|webp|jpe?g)(\?[^\s]*)?$/i.test(value.media.portraitImage)) fail("media.portraitImage");
+  for (const field of ["logoImage", "mapImage"]) if (!text((_a = value.media) == null ? void 0 : _a[field]) || !/^https:\/\/[^\s]+\.(png|webp|jpe?g|svg)(\?[^\s]*)?$/i.test(value.media[field])) fail(`media.${field}`);
+  const rows = (input, path, fields, min = 1, max = 12) => {
+    if (!Array.isArray(input) || input.length < min || input.length > max) {
+      fail(path);
+      return;
+    }
+    const ids = /* @__PURE__ */ new Set();
+    input.forEach((item, i) => {
+      if (!record(item)) {
+        fail(`${path}.${i}`);
+        return;
+      }
+      for (const field of fields) if (!text(item[field])) fail(`${path}.${i}.${field}`);
+      if ("id" in item) {
+        if (ids.has(item.id)) fail(`${path}.${i}.id`);
+        ids.add(item.id);
+      }
+    });
+  };
+  for (const audience of ["neighborhood", "schools"]) {
+    const activities = (_b = value.activities) == null ? void 0 : _b[audience];
+    rows(activities, `activities.${audience}`, ["id", "icon", "title", "interest", "timeLabel", "venue", "people", "age"]);
+    if (Array.isArray(activities)) activities.forEach((item, i) => {
+      if (!record(item)) return;
+      if (typeof item.icon !== "string" || [...item.icon].length > 8) fail(`activities.${audience}.${i}.icon`);
+      for (const coordinate of ["x", "y"]) if (!Number.isFinite(item[coordinate]) || item[coordinate] < 0 || item[coordinate] > 100) fail(`activities.${audience}.${i}.${coordinate}`);
+    });
+    const steps = (_c = value.process) == null ? void 0 : _c[audience];
+    rows(steps, `process.${audience}`, ["id", "body"], 3, 3);
+    if (Array.isArray(steps)) steps.forEach((step, i) => {
+      if (!Array.isArray(step == null ? void 0 : step.headingLines) || !step.headingLines.length || step.headingLines.some((line) => !text(line))) fail(`process.${audience}.${i}.headingLines`);
+    });
+  }
+  rows(value.workshops, "workshops", ["id", "icon", "title", "body", "color", "outcome"]);
+  if (Array.isArray(value.workshops)) value.workshops.forEach((item, i) => {
+    if (typeof (item == null ? void 0 : item.icon) !== "string" || [...item.icon].length > 8) fail(`workshops.${i}.icon`);
+  });
+  for (const [path, choices] of [["cohorts", value.cohorts], ["form.roles", (_d = value.form) == null ? void 0 : _d.roles], ["form.delivery", (_e = value.form) == null ? void 0 : _e.delivery], ["form.funding", (_f = value.form) == null ? void 0 : _f.funding]]) {
+    rows(choices, path, ["id", "label"]);
+    if (!Array.isArray(choices) || !choices.some((item) => (item == null ? void 0 : item.selected) === true)) fail(`${path}.selected`);
+  }
+  for (const key of ["neighborhoodPlan", "neighborhoodFind", "schoolPlan", "schoolProgramme", "schoolSolution"]) if (!text((_h = (_g = value.actions) == null ? void 0 : _g[key]) == null ? void 0 : _h.command)) fail(`actions.${key}.command`);
+  rows(value.previewPeople, "previewPeople", ["id", "code"], 3, 3);
+  rows(value.schoolsFaqs, "schoolsFaqs", ["question", "answer"], 1, 12);
+  rows(value.fundingSources, "fundingSources", ["id", "url"], 3, 3);
+  if (Array.isArray(value.fundingSources)) value.fundingSources.forEach((source, i) => {
+    if (!/^https:\/\/[^\s]+$/.test((source == null ? void 0 : source.url) || "")) fail(`fundingSources.${i}.url`);
+  });
+  rows(value.metrics, "metrics", ["id", "label"], 3, 3);
+  if (Array.isArray(value.metrics)) value.metrics.forEach((metric, i) => {
+    if (!Number.isFinite(metric == null ? void 0 : metric.value) || metric.value < 0) fail(`metrics.${i}.value`);
+  });
+  if (!text((_i = value.schoolAccount) == null ? void 0 : _i.code)) fail("schoolAccount.code");
+  if (!text((_j = value.form) == null ? void 0 : _j.websitePlaceholder)) fail("form.websitePlaceholder");
+  if (!text(value.deviceTimeLabel)) fail("deviceTimeLabel");
   return issues;
 }
 
@@ -928,6 +1466,131 @@ function isLandingPageTranslationManifestEntry(value) {
   }
 }
 
+// server/src/services/digital-twin-page-git/compact-roi.ts
+var COMPACT_ROI_COPY = {
+  navLabel: "Pricing",
+  heading: "Pricing & ROI",
+  intro: "Choose a plan. See your forecast.",
+  monthly: "Month",
+  weekly: "Week",
+  daily: "Day",
+  cost: "You pay",
+  benefit: "Estimated return",
+  net: "Net gain",
+  roi: "Estimated ROI",
+  timeBenefit: "Estimated time value",
+  timeRoi: "Time-value ROI",
+  timeBack: "Hours returned",
+  missing: "Forecast unavailable",
+  noRatio: "Not applicable",
+  method: "How it\u2019s calculated",
+  reset: "Reset",
+  audience: "Audience",
+  includedVat: "Including VAT",
+  excludedVat: "Excluding VAT",
+  perMonth: "per month",
+  equivalents: "Billed monthly. Day and week figures are averages, not daily or weekly charges or guaranteed returns.",
+  timeNote: "Forecast time value is returned capacity, not cash received or a payroll reduction. Net minutes include checking and approval.",
+  estimateNote: "Planning estimates are separate from measured ROI. Only accepted outcomes and comparable recorded costs support measured returns.",
+  limitNote: "For more usage or separately quoted work, contact us. This estimate covers the included plan only.",
+  timeFormula: "Forecast time value = included work \xD7 fixed net minutes returned \xF7 60 \xD7 reference hourly value.",
+  profitFormula: "Contribution profit = eligible recommendation sessions \xD7 conversion uplift \xF7 100 \xD7 profit per additional order.",
+  proceedsFormula: "Incremental proceeds = lots or pickups \xD7 (net proceeds afterward \u2212 net proceeds beforehand).",
+  roiFormula: "Net = benefit \u2212 app subscription cost. ROI = net \xF7 app subscription cost \xD7 100. Free plans have no ROI percentage."
+};
+var COMPACT_MODEL_INPUTS = {
+  time_value: ["units", "minutes_saved", "hourly_value"],
+  conversion_profit: ["units", "conversion_uplift", "order_profit"],
+  net_proceeds: ["units", "net_before", "net_after"]
+};
+var record2 = (v) => !!v && typeof v === "object" && !Array.isArray(v);
+var finite = (v) => typeof v === "number" && Number.isFinite(v);
+var id = (v) => typeof v === "string" && /^[a-z][a-z0-9_-]{0,63}$/.test(v);
+function validateCompactRoi(value, path = "landingPage.roiCalculator.compact") {
+  const issues = [];
+  const fail = (p, message) => issues.push({ path: p, message });
+  const keys = (v, allowed, p) => Object.keys(v).forEach((k) => {
+    if (!allowed.includes(k)) fail(`${p}.${k}`, "Unsupported compact calculator field.");
+  });
+  const text2 = (v, p) => {
+    if (typeof v !== "string" || !v.trim() || v.length > 2e3) fail(p, "Expected non-empty copy, up to 2000 characters.");
+  };
+  if (!record2(value)) return [{ path, message: "Expected compact calculator configuration." }];
+  keys(value, ["schemaVersion", "showWorkOutput", "scaleCapacityOnly", "defaultProfileId", "copy", "profiles"], path);
+  if (value.showWorkOutput !== void 0 && typeof value.showWorkOutput !== "boolean") fail(`${path}.showWorkOutput`, "Choose whether to show the work-output forecast.");
+  if (value.scaleCapacityOnly !== void 0 && typeof value.scaleCapacityOnly !== "boolean") fail(`${path}.scaleCapacityOnly`, "Choose whether paid tiers keep the same benefit per unit.");
+  if (value.schemaVersion !== 1) fail(`${path}.schemaVersion`, "Supported compact version is 1.");
+  if (!record2(value.copy)) fail(`${path}.copy`, "Add localized calculator copy.");
+  else {
+    keys(value.copy, [...Object.keys(COMPACT_ROI_COPY), "value"], `${path}.copy`);
+    if (value.copy.value !== void 0) text2(value.copy.value, `${path}.copy.value`);
+    Object.keys(COMPACT_ROI_COPY).forEach((k) => text2(value.copy[k], `${path}.copy.${k}`));
+  }
+  if (!Array.isArray(value.profiles) || !value.profiles.length || value.profiles.length > 8) return [...issues, { path: `${path}.profiles`, message: "Use one to eight audience profiles." }];
+  const seen = /* @__PURE__ */ new Set();
+  value.profiles.forEach((profile, index) => {
+    const p = `${path}.profiles[${index}]`;
+    if (!record2(profile)) {
+      fail(p, "Expected audience profile.");
+      return;
+    }
+    keys(profile, ["id", "label", "model", "inputs", "offer", "unitsPerWorkload", "assumptions", "loop", "ctaLabel", "ctaTarget"], p);
+    if (!id(profile.id) || seen.has(profile.id)) fail(`${p}.id`, "Use a unique profile identifier.");
+    else seen.add(profile.id);
+    ["label", "loop", "ctaLabel"].forEach((k) => text2(profile[k], `${p}.${k}`));
+    if (!id(profile.ctaTarget)) fail(`${p}.ctaTarget`, "Use an existing section target, never a URL.");
+    if (!finite(profile.unitsPerWorkload) || profile.unitsPerWorkload <= 0 || profile.unitsPerWorkload > 1e3) fail(`${p}.unitsPerWorkload`, "Use a positive workload multiplier up to 1000.");
+    if (!Array.isArray(profile.assumptions) || profile.assumptions.length > 12) fail(`${p}.assumptions`, "Use up to twelve disclosed assumptions.");
+    else profile.assumptions.forEach((t, i) => text2(t, `${p}.assumptions[${i}]`));
+    const expected = COMPACT_MODEL_INPUTS[profile.model];
+    if (!expected) fail(`${p}.model`, "Use time_value, conversion_profit or net_proceeds.");
+    if (!Array.isArray(profile.inputs) || profile.inputs.length !== 3) fail(`${p}.inputs`, "Use exactly three declared inputs.");
+    else profile.inputs.forEach((field, i) => {
+      const f = `${p}.inputs[${i}]`;
+      if (!record2(field)) {
+        fail(f, "Expected input definition.");
+        return;
+      }
+      keys(field, ["id", "label", "help", "defaultValue", "min", "max", "step", "format"], f);
+      if (expected && field.id !== expected[i]) fail(`${f}.id`, "Inputs must match the selected model in declared order.");
+      text2(field.label, `${f}.label`);
+      text2(field.help, `${f}.help`);
+      if (!finite(field.min) || !finite(field.max) || field.min > field.max || Math.abs(field.min) > 1e9 || Math.abs(field.max) > 1e9) fail(f, "Use finite ordered bounds within \xB11 billion.");
+      if (!finite(field.step) || field.step <= 0) fail(`${f}.step`, "Use a positive step.");
+      if (!["number", "currency", "percent"].includes(String(field.format))) fail(`${f}.format`, "Unsupported input format.");
+      if (field.defaultValue !== null && (!finite(field.defaultValue) || !finite(field.min) || !finite(field.max) || field.defaultValue < field.min || field.defaultValue > field.max)) fail(`${f}.defaultValue`, "Use null or a number within the declared bounds.");
+      if (field.id === "units" && (field.min !== 0 || field.step !== 1 || !Number.isInteger(field.max) || field.defaultValue !== null && !Number.isInteger(field.defaultValue))) fail(f, "Workload is a nonnegative whole number.");
+    });
+    const offer = profile.offer;
+    if (!record2(offer)) fail(`${p}.offer`, "Add offer metadata.");
+    else {
+      keys(offer, ["monthlyPrice", "basis", "unit", "vatIncluded", "includedUnits", "allowance", "extras", "free", "trialDays", "trialLabel"], `${p}.offer`);
+      if (offer.trialDays !== void 0 && offer.trialDays !== 7) fail(`${p}.offer.trialDays`, "The draft paid trial is seven days.");
+      if (offer.trialLabel !== void 0) text2(offer.trialLabel, `${p}.offer.trialLabel`);
+      if (offer.free !== void 0) {
+        const free = offer.free;
+        if (!record2(free)) fail(`${p}.offer.free`, "Expected a bounded free allowance.");
+        else {
+          keys(free, ["includedUnits", "allowance", "unitsPerWorkload", "benefitFactor"], `${p}.offer.free`);
+          if (!finite(free.includedUnits) || free.includedUnits <= 0 || !Number.isInteger(free.includedUnits) || free.includedUnits > Number(offer.includedUnits)) fail(`${p}.offer.free.includedUnits`, "Free capacity must fit within the base allowance.");
+          text2(free.allowance, `${p}.offer.free.allowance`);
+          if (finite(free.includedUnits) && finite(profile.unitsPerWorkload) && finite(offer.includedUnits) && free.includedUnits * (finite(free.unitsPerWorkload) ? free.unitsPerWorkload : profile.unitsPerWorkload) > offer.includedUnits) fail(`${p}.offer.free`, "Free work cannot exceed the base workload capacity.");
+          if (free.unitsPerWorkload !== void 0 && (!finite(free.unitsPerWorkload) || free.unitsPerWorkload <= 0 || free.unitsPerWorkload > 1e3)) fail(`${p}.offer.free.unitsPerWorkload`, "Use a bounded positive free workload multiplier.");
+          if (free.benefitFactor !== void 0 && (!finite(free.benefitFactor) || free.benefitFactor <= 0 || free.benefitFactor > 1)) fail(`${p}.offer.free.benefitFactor`, "Use a free-work benefit fraction greater than zero and at most one.");
+        }
+      }
+      if (offer.monthlyPrice !== null && (!finite(offer.monthlyPrice) || offer.monthlyPrice < 0 || offer.monthlyPrice > 1e9)) fail(`${p}.offer.monthlyPrice`, "Use a nonnegative price or null for a quote.");
+      if (!["fixed", "per_unit"].includes(String(offer.basis))) fail(`${p}.offer.basis`, "Use fixed or per_unit pricing.");
+      if (typeof offer.vatIncluded !== "boolean") fail(`${p}.offer.vatIncluded`, "Declare VAT treatment.");
+      ["unit", "allowance", "extras"].forEach((k) => text2(offer[k], `${p}.offer.${k}`));
+      if (!finite(offer.includedUnits) || !Number.isInteger(offer.includedUnits) || offer.includedUnits <= 0) fail(`${p}.offer.includedUnits`, "Declare a positive whole-number allowance.");
+      if (Array.isArray(profile.inputs) && record2(profile.inputs[0]) && offer.basis === "fixed" && finite(profile.unitsPerWorkload) && finite(profile.inputs[0].max) && finite(offer.includedUnits) && profile.inputs[0].max * profile.unitsPerWorkload > offer.includedUnits) fail(`${p}.inputs[0].max`, "Workload exceeds the included plan.");
+    }
+  });
+  if (!seen.has(String(value.defaultProfileId))) fail(`${path}.defaultProfileId`, "Choose a declared default audience.");
+  return issues;
+}
+
 // server/src/services/digital-twin-page-git/business-impact.ts
 var IMPACT_OUTCOMES = ["cash", "higher_value", "throughput", "hiring", "error", "risk", "cycle_time"];
 var IMPACT_FIELDS = {
@@ -984,8 +1647,8 @@ var HOUSEHOLD_INPUT_RANGES = { volume: [1, 12, 1], minutes: [10, 90, 5], people:
 var HOUSEHOLD_STARTING_VALUES = { volume: 4, minutes: 45, people: 2 };
 var HOUSEHOLD_PEOPLE_DEFAULT = HOUSEHOLD_STARTING_VALUES.people;
 var HOUSEHOLD_INPUT_FIELDS = ["volume", "minutes", "people"];
-function isCopyTemplate(text, tokens) {
-  let rest = text;
+function isCopyTemplate(text2, tokens) {
+  let rest = text2;
   for (const token of tokens) {
     const parts = rest.split(`{${token}}`);
     if (parts.length !== 2) return false;
@@ -1065,7 +1728,7 @@ var STORE_OPS_COPY = {
   pricePerStoreLabel: "KAI price per store per month",
   sourceLabel: "Source",
   hoursFormula: "Hours back = stores \xD7 cycles per store \xD7 (preparation minutes \xD7 share KAI handles \u2212 review minutes) \xF7 60, rounded.",
-  lossFormula: "Food loss = stores \xD7 monthly food purchases per store \xD7 loss rate, rounded to whole euros.",
+  lossFormula: "Food loss = stores \xD7 monthly food purchases per store \xD7 loss rate, rounded-sm to whole euros.",
   priceFormula: "KAI price = stores \xD7 price per store.",
   breakEvenFormula: "Break-even share = KAI price \xF7 food loss \xD7 100, rounded.",
   yearlyNote: "The yearly view multiplies hours, food loss and price by 12. The break-even share stays the same.",
@@ -1109,13 +1772,13 @@ function validateRoiCostCopy(value, path) {
 function validateRoiNoticeCopy(value, path, defaults) {
   if (value === void 0) return [];
   if (!value || typeof value !== "object" || Array.isArray(value)) return [{ path, message: "Expected localized currency notices." }];
-  const record = value;
+  const record3 = value;
   const issues = [];
-  for (const key of /* @__PURE__ */ new Set([...Object.keys(record), ...Object.keys(defaults)])) {
-    const text = record[key];
+  for (const key of /* @__PURE__ */ new Set([...Object.keys(record3), ...Object.keys(defaults)])) {
+    const text2 = record3[key];
     const original = defaults[key];
-    if (!original || typeof text !== "string" || !text.trim() || text.length > 900) issues.push({ path: `${path}.${key}`, message: "Use bounded localized currency notice copy." });
-    else if (JSON.stringify((text.match(/\{[a-z]+\}/g) || []).sort()) !== JSON.stringify((original.match(/\{[a-z]+\}/g) || []).sort())) issues.push({ path: `${path}.${key}`, message: "Preserve the currency notice placeholders." });
+    if (!original || typeof text2 !== "string" || !text2.trim() || text2.length > 900) issues.push({ path: `${path}.${key}`, message: "Use bounded localized currency notice copy." });
+    else if (JSON.stringify((text2.match(/\{[a-z]+\}/g) || []).sort()) !== JSON.stringify((original.match(/\{[a-z]+\}/g) || []).sort())) issues.push({ path: `${path}.${key}`, message: "Preserve the currency notice placeholders." });
   }
   return issues;
 }
@@ -1242,25 +1905,42 @@ var finiteNumber = (value) => typeof value === "number" && Number.isFinite(value
 function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
   const issues = [];
   const fail = (p, message) => issues.push({ path: p, message });
-  const record = (v) => !!v && typeof v === "object" && !Array.isArray(v);
+  const record3 = (v) => !!v && typeof v === "object" && !Array.isArray(v);
   const keys = (v, allowed, p) => Object.keys(v).forEach((k) => {
     if (!allowed.includes(k)) fail(`${p}.${k}`, "Unsupported business-impact field.");
   });
-  const text = (v, p, max = 600) => {
+  const text2 = (v, p, max = 600) => {
     if (typeof v !== "string" || !v.trim() || v.length > max) fail(p, `Use non-empty text up to ${max} characters.`);
   };
   const numberInRange = (n, field, p) => {
     if (typeof n !== "number" || !Number.isFinite(n) || n < IMPACT_FIELDS[field][0] || n > IMPACT_FIELDS[field][1]) fail(p, "Value is outside the supported range.");
   };
-  if (!record(value)) return [{ path, message: "Expected a calculator object." }];
+  if (!record3(value)) return [{ path, message: "Expected a calculator object." }];
+  if (value.compact !== void 0) {
+    const issues2 = validateCompactRoi(value.compact, `${path}.compact`);
+    issues2.push(...validateRoiCurrencyCopy(value.currencyCopy, `${path}.currencyCopy`));
+    issues2.push(...validateRoiCostCopy(value.costCopy, `${path}.costCopy`));
+    if (value.locale !== void 0) {
+      try {
+        if (typeof value.locale !== "string") throw new Error();
+        new Intl.Locale(value.locale);
+      } catch {
+        issues2.push({ path: `${path}.locale`, message: "Use a valid locale." });
+      }
+    }
+    if (value.methodologyVersion !== 2 || !/^[A-Z]{3}$/.test(String(value.currency))) issues2.push({ path, message: "Compact calculators require methodologyVersion 2 and an ISO currency." });
+    if (typeof value.enabled !== "boolean") issues2.push({ path: `${path}.enabled`, message: "Declare calculator availability." });
+    if (!Array.isArray(value.inputs) || value.inputs.length || !Array.isArray(value.metrics) || value.metrics.length) issues2.push({ path, message: "Compact calculators use empty compatibility arrays." });
+    return issues2;
+  }
   keys(value, ["methodologyVersion", "enabled", "heading", "subheading", "kicker", "disclaimer", "currency", "currencyCopy", "costCopy", "locale", "periodToggle", "inputs", "metrics", "businessImpact", "cta"], path);
   issues.push(...validateRoiCurrencyCopy(value.currencyCopy, `${path}.currencyCopy`));
   issues.push(...validateRoiCostCopy(value.costCopy, `${path}.costCopy`));
   if (value.methodologyVersion !== 2) fail(`${path}.methodologyVersion`, "Supported methodology version is 2.");
   if (value.enabled !== void 0 && typeof value.enabled !== "boolean") fail(`${path}.enabled`, "Expected a boolean.");
-  ["heading", "disclaimer"].forEach((k) => text(value[k], `${path}.${k}`));
+  ["heading", "disclaimer"].forEach((k) => text2(value[k], `${path}.${k}`));
   ["subheading", "kicker"].forEach((k) => {
-    if (value[k] !== void 0) text(value[k], `${path}.${k}`);
+    if (value[k] !== void 0) text2(value[k], `${path}.${k}`);
   });
   if (typeof value.currency !== "string" || !/^[A-Z]{3}$/.test(value.currency)) fail(`${path}.currency`, "Use an ISO currency code.");
   if (value.locale !== void 0) {
@@ -1275,12 +1955,12 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     if (!Array.isArray(value[k]) || value[k].length) fail(`${path}.${k}`, "Version 2 uses platform calculations; keep this compatibility array empty.");
   });
   if (value.cta !== void 0) {
-    if (!record(value.cta)) fail(`${path}.cta`, "Expected CTA copy.");
+    if (!record3(value.cta)) fail(`${path}.cta`, "Expected CTA copy.");
     else {
       keys(value.cta, ["primaryLabel", "primaryTarget", "secondaryLabel", "secondaryTarget", "privacyNote"], `${path}.cta`);
-      text(value.cta.primaryLabel, `${path}.cta.primaryLabel`);
+      text2(value.cta.primaryLabel, `${path}.cta.primaryLabel`);
       ["secondaryLabel", "privacyNote"].forEach((k) => {
-        if (value.cta && record(value.cta) && value.cta[k] !== void 0) text(value.cta[k], `${path}.cta.${k}`);
+        if (value.cta && record3(value.cta) && value.cta[k] !== void 0) text2(value.cta[k], `${path}.cta.${k}`);
       });
       for (const key of ["primaryTarget", ...value.cta.secondaryLabel !== void 0 ? ["secondaryTarget"] : []]) {
         if (typeof value.cta[key] !== "string" || !/^[a-z][a-z-]{0,60}$/.test(value.cta[key])) fail(`${path}.cta.${key}`, "Use a section target, never a URL.");
@@ -1288,14 +1968,14 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     }
   }
   const b = value.businessImpact;
-  if (!record(b)) return [...issues, { path: `${path}.businessImpact`, message: "Business impact content is required." }];
+  if (!record3(b)) return [...issues, { path: `${path}.businessImpact`, message: "Business impact content is required." }];
   const bp = `${path}.businessImpact`;
   keys(b, ["defaults", "fixedAssumptions", "householdCopy", "storeOpsAssumptions", "storeOpsCopy", "copy", "fields", "outcomes", "burden", "opportunity", "usagePackages", "tabs", "hero", "selected", "reviewMode", "costMode", "confirmations", "defaultPackage", "workloadMultiplierField", "pricing", "presentation"], bp);
   const household = b.fixedAssumptions !== void 0;
   const storeOps = b.storeOpsAssumptions !== void 0;
   const estimator = household || storeOps;
   if (household && storeOps) fail(`${bp}.storeOpsAssumptions`, "Use either household or store-ops fixed assumptions, not both.");
-  if (!record(b.defaults)) fail(`${bp}.defaults`, "Add workload defaults.");
+  if (!record3(b.defaults)) fail(`${bp}.defaults`, "Add workload defaults.");
   else {
     const defaults = b.defaults;
     keys(defaults, Object.keys(IMPACT_FIELDS), `${bp}.defaults`);
@@ -1307,10 +1987,10 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     });
     if (!household && defaults.people != null && !Number.isInteger(defaults.people)) fail(`${bp}.defaults.people`, "Use a whole number of people.");
   }
-  const estimatorDefaults = record(b.defaults) ? b.defaults : {};
+  const estimatorDefaults = record3(b.defaults) ? b.defaults : {};
   const oneInputPanel = (inputFields, label) => {
     if (!Array.isArray(b.tabs) || b.tabs.length !== 1) return fail(`${bp}.tabs`, "Use exactly one input panel.");
-    if (!record(b.tabs[0])) return;
+    if (!record3(b.tabs[0])) return;
     const tab = b.tabs[0];
     const fields = Array.isArray(tab.fields) ? tab.fields : [];
     const exposed = fields.filter((field) => !inputFields.includes(field));
@@ -1323,10 +2003,10 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
   const templatedCopy = (key, english, templates) => {
     const cp = `${bp}.${key}`;
     const copy = b[key];
-    if (!record(copy)) return fail(cp, "Add the result copy.");
+    if (!record3(copy)) return fail(cp, "Add the result copy.");
     keys(copy, Object.keys(english), cp);
     Object.keys(english).forEach((k) => {
-      text(copy[k], `${cp}.${k}`);
+      text2(copy[k], `${cp}.${k}`);
       if (typeof copy[k] !== "string") return;
       const tokens = templates[k];
       if (tokens && !isCopyTemplate(copy[k], tokens)) fail(`${cp}.${k}`, `Include ${tokens.map((token) => `{${token}}`).join(" and ")} exactly once and no other template fields.`);
@@ -1347,7 +2027,7 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     const share = (value2, p, example) => {
       if (!finiteNumber(value2) || value2 <= 0 || value2 > 1) fail(p, `Use a share above 0 and at most 1 (${example}).`);
     };
-    if (!record(fixed)) fail(fp, "Expected fixed assumptions.");
+    if (!record3(fixed)) fail(fp, "Expected fixed assumptions.");
     else {
       keys(fixed, ["offloadRate", "reviewMinutes", "foodWastePerPersonYear", "foodWasteSource", "smartShopping", "smartShare", "spendBySize", "spendSource", "userEditable"], fp);
       const { offloadRate, reviewMinutes, foodWastePerPersonYear, spendBySize } = fixed;
@@ -1356,10 +2036,10 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
       numberInRange(reviewMinutes, "review", `${fp}.reviewMinutes`);
       if (finiteNumber(reviewMinutes) && defaults.review !== reviewMinutes) fail(`${bp}.defaults.review`, "Keep review equal to the fixed review minutes.");
       if (!finiteNumber(foodWastePerPersonYear) || foodWastePerPersonYear < 0 || foodWastePerPersonYear > 1e5) fail(`${fp}.foodWastePerPersonYear`, "Use a non-negative yearly amount per person.");
-      text(fixed.foodWasteSource, `${fp}.foodWasteSource`);
+      text2(fixed.foodWasteSource, `${fp}.foodWasteSource`);
       if (typeof fixed.smartShopping !== "boolean") fail(`${fp}.smartShopping`, "Set smartShopping to false until offers and price checks are verified live.");
       share(fixed.smartShare, `${fp}.smartShare`, "0.03 means 3%");
-      if (!record(spendBySize)) fail(`${fp}.spendBySize`, "Add monthly food spend for households of 1 to 8 people.");
+      if (!record3(spendBySize)) fail(`${fp}.spendBySize`, "Add monthly food spend for households of 1 to 8 people.");
       else {
         keys(spendBySize, HOUSEHOLD_SIZE_KEYS, `${fp}.spendBySize`);
         HOUSEHOLD_SIZE_KEYS.forEach((size) => {
@@ -1367,7 +2047,7 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
           if (!finiteNumber(v) || v < 0 || v > 1e5) fail(`${fp}.spendBySize.${size}`, "Use a non-negative monthly amount.");
         });
       }
-      text(fixed.spendSource, `${fp}.spendSource`);
+      text2(fixed.spendSource, `${fp}.spendSource`);
       if (fixed.userEditable !== false) fail(`${fp}.userEditable`, "Set userEditable to false. Visitors can never change fixed assumptions.");
     }
     const startingValue = (field, message) => {
@@ -1379,7 +2059,7 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     startingValue("minutes", "Use planning minutes from 10 to 90.");
     startingValue("people", "Use a whole household size from 1 to 8.");
     if (defaults.customer_price != null) fail(`${bp}.defaults.customer_price`, "Household prices come from pricing.tiers. Remove customer_price.");
-    if (!record(b.pricing) || b.pricing.basis !== "tiered") fail(`${bp}.pricing.basis`, "Household estimates price by planning sessions; only the session count changes the price.");
+    if (!record3(b.pricing) || b.pricing.basis !== "tiered") fail(`${bp}.pricing.basis`, "Household estimates price by planning sessions; only the session count changes the price.");
     else {
       const tiers = b.pricing.tiers;
       if (!Array.isArray(tiers) || !tiers.length || tiers.length > 6) fail(`${bp}.pricing.tiers`, "Add one to six session tiers.");
@@ -1387,7 +2067,7 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
         let previous = 0;
         tiers.forEach((tier, i) => {
           const tp = `${bp}.pricing.tiers[${i}]`;
-          if (!record(tier)) return fail(tp, "Expected a session tier.");
+          if (!record3(tier)) return fail(tp, "Expected a session tier.");
           keys(tier, ["upTo", "price"], tp);
           if (!Number.isInteger(tier.upTo) || tier.upTo <= previous) fail(`${tp}.upTo`, "Use whole session limits that increase from tier to tier.");
           else previous = tier.upTo;
@@ -1405,7 +2085,7 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     const sp = `${bp}.storeOpsAssumptions`;
     const fixed = b.storeOpsAssumptions;
     const defaults = estimatorDefaults;
-    if (!record(fixed)) fail(sp, "Expected store-ops fixed assumptions.");
+    if (!record3(fixed)) fail(sp, "Expected store-ops fixed assumptions.");
     else {
       keys(fixed, ["shareHandled", "reviewMinutesPerStoreCycle", "lossRate", "lossRateSource", "userEditable"], sp);
       const { shareHandled, reviewMinutesPerStoreCycle, lossRate } = fixed;
@@ -1414,7 +2094,7 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
       numberInRange(reviewMinutesPerStoreCycle, "review", `${sp}.reviewMinutesPerStoreCycle`);
       if (finiteNumber(reviewMinutesPerStoreCycle) && defaults.review !== reviewMinutesPerStoreCycle) fail(`${bp}.defaults.review`, "Keep review equal to the fixed review minutes per store cycle.");
       if (!finiteNumber(lossRate) || lossRate <= 0 || lossRate >= 1) fail(`${sp}.lossRate`, "Use a share above 0 and below 1 (0.0121 means 1.21%).");
-      text(fixed.lossRateSource, `${sp}.lossRateSource`);
+      text2(fixed.lossRateSource, `${sp}.lossRateSource`);
       if (fixed.userEditable !== false) fail(`${sp}.userEditable`, "Set userEditable to false. Visitors can never change fixed assumptions.");
     }
     const { volume: stores, customer_price: price } = defaults;
@@ -1423,7 +2103,7 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
       if (defaults[k] == null) fail(`${bp}.defaults.${k}`, "Add a starting value.");
     });
     if (!finiteNumber(price) || price < 0) fail(`${bp}.defaults.customer_price`, "Add the fixed price per store per month.");
-    if (!record(b.pricing) || b.pricing.basis !== "per_volume") fail(`${bp}.pricing.basis`, "Store-ops estimates price per store; only the store count changes the price.");
+    if (!record3(b.pricing) || b.pricing.basis !== "per_volume") fail(`${bp}.pricing.basis`, "Store-ops estimates price per store; only the store count changes the price.");
     else {
       if (b.pricing.annualPrice !== void 0) fail(`${bp}.pricing.annualPrice`, "The yearly price is the monthly price \xD7 12.");
       if (b.pricing.minimumMargin !== void 0) fail(`${bp}.pricing.minimumMargin`, "Store-ops pricing has no usage margin.");
@@ -1431,52 +2111,52 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     oneInputPanel(STORE_OPS_INPUT_FIELDS, "stores, cycles per store, preparation minutes and food purchases per store");
     templatedCopy("storeOpsCopy", STORE_OPS_COPY, STORE_OPS_COPY_TEMPLATES);
   } else if (b.storeOpsCopy !== void 0) fail(`${bp}.storeOpsCopy`, "Store-ops copy requires store-ops fixed assumptions.");
-  if (!record(b.copy)) fail(`${bp}.copy`, "Localized interface copy is required.");
+  if (!record3(b.copy)) fail(`${bp}.copy`, "Localized interface copy is required.");
   else {
     const copy = b.copy;
     keys(copy, Object.keys(IMPACT_COPY), `${bp}.copy`);
     const required = household ? [...HOUSEHOLD_IMPACT_COPY_KEYS] : storeOps ? [...STORE_OPS_IMPACT_COPY_KEYS] : Object.keys(IMPACT_COPY);
     Object.keys(IMPACT_COPY).forEach((k) => {
-      if (required.includes(k) || copy[k] !== void 0) text(copy[k], `${bp}.copy.${k}`);
+      if (required.includes(k) || copy[k] !== void 0) text2(copy[k], `${bp}.copy.${k}`);
     });
   }
-  if (!record(b.fields)) fail(`${bp}.fields`, "Authored input labels and help are required.");
+  if (!record3(b.fields)) fail(`${bp}.fields`, "Authored input labels and help are required.");
   else {
     keys(b.fields, Object.keys(IMPACT_FIELDS), `${bp}.fields`);
     for (const k of Object.keys(b.fields)) {
       const f = b.fields[k];
       if (!IMPACT_FIELDS[k]) fail(`${bp}.fields.${k}`, "Use a supported input field.");
-      else if (!record(f)) fail(`${bp}.fields.${k}`, "Add label and help.");
+      else if (!record3(f)) fail(`${bp}.fields.${k}`, "Add label and help.");
       else {
         keys(f, ["label", "help"], `${bp}.fields.${k}`);
-        text(f.label, `${bp}.fields.${k}.label`, 160);
-        text(f.help, `${bp}.fields.${k}.help`);
+        text2(f.label, `${bp}.fields.${k}.label`, 160);
+        text2(f.help, `${bp}.fields.${k}.help`);
       }
     }
   }
   const seen = /* @__PURE__ */ new Set();
   if (!Array.isArray(b.outcomes) || b.outcomes.length > 7 || !b.outcomes.length && !estimator) fail(`${bp}.outcomes`, "Use one to seven supported outcomes.");
   else b.outcomes.forEach((o, i) => {
-    if (!record(o)) return fail(`${bp}.outcomes[${i}]`, "Expected an outcome.");
+    if (!record3(o)) return fail(`${bp}.outcomes[${i}]`, "Expected an outcome.");
     keys(o, ["id", "label", "help"], `${bp}.outcomes[${i}]`);
     if (!IMPACT_OUTCOMES.includes(o.id) || seen.has(o.id)) fail(`${bp}.outcomes[${i}].id`, "Use a unique supported outcome.");
     seen.add(o.id);
-    text(o.label, `${bp}.outcomes[${i}].label`, 160);
-    text(o.help, `${bp}.outcomes[${i}].help`);
+    text2(o.label, `${bp}.outcomes[${i}].label`, 160);
+    text2(o.help, `${bp}.outcomes[${i}].help`);
   });
   ["burden", "opportunity"].forEach((k) => {
     const list = b[k];
     if (!Array.isArray(list) || !list.length || list.length > 4) fail(`${bp}.${k}`, "Use one to four concise examples.");
-    else list.forEach((v, i) => text(v, `${bp}.${k}[${i}]`, 240));
+    else list.forEach((v, i) => text2(v, `${bp}.${k}[${i}]`, 240));
   });
   if (b.selected !== void 0) {
-    if (!Array.isArray(b.selected) || b.selected.some((id) => !seen.has(id))) fail(`${bp}.selected`, "Preselected outcomes must be included in outcomes.");
+    if (!Array.isArray(b.selected) || b.selected.some((id2) => !seen.has(id2))) fail(`${bp}.selected`, "Preselected outcomes must be included in outcomes.");
   }
   if (b.reviewMode !== void 0 && b.reviewMode !== "team" && b.reviewMode !== "paid") fail(`${bp}.reviewMode`, "Use team or paid review.");
   if (b.costMode !== void 0 && b.costMode !== "total" && b.costMode !== "itemized") fail(`${bp}.costMode`, "Use total or itemized cost.");
   if (b.defaultPackage !== void 0 && b.defaultPackage !== "base" && b.defaultPackage !== "medium") fail(`${bp}.defaultPackage`, "Use base or medium.");
   if (b.confirmations !== void 0) {
-    if (!record(b.confirmations)) fail(`${bp}.confirmations`, "Expected confirmation flags.");
+    if (!record3(b.confirmations)) fail(`${bp}.confirmations`, "Expected confirmation flags.");
     else {
       keys(b.confirmations, ["overlap", "hiring", "outcomes", "hide"], `${bp}.confirmations`);
       for (const key of ["overlap", "hiring", "outcomes", "hide"]) {
@@ -1485,21 +2165,21 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     }
   }
   if (b.hero !== void 0) {
-    if (!record(b.hero)) fail(`${bp}.hero`, "Expected a hero metric.");
+    if (!record3(b.hero)) fail(`${bp}.hero`, "Expected a hero metric.");
     else {
       keys(b.hero, ["kind", "label"], `${bp}.hero`);
       if (b.hero.kind !== "volume" && b.hero.kind !== "capacity" && b.hero.kind !== "money") fail(`${bp}.hero.kind`, "Use volume, capacity or money.");
-      text(b.hero.label, `${bp}.hero.label`, 160);
+      text2(b.hero.label, `${bp}.hero.label`, 160);
     }
   }
   if (b.tabs !== void 0) {
     if (!Array.isArray(b.tabs) || !b.tabs.length || b.tabs.length > 4) fail(`${bp}.tabs`, "Use one to four tabs.");
     else b.tabs.forEach((tab, i) => {
-      if (!record(tab)) return fail(`${bp}.tabs[${i}]`, "Expected a tab.");
+      if (!record3(tab)) return fail(`${bp}.tabs[${i}]`, "Expected a tab.");
       keys(tab, ["id", "label", "intro", "fields", "showReview", "showOutcomes", "showPackage"], `${bp}.tabs[${i}]`);
       if (typeof tab.id !== "string" || !/^[a-z][a-z0-9-]{0,40}$/.test(tab.id)) fail(`${bp}.tabs[${i}].id`, "Use a compact tab id.");
-      text(tab.label, `${bp}.tabs[${i}].label`, 80);
-      text(tab.intro, `${bp}.tabs[${i}].intro`);
+      text2(tab.label, `${bp}.tabs[${i}].label`, 80);
+      text2(tab.intro, `${bp}.tabs[${i}].intro`);
       if (!Array.isArray(tab.fields) || tab.fields.some((field) => !IMPACT_FIELDS[field])) fail(`${bp}.tabs[${i}].fields`, "Use supported input fields.");
       for (const flag of ["showReview", "showOutcomes", "showPackage"]) {
         if (tab[flag] !== void 0 && typeof tab[flag] !== "boolean") fail(`${bp}.tabs[${i}].${flag}`, "Expected a boolean.");
@@ -1507,13 +2187,13 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     });
   }
   if (b.usagePackages !== void 0) {
-    if (!record(b.usagePackages)) fail(`${bp}.usagePackages`, "Expected base and medium packages.");
+    if (!record3(b.usagePackages)) fail(`${bp}.usagePackages`, "Expected base and medium packages.");
     else {
       keys(b.usagePackages, ["base", "medium"], `${bp}.usagePackages`);
       for (const name of ["base", "medium"]) {
         const pack = b.usagePackages[name];
         const pp = `${bp}.usagePackages.${name}`;
-        if (!record(pack)) fail(pp, "Expected a usage package.");
+        if (!record3(pack)) fail(pp, "Expected a usage package.");
         else {
           keys(pack, ["volume", "tokensPerOutput", "platform_cost", ...PACKAGE_VALUE_KEYS], pp);
           numberInRange(pack.volume, "volume", `${pp}.volume`);
@@ -1528,13 +2208,13 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
   }
   if (b.workloadMultiplierField !== void 0 && b.workloadMultiplierField !== "cycles_per_unit") fail(`${bp}.workloadMultiplierField`, "Use cycles_per_unit when configuring recurring workload cycles.");
   if (b.pricing !== void 0) {
-    if (!record(b.pricing)) fail(`${bp}.pricing`, "Expected pricing metadata.");
+    if (!record3(b.pricing)) fail(`${bp}.pricing`, "Expected pricing metadata.");
     else {
       keys(b.pricing, ["basis", "annualPrice", "tiers", "minimumMargin", "label", "help"], `${bp}.pricing`);
       if (!["fixed", "per_volume", "usage", "tiered"].includes(b.pricing.basis)) fail(`${bp}.pricing.basis`, "Use fixed, per_volume, usage or tiered.");
       if (b.pricing.tiers !== void 0 && !household) fail(`${bp}.pricing.tiers`, "Session price tiers are only for household estimators.");
-      text(b.pricing.label, `${bp}.pricing.label`, 160);
-      text(b.pricing.help, `${bp}.pricing.help`);
+      text2(b.pricing.label, `${bp}.pricing.label`, 160);
+      text2(b.pricing.help, `${bp}.pricing.help`);
       if (b.pricing.annualPrice !== void 0) numberInRange(b.pricing.annualPrice, "customer_price", `${bp}.pricing.annualPrice`);
       if (b.pricing.basis === "usage" || b.pricing.minimumMargin !== void 0) {
         if (typeof b.pricing.minimumMargin !== "number" || !Number.isFinite(b.pricing.minimumMargin) || b.pricing.minimumMargin < 0 || b.pricing.minimumMargin >= 1) fail(`${bp}.pricing.minimumMargin`, "Use a margin from 0 (inclusive) to 1 (exclusive).");
@@ -1542,7 +2222,7 @@ function validateBusinessImpact(value, path = "landingPage.roiCalculator") {
     }
   }
   if (b.presentation !== void 0) {
-    if (!record(b.presentation)) fail(`${bp}.presentation`, "Expected presentation metadata.");
+    if (!record3(b.presentation)) fail(`${bp}.presentation`, "Expected presentation metadata.");
     else {
       keys(b.presentation, ["financial", "showCustomerEconomics", "hideEconomicMultiple", "costFocus", "showTokenUsage", "showInternalCost"], `${bp}.presentation`);
       if (!["capacity_only", "optional", "required"].includes(b.presentation.financial)) fail(`${bp}.presentation.financial`, "Use capacity_only, optional or required.");
@@ -1739,7 +2419,7 @@ function topologicalMetricOrder({
   metrics.forEach((metric) => {
     let refs = [];
     try {
-      refs = parseRoiFormula({ formula: metric.formula }).identifiers.filter((id) => ids.has(id) && id !== metric.id);
+      refs = parseRoiFormula({ formula: metric.formula }).identifiers.filter((id2) => ids.has(id2) && id2 !== metric.id);
     } catch {
       refs = [];
     }
@@ -1749,18 +2429,18 @@ function topologicalMetricOrder({
   const visited = /* @__PURE__ */ new Set();
   const order = [];
   const cycles = [];
-  const visit = ({ id }) => {
-    if (visited.has(id)) return true;
-    if (visiting.has(id)) {
-      cycles.push(id);
+  const visit = ({ id: id2 }) => {
+    if (visited.has(id2)) return true;
+    if (visiting.has(id2)) {
+      cycles.push(id2);
       return false;
     }
-    visiting.add(id);
-    const refs = dependencies.get(id) || [];
+    visiting.add(id2);
+    const refs = dependencies.get(id2) || [];
     const acyclic = refs.every((ref) => visit({ id: ref }));
-    visiting.delete(id);
-    visited.add(id);
-    order.push(id);
+    visiting.delete(id2);
+    visited.add(id2);
+    order.push(id2);
     return acyclic;
   };
   metrics.forEach((metric) => visit({ id: metric.id }));
@@ -1842,8 +2522,8 @@ function validateRoiCalculator({
         issues.push({ path: inputPath, message: "Each input must be an object." });
         return;
       }
-      const id = validateIdentifier({ value: input.id, path: `${inputPath}.id`, issues, used: usedIds });
-      if (id) inputIds.add(id);
+      const id2 = validateIdentifier({ value: input.id, path: `${inputPath}.id`, issues, used: usedIds });
+      if (id2) inputIds.add(id2);
       if (typeof input.label !== "string" || !input.label.trim()) issues.push({ path: `${inputPath}.label`, message: "Add an input label." });
       if (typeof input.type !== "string" || !INPUT_TYPES.has(input.type)) {
         issues.push({ path: `${inputPath}.type`, message: "Choose slider, number, or select." });
@@ -1938,10 +2618,10 @@ function validateRoiCalculator({
         issues.push({ path: metricPath, message: "Each metric must be an object." });
         return;
       }
-      const id = validateIdentifier({ value: metric.id, path: `${metricPath}.id`, issues, used: usedIds });
-      if (id) {
-        metricIds.add(id);
-        allowedRefs.add(id);
+      const id2 = validateIdentifier({ value: metric.id, path: `${metricPath}.id`, issues, used: usedIds });
+      if (id2) {
+        metricIds.add(id2);
+        allowedRefs.add(id2);
       }
       if (typeof metric.label !== "string" || !metric.label.trim()) issues.push({ path: `${metricPath}.label`, message: "Add a metric label." });
       if (typeof metric.format !== "string" || !VALUE_FORMATS.has(metric.format)) {
@@ -1967,8 +2647,8 @@ function validateRoiCalculator({
       }
       if (typeof metric.formula !== "string" || !metric.formula.trim()) {
         issues.push({ path: `${metricPath}.formula`, message: "Add an arithmetic formula." });
-      } else if (id) {
-        metricsForGraph.push({ id, formula: metric.formula });
+      } else if (id2) {
+        metricsForGraph.push({ id: id2, formula: metric.formula });
         try {
           const parsed = parseRoiFormula({ formula: metric.formula });
           parsed.identifiers.forEach((ref) => {
@@ -2505,7 +3185,15 @@ var boli_learning_copy_schema_default = {
     "parentStep2Alt",
     "parentStep3Alt",
     "parentStep4Alt",
-    "parentStep5Alt"
+    "parentStep5Alt",
+    "filmPlay",
+    "filmPause",
+    "filmReplay",
+    "filmMute",
+    "filmUnmute",
+    "filmFullscreen",
+    "filmExitFullscreen",
+    "filmProgress"
   ]
 };
 
@@ -2742,28 +3430,29 @@ var HOME_INTRODUCTION_TARGETS = /* @__PURE__ */ new Set(["top", "audience", "pri
 var LOGISTICS_PORTAL_TARGETS = /* @__PURE__ */ new Set(["top", "edge", "control", "workflows", "pilot", "simulation", "roi-calculator"]);
 var CINEMATIC_CAMPAIGN_TARGETS = /* @__PURE__ */ new Set(["workflow", "delivery", "showcase", "features", "tracker", "meet-archer", "fit", "pilot", "hero-intake", "contact", "roi-calculator"]);
 var RECRUITING_OPERATIONS_TARGETS = /* @__PURE__ */ new Set(["workflow", "use-cases", "why-lina", "faq", "roi-calculator"]);
-var DESIGN_VARIANTS = /* @__PURE__ */ new Set(["default", "signature", "banking", "form-operations", "logistics-portal", "cinematic-campaigns", "recruiting-operations", "grocery-twin", "wardrobe-twin", "boli-learning", "event-introductions", "home-introductions", "chakri-scrap"]);
+var DESIGN_VARIANTS = /* @__PURE__ */ new Set(["company-intelligence", "stayor", "industrial-production", "default", "signature", "banking", "form-operations", "logistics-portal", "cinematic-campaigns", "recruiting-operations", "grocery-twin", "wardrobe-twin", "boli-learning", "event-introductions", "home-introductions", "chakri-scrap", "klok", "community-connections"]);
 var THEME_PALETTES = /* @__PURE__ */ new Set(["coral", "ocean", "forest", "purple", "slate", "research", "maroon", "stone", "emerald", "custom"]);
 var THEME_COLORS = /* @__PURE__ */ new Set(["purple", "indigo", "blue", "green", "orange", "pink", "red", "teal", "gray", "slate", "maroon", "stone", "emerald"]);
 var THEME_MODES = /* @__PURE__ */ new Set(["light", "dark"]);
 var EMOJI_PATTERN = new RegExp("\\p{Extended_Pictographic}", "u");
 var IMAGE_EXTENSION = /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#]|$)/i;
-var SAFE_APP_IMAGE_PATH = /^\/(?:assets|landing-pages)\/[a-z0-9][a-z0-9/_-]*\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#]|$)/i;
+var SAFE_APP_IMAGE_PATH = /^\/(?:(?:assets|landing-pages)\/[a-z0-9][a-z0-9/_-]*|api\/page-builder\/media\/[a-z0-9_-]+\/[a-z0-9_-]+\/content\/[a-z0-9][a-z0-9._-]*)\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#]|$)/i;
 var VIDEO_EXTENSION = /\.(?:m4v|mov|mp4|webm)(?:[?#]|$)/i;
+var SAFE_APP_VIDEO_PATH = /^\/(?:(?:assets|landing-pages)\/[a-z0-9][a-z0-9/_-]*|persona-course-media\/[a-z0-9][a-z0-9-]*\/[a-z0-9][a-z0-9._-]*)\.(?:m4v|mov|mp4|webm)(?:[?#]|$)/i;
 var REGION_KEY2 = /^[a-z0-9][a-z0-9-]{0,63}$/;
 var COUNTRY_CODE = /^[A-Z]{2}$/;
 var SOURCE_REVISION2 = /^[a-f0-9]{64}$/;
 var SUPPORTED_LANGUAGES = new Set(languages.map((language) => language.id));
 var isRecord3 = (value) => Boolean(value) && typeof value === "object" && !Array.isArray(value);
 var isDirectImageSource = (value) => typeof value === "string" && IMAGE_EXTENSION.test(value) && (/^https:\/\//i.test(value) || SAFE_APP_IMAGE_PATH.test(value));
-var isDirectVideoSource = (value) => typeof value === "string" && VIDEO_EXTENSION.test(value) && (/^https:\/\//i.test(value) || /^\/(?:(?:assets|landing-pages)\/[a-z0-9][a-z0-9/_-]*|persona-course-media\/[a-z0-9][a-z0-9-]*\/[a-z0-9][a-z0-9._-]*)\.(?:m4v|mov|mp4|webm)(?:[?#]|$)/i.test(value));
+var isDirectVideoSource = (value) => typeof value === "string" && VIDEO_EXTENSION.test(value) && (/^https:\/\//i.test(value) || SAFE_APP_VIDEO_PATH.test(value));
 function validateBoliLearningContent(content) {
   const issues = [];
   const prefix = "landingPage.boliLearning";
   const issue = (path, message) => {
     issues.push({ path: `${prefix}${path ? `.${path}` : ""}`, message });
   };
-  const record = (value, path, keys) => {
+  const record3 = (value, path, keys) => {
     if (!isRecord3(value)) {
       issue(path, "Provide the complete BOLI Learning content object.");
       return false;
@@ -2771,7 +3460,7 @@ function validateBoliLearningContent(content) {
     for (const key of Object.keys(value)) if (!keys.includes(key)) issue(path ? `${path}.${key}` : key, "Only registered BOLI Learning content fields are allowed.");
     return true;
   };
-  const text = (value, path, max = 600) => {
+  const text2 = (value, path, max = 600) => {
     if (typeof value !== "string" || !value.trim() || value.length > max) issue(path, `Provide text between 1 and ${max} characters.`);
   };
   const strings = (value, path, count) => {
@@ -2779,25 +3468,25 @@ function validateBoliLearningContent(content) {
       issue(path, `Provide exactly ${count} entries.`);
       return;
     }
-    value.forEach((item, index) => text(item, `${path}[${index}]`));
+    value.forEach((item, index) => text2(item, `${path}[${index}]`));
   };
-  if (!record(content, "", ["contentVersion", "brandName", "tagline", "mascotImage", "avatarImage", "minecraftMascotImage", "minecraftAvatarImage", "logoImage", "islandsImage", "parents", "schools", "copy", "courses", "faq"])) return issues;
+  if (!record3(content, "", ["contentVersion", "brandName", "tagline", "mascotImage", "avatarImage", "minecraftMascotImage", "minecraftAvatarImage", "logoImage", "islandsImage", "parents", "schools", "copy", "courses", "faq"])) return issues;
   if (content.contentVersion !== void 0 && (!Number.isInteger(content.contentVersion) || Number(content.contentVersion) < 1)) issue("contentVersion", "Use a positive integer content version.");
-  text(content.brandName, "brandName", 80);
-  text(content.tagline, "tagline");
+  text2(content.brandName, "brandName", 80);
+  text2(content.tagline, "tagline");
   for (const key of ["mascotImage", "islandsImage"]) if (!isDirectImageSource(content[key])) issue(key, "Use a direct HTTPS or bundled application image URL.");
   for (const key of ["avatarImage", "minecraftMascotImage", "minecraftAvatarImage", "logoImage"]) if (content[key] !== void 0 && !isDirectImageSource(content[key])) issue(key, "Use a direct HTTPS or bundled application image URL.");
   const optionalCopyKeys = boli_learning_copy_schema_default.optional;
   const copyKeys = boli_learning_copy_schema_default.required;
-  if (record(content.copy, "copy", [...copyKeys, ...optionalCopyKeys])) {
-    for (const key of copyKeys) text(content.copy[key], `copy.${key}`);
-    for (const key of optionalCopyKeys) if (content.copy[key] !== void 0) text(content.copy[key], `copy.${key}`);
+  if (record3(content.copy, "copy", [...copyKeys, ...optionalCopyKeys])) {
+    for (const key of copyKeys) text2(content.copy[key], `copy.${key}`);
+    for (const key of optionalCopyKeys) if (content.copy[key] !== void 0) text2(content.copy[key], `copy.${key}`);
   }
   const editionKeys = ["eyebrow", "headline", "description", "flagshipQuestion", "flagshipDescription", "learnerLabel", "approvalLabel", "chatQuestion", "chatAnswer", "chartTitle", "chartNote", "createPrompt", "startPrompt"];
   for (const name of ["parents", "schools"]) {
     const edition = content[name];
-    if (!record(edition, name, [...editionKeys, "chartLabels"])) continue;
-    for (const key of editionKeys) text(edition[key], `${name}.${key}`, key.endsWith("Prompt") ? 2e3 : 600);
+    if (!record3(edition, name, [...editionKeys, "chartLabels"])) continue;
+    for (const key of editionKeys) text2(edition[key], `${name}.${key}`, key.endsWith("Prompt") ? 2e3 : 600);
     strings(edition.chartLabels, `${name}.chartLabels`, 3);
   }
   const courseIds = /* @__PURE__ */ new Set();
@@ -2805,30 +3494,30 @@ function validateBoliLearningContent(content) {
   if (!Array.isArray(content.courses) || content.courses.length !== registeredCourseIds.length) issue("courses", `Provide the ${registeredCourseIds.length} registered course islands.`);
   else content.courses.forEach((course, index) => {
     const path = `courses[${index}]`;
-    if (!record(course, path, ["id", "title", "island", "subject", "goal", "descriptions", "lessons", "symbol", "color", "ageContent"])) return;
-    const id = String(course.id || "");
-    if (!registeredCourseIds.includes(id) || courseIds.has(id)) issue(`${path}.id`, `Use ${registeredCourseIds.join(", ")} exactly once.`);
-    courseIds.add(id);
+    if (!record3(course, path, ["id", "title", "island", "subject", "goal", "descriptions", "lessons", "symbol", "color", "ageContent"])) return;
+    const id2 = String(course.id || "");
+    if (!registeredCourseIds.includes(id2) || courseIds.has(id2)) issue(`${path}.id`, `Use ${registeredCourseIds.join(", ")} exactly once.`);
+    courseIds.add(id2);
     if (!["lavender", "peach", "green", "sky"].includes(String(course.color))) issue(`${path}.color`, "Choose lavender, peach, green, or sky.");
-    for (const key of ["title", "island", "subject", "goal"]) text(course[key], `${path}.${key}`);
-    text(course.symbol, `${path}.symbol`, 8);
+    for (const key of ["title", "island", "subject", "goal"]) text2(course[key], `${path}.${key}`);
+    text2(course.symbol, `${path}.symbol`, 8);
     const ages = ["9\u201311", "12\u201314", "15\u201318"];
-    if (record(course.descriptions, `${path}.descriptions`, ages)) for (const age of ages) text(course.descriptions[age], `${path}.descriptions.${age}`);
+    if (record3(course.descriptions, `${path}.descriptions`, ages)) for (const age of ages) text2(course.descriptions[age], `${path}.descriptions.${age}`);
     if (!Array.isArray(course.lessons) || course.lessons.length < 1 || course.lessons.length > 6) issue(`${path}.lessons`, "Provide between 1 and 6 lessons.");
-    else course.lessons.forEach((lesson, lessonIndex) => text(lesson, `${path}.lessons[${lessonIndex}]`));
-    if (course.ageContent !== void 0 && record(course.ageContent, `${path}.ageContent`, ages)) {
+    else course.lessons.forEach((lesson, lessonIndex) => text2(lesson, `${path}.lessons[${lessonIndex}]`));
+    if (course.ageContent !== void 0 && record3(course.ageContent, `${path}.ageContent`, ages)) {
       for (const age of ages) {
         const entry = course.ageContent[age];
-        if (entry === void 0 || !record(entry, `${path}.ageContent.${age}`, ["title", "island", "subject", "goal", "description", "lessons", "puzzle", "gameTitle", "storyboardImage", "storyboardAlt", "pathImage", "evidenceImage", "introVideo"])) continue;
-        for (const key of ["title", "island", "subject", "goal", "description", "gameTitle", "storyboardAlt"]) text(entry[key], `${path}.ageContent.${age}.${key}`);
+        if (entry === void 0 || !record3(entry, `${path}.ageContent.${age}`, ["title", "island", "subject", "goal", "description", "lessons", "puzzle", "gameTitle", "storyboardImage", "storyboardAlt", "pathImage", "evidenceImage", "introVideo"])) continue;
+        for (const key of ["title", "island", "subject", "goal", "description", "gameTitle", "storyboardAlt"]) text2(entry[key], `${path}.ageContent.${age}.${key}`);
         if (!isDirectImageSource(entry.storyboardImage)) issue(`${path}.ageContent.${age}.storyboardImage`, "Use a direct HTTPS or bundled application image URL.");
         if (entry.pathImage !== void 0 && !isDirectImageSource(entry.pathImage)) issue(`${path}.ageContent.${age}.pathImage`, "Use a direct HTTPS or bundled application image URL.");
         if (entry.evidenceImage !== void 0 && !isDirectImageSource(entry.evidenceImage)) issue(`${path}.ageContent.${age}.evidenceImage`, "Use a direct HTTPS or bundled application image URL.");
         if (entry.introVideo !== void 0 && !isDirectVideoSource(entry.introVideo)) issue(`${path}.ageContent.${age}.introVideo`, "Use a direct HTTPS or bundled application video URL.");
         if (!Array.isArray(entry.lessons) || entry.lessons.length < 1 || entry.lessons.length > 6) issue(`${path}.ageContent.${age}.lessons`, "Provide between 1 and 6 lessons.");
-        else entry.lessons.forEach((lesson, lessonIndex) => text(lesson, `${path}.ageContent.${age}.lessons[${lessonIndex}]`));
-        if (record(entry.puzzle, `${path}.ageContent.${age}.puzzle`, ["title", "prompt", "choices", "correct", "hint", "unlockQuestion"])) {
-          for (const key of ["title", "prompt", "hint", "unlockQuestion"]) text(entry.puzzle[key], `${path}.ageContent.${age}.puzzle.${key}`);
+        else entry.lessons.forEach((lesson, lessonIndex) => text2(lesson, `${path}.ageContent.${age}.lessons[${lessonIndex}]`));
+        if (record3(entry.puzzle, `${path}.ageContent.${age}.puzzle`, ["title", "prompt", "choices", "correct", "hint", "unlockQuestion"])) {
+          for (const key of ["title", "prompt", "hint", "unlockQuestion"]) text2(entry.puzzle[key], `${path}.ageContent.${age}.puzzle.${key}`);
           strings(entry.puzzle.choices, `${path}.ageContent.${age}.puzzle.choices`, 3);
           if (!Number.isInteger(entry.puzzle.correct) || Number(entry.puzzle.correct) < 0 || Number(entry.puzzle.correct) > 2) issue(`${path}.ageContent.${age}.puzzle.correct`, "Choose a zero-based answer index from 0 to 2.");
         }
@@ -2838,9 +3527,9 @@ function validateBoliLearningContent(content) {
   if (!Array.isArray(content.faq) || content.faq.length < 1 || content.faq.length > 8) issue("faq", "Provide between 1 and 8 questions.");
   else content.faq.forEach((item, index) => {
     const path = `faq[${index}]`;
-    if (!record(item, path, ["question", "answer"])) return;
-    text(item.question, `${path}.question`);
-    text(item.answer, `${path}.answer`, 2e3);
+    if (!record3(item, path, ["question", "answer"])) return;
+    text2(item.question, `${path}.question`);
+    text2(item.answer, `${path}.answer`, 2e3);
   });
   return issues;
 }
@@ -2877,8 +3566,20 @@ var validateAccent = (issues, value, headingKey, accentKey, path) => {
 };
 var validateLandingPageConfig = (landingPage) => {
   const issues = [];
+  issues.push(...validateLandingEditorial(landingPage));
   if (!isRecord3(landingPage)) {
     return [{ path: "landingPage", message: "Landing page must be an object." }];
+  }
+  const contact = isRecord3(landingPage.contact) ? landingPage.contact : {};
+  if (contact.enquiryForm !== void 0) {
+    const prefix = "landingPage.contact.enquiryForm";
+    const copy = isRecord3(contact.enquiryForm) ? contact.enquiryForm : {};
+    for (const key of ["nameLabel", "emailLabel", "organizationLabel", "intentLabel", "detailsLabel", "detailsPlaceholder", "submitLabel", "privacyNote", "validationMessage", "successHeading", "successBody", "emailActionLabel", "emailSubject", "editLabel"]) {
+      if (typeof copy[key] !== "string" || !copy[key].trim()) issues.push({ path: `${prefix}.${key}`, message: "Provide authored enquiry form copy." });
+    }
+    const options = copy.intentOptions;
+    if (!Array.isArray(options) || !options.length || options.length > 8 || options.some((option) => !isRecord3(option) || typeof option.id !== "string" || !/^[a-z][a-z0-9-]{0,63}$/.test(option.id) || typeof option.label !== "string" || !option.label.trim()) || new Set(options.map((option) => isRecord3(option) ? option.id : void 0)).size !== options.length) issues.push({ path: `${prefix}.intentOptions`, message: "Provide one to eight labelled options with unique stable IDs." });
+    if (typeof contact.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) issues.push({ path: "landingPage.contact.email", message: "Provide a valid enquiry recipient email." });
   }
   const capability = landingPage.capabilityPreview;
   if (capability !== void 0 && (!isRecord3(capability) || Object.keys(capability).some((key) => !["enabled", "commandId", "presentation"].includes(key)) || typeof capability.enabled !== "boolean" || !/^[a-z][a-z0-9-]{0,63}$/.test(String(capability.commandId || "")) || capability.presentation !== void 0 && !["journey", "surface"].includes(String(capability.presentation)))) {
@@ -3062,9 +3763,11 @@ var validateLandingPageConfig = (landingPage) => {
     issues.push({ path: "landingPage.seoImage", message: "SEO image must be an object with a src URL." });
   }
   if (isRecord3(landingPage.design) && landingPage.design.variant === "chakri-scrap" || landingPage.scrapOperations !== void 0) issues.push(...validateChakriLandingContent(landingPage.scrapOperations));
+  if (isRecord3(landingPage.design) && landingPage.design.variant === "community-connections" || landingPage.mirav !== void 0) issues.push(...validateMiravLandingCopy(landingPage.mirav));
   if (isRecord3(landingPage.design) && landingPage.design.variant === "boli-learning" || landingPage.boliLearning !== void 0) issues.push(...validateBoliLearningContent(landingPage.boliLearning));
   const { localization: _localization, ...landingPageWithoutLocalization } = landingPage;
   walkStrings(landingPageWithoutLocalization, "landingPage", (value, path) => {
+    if (isMiravPreviewIconPath(path)) return;
     if (EMOJI_PATTERN.test(value.replace(/↔/g, "")) && !path.endsWith(".footer.copyright")) {
       issues.push({ path, message: "Use a supported icon instead of an emoji." });
     }
@@ -3116,6 +3819,16 @@ var validateLandingPageConfig = (landingPage) => {
     issues.push({ path: "landingPage.matchPreview.people", message: "Match preview requires exactly two people." });
   }
   const howItWorks = landingPage.howItWorks;
+  if (landingPage.factorySimulation !== void 0) {
+    issues.push(...validateFactorySimulation(landingPage.factorySimulation).map((issue) => ({ path: `landingPage.factorySimulation${issue.path ? `.${issue.path}` : ""}`, message: issue.message })));
+    if (!Array.isArray(landingPage.features) || landingPage.features.length !== 6) issues.push({ path: "landingPage.features", message: "Factory simulation requires six authored capability steps." });
+  }
+  if (isRecord3(howItWorks) && howItWorks.factoryExplorer !== void 0) {
+    issues.push(...validateFactoryExplorer(howItWorks.factoryExplorer).map((issue) => ({
+      path: `landingPage.howItWorks.factoryExplorer${issue.path ? `.${issue.path}` : ""}`,
+      message: issue.message
+    })));
+  }
   if (isRecord3(howItWorks) && Array.isArray(howItWorks.steps)) {
     howItWorks.steps.forEach((step, index) => {
       if (!isRecord3(step)) return;
@@ -3186,7 +3899,7 @@ var validateLandingPageConfig = (landingPage) => {
       const stages = valueAt("retail.stages");
       if (Array.isArray(stages)) {
         const ids = new Set(stages.map((stage) => isRecord3(stage) ? stage.id : void 0));
-        if (ids.size !== 3 || !["language", "region", "person"].every((id) => ids.has(id))) issues.push({ path: "landingPage.wardrobeTwin.retail.stages", message: "Configure language, region, and person exactly once." });
+        if (ids.size !== 3 || !["language", "region", "person"].every((id2) => ids.has(id2))) issues.push({ path: "landingPage.wardrobeTwin.retail.stages", message: "Configure language, region, and person exactly once." });
         stages.forEach((stage, index) => {
           if (!isRecord3(stage) || !Array.isArray(stage.bullets) || stage.bullets.length !== 3) issues.push({ path: `landingPage.wardrobeTwin.retail.stages[${index}].bullets`, message: "Use exactly 3 stage benefits." });
         });

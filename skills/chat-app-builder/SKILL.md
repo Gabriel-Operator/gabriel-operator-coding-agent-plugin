@@ -3,7 +3,13 @@ name: chat-app-builder
 description: Author versioned authenticated persona Chat Apps with model-defined navigation, pages, registered components and named data points, backed by authorised pipeline lists and outcomes.
 ---
 
+# External and private Studio connector apps
+
+Use **connector-app-builder** (skill topic `connector-app-builder`) to discover, author, preview and install an MCP connector app. Studio's Apps tab offers the platform public catalog plus creator-only My apps, independently of persona template cards. `chatApp.studio.connectorApps` carries portable availability: `enabled`, `allowCustom`, optional `allowedAppIds`. `chatApp.studio.featuredApps` chooses the market layers a team's Featured tab shows for the country in the page header; plan both with [the app plan](../persona-builder/references/studio-apps.md#app-plan-for-a-new-persona) and [the featured app layers reference](../persona-builder/references/featured-app-layers.md). Do not register custom HTML in `studio.apps` or require a persona-author/admin token for personal registration. The focused skill supplies the manifest, compiled shared controls, scoped guest bridge and authenticated helper. Writers configure bindings and prepare rules; owners activate automatic bots under team background authority.
+
 # Chat App Builder
+
+For new UI actions and modules, read the [Coach integration contract](references/coach-integration.md) so the same capability is available through Coach text, voice and cloud MCP. Register operations once against shared services; do not add separate per-feature voice tools or rely on HTML to grant mutation authority.
 ## Persona operating framework
 
 Read [the source-to-outcome contract](references/persona-framework.md) when
@@ -30,7 +36,9 @@ Use this for the signed-in persona app, independently of the anonymous landing p
 
 ## Standard Persona dashboard format
 
-For every new signed-in Persona app, read [the dashboard format](references/dashboard-first.md): Home contains the review-only `Meet <persona>` coach and the domain workspace tabs. The primary sidebar is Home, named chat history/playbooks, Signals, Data Feed and Media. Keep the coach and domain records/results/decisions in Home. Playbooks stays in the sidebar, milestones/goals in the Coach control, and routines/Signals/Schedule in Signals. Never duplicate those as Home tabs; retain standard shell utilities. Match Kai’s composition while adapting the actual persona domain. Honor a user-requested alternative and preserve an existing explicitly chosen layout.
+For every new signed-in Persona app, read [the dashboard format](references/dashboard-first.md). Build on the enabled schema-version-3 starter. Give Home one domain overview with live metrics, linked previews and a guided playbook entry. Use the Activity overview when there are no domain records. Place the full record views in the sidebar alongside Playbooks, Signals, Data Feed and Media. The review-only Coach opens through the shared floating chat and right sidebar. Keep milestones in the Coach control, routines and schedules in Signals, and the standard shell utilities in their existing locations. Honor a user-requested alternative and preserve an existing explicitly chosen layout.
+
+Use the saved starter as the base, preserve its resource identity and enabled utilities, and bind the real domain Lists, Pipeline and primary command before handoff. The public landing page is a separate presentation. Share the Gateway `publicUrl` at `/persona/<slug>` after successful publication.
 
 ## Authoring workflow
 
@@ -42,6 +50,20 @@ For every new signed-in Persona app, read [the dashboard format](references/dash
 6. Translate app-owned copy under `localization.translations`, keyed by source-language text. Never translate identifiers, references, fields or numeric configuration. Missing translations fall back to source copy. Use the existing persona presentation theme.
 7. Run `node server/skills/chat-app-builder/scripts/validate-chat-app.js <app-file> <chat-config-file>`. The sibling generated `chat-app-model.cjs` is required when copying this validator. It checks the effective local registry schemas when available.
 8. Update workspace Chat App fingerprints and `dataPoint` dependency edges to referenced lists. Run the persona's existing build/portability checks. Report validation; publish only within the user's authorised scope.
+
+## Required schema shapes before saving
+
+Extend the saved app rather than replacing it with a layout excerpt. `utilities` must retain explicit objects: `{"feedback":{"enabled":true},"invite":{"enabled":true},"settings":{"enabled":true}}`. Preserve the author's existing enabled values and optional `tryWithAgents` object; `{}`, booleans and omitted required utilities are invalid. Retain the knowledge-base policy.
+
+For list data points, copy the resource key from `references/registry.json` and the bound List definition: `"listRef":{"kind":"list","resourceKey":"list.<persona>.<list>"}`. A List name, underscore alias, string resource key or runtime ID is not a `listRef`. Match `select`, filters, sort and displayed columns to that List's actual column keys/types. Use component types from `references/chat-app-contract.json`: a tabular view is `"type":"table"`, never `"data-table"`. Read the registered component's allowed fields; do not invent props or component names.
+
+Before sending a complete `chatApp` through the twin-config save operation, validate the candidate with the maintained schema validator. In the Persona repository, run `node scripts/build-chat-app.js` to regenerate its mirror, fingerprint and dependencies, then `node scripts/validate-chat-app.js assets/chat-app.json assets/chat-config.json` and `node scripts/build-chat-app.js --check`. Use `--dashboard-first` with the five-module starter. Resolve every error before publishing. Read back the saved app and accepted source revision, validate the exact saved content, then validate and publish the workspace and inspect the signed-in app. Resolve missing validator files or unreadable List schemas before authoring their dependent views.
+
+## Workspace theme and contrast
+
+The public landing and signed-in app share semantic brand tokens, not the same foreground color on every surface. Keep brand palette and typography in `landingPage.design`, with allowed light/dark brand seeds from the landing-page contract; use `chatApp.presentation.sidebar: "brand"` or `"surface"` for sidebar treatment. The shared renderer supplies a readable default when no brand is authored. Do not add CSS, raw color props or a copied landing stylesheet to Chat App JSON, and do not fix an invisible sidebar by hiding it.
+
+Before handoff, inspect the rendered signed-in workspace in both light and dark mode at desktop and mobile widths. Check sidebar labels/icons/logo, utility and profile controls, active/hover/focus states, body/card text, table rows/headers, inputs and primary actions. Normal text must have at least 4.5:1 contrast against its actual surface; essential icons, control boundaries and focus indicators need 3:1. Keep visible selected states and clear surface/border hierarchy without inventing business metrics or filling empty states with fake records. A missing theme, white-on-white controls or schema error banner means the app is not ready to publish; report a shared renderer defect separately from authored theme changes.
 
 ## Version 2 contract
 
@@ -57,11 +79,49 @@ Queries are authorised and scoped on the server to the signed-in runner, even wh
 
 Do not include JavaScript, raw database expressions, arbitrary API URLs, CSS, secrets, credential references, runtime IDs, customer records or uploaded evidence. Components and sources must be registered. Version 2 navigation requires no monitoring configuration for list-backed pages. Anonymous landing pages, compact widgets and evaluation simulations cannot expose runner data.
 
+## Organization and process maps
+
+For an optional Google Maps-like organization → departments → processes → playbooks
+view, read [persona-organization-map](../persona-organization-map/SKILL.md) or request
+that Gateway skill topic. Author `chatApp.organizationMap` in version 3, mirror the
+complete app and rebuild the definition fingerprint. The shared web shell adds a
+header marker button and List / Organization map controls to the existing Playbooks
+surface. Counts and Run resolve through the current workspace's playbook catalogue.
+Maps default to disabled: require explicit `organizationMap.enabled: true` and
+a persona organization scene before exposing the map controls. Omitted/false flags
+keep the header button, switch and deep-linked map view hidden.
+Scenes can be overridden per level or per node; optional `valueChains` add
+end-to-end perspectives over the same hierarchy and registered actions.
+This is a conceptual business map and needs no Google Maps credentials.
+
+Each organization map node can also have a process map: `chatApp.processMaps.<nodeId>`
+documents how the unit works as a swimlane (lanes, phases, variants, steps, flows), with
+when it is used and how people use it today. It is documentation for the admin
+Organization map page, validated by the shared model and left out of the served app.
+Read [persona-organization-map](../persona-organization-map/SKILL.md#process-maps) for the
+contract and the authoring rules.
+
+## Studio apps
+
+`chatApp.studio.apps` offers each Playbook Studio team mini apps and declares the toolkit
+connectors each depends on (`instagram`, `googlemeet`, ...), with Required or Optional
+levels. An app uses a platform template by id: `campaigns` (a `campaign-workspace`) and
+`leads` (a `relationship-workspace`) need that workspace and its command action on a
+dashboard page; `records` shows any list data point of the persona (`dataPoint`, plus the
+command's `commandId` or slash trigger, and optional `columns`) limited to what the team's
+own runs made. Use `workspace-view` with `pageId` to show an existing Leads, Campaigns,
+Analytics or Inbox prospecting page in Studio. It uses the same data and actions as the
+sidebar, scoped to the open team, without requiring a second playbook installation.
+The shared validator checks each. Read [the Studio apps contract](../persona-builder/references/studio-apps.md) for the
+fields, the team Apps tab, the connector guard and the author's saved-apps registry. Switch
+apps on in Edit Persona → Experience → Studio Apps. A persona that declares none keeps the
+apps its workspaces imply.
+
 ## Existing shell modules
 
-Built-ins: `chat-sessions`, `matches`, `assets`, `movie-editor`, `meetings`, `ai-resources` (legacy), `connections`, `todos`, `canvas`, `avatar`, `mobile`. The legacy `dashboard` identifier is readable in v1 only with enabled app and monitoring; migration creates `page:dashboard`.
+Built-ins: `chat-sessions`, `matches`, `assets`, `movie-editor` (both of these two are listed in Playbook Studio's Outputs tab, not in the menu, wherever the persona has Playbook Studio), `meetings`, `ai-resources` (legacy), `connections`, `todos`, `canvas`, `avatar`, `mobile`. The legacy `dashboard` identifier is readable in v1 only with enabled app and monitoring; migration creates `page:dashboard`.
 
-Utilities: `feedback`, `invite`, `settings`, `tryWithAgents` (on unless `enabled: false`). Try with Agents lets runners install this persona as a coding-agent skill (`curl -fsSL <origin>/chat/<slug>/install.sh | bash`), connect with OAuth, or copy MCP/CLI/Skills prompts. Asset tabs: `all`, `images`, `pdfs`, `videos`, `audio`, `other`. Module labels are at most 48 characters; icons use existing registered heroicons, emoji or approved image icons. Capability gates still apply.
+Utilities: `feedback`, `invite`, `settings`, `tryWithAgents` (on unless `enabled: false`). Try with Agents lets runners install this persona as a coding-agent skill (`curl -fsSL <origin>/persona/<slug>/install.sh | bash`), connect with OAuth, or copy MCP/CLI/Skills prompts. Asset tabs: `all`, `images`, `pdfs`, `videos`, `audio`, `other`. Module labels are at most 48 characters; icons use existing registered heroicons, emoji or approved image icons. Capability gates still apply.
 
 `knowledgeBase` remains the fixed footer entry with provisioning mode `managed`, `author`, `runner` or `ask`. Its private Git credentials stay in server storage, never portable app JSON.
 
@@ -73,7 +133,7 @@ Build the canonical model with `node scripts/build-chat-app.js`, then verify wit
 
 ## Authenticated start screens and rich results
 
-Use `chatApp.experience` for the authenticated persona journey. It is rendered only by full `/chat/:agentId` and the native persona app shell. Full embeds, compact widgets, anonymous landings and internal playgrounds ignore it. Rendering, restoring, or refreshing it must never run a command.
+Use `chatApp.experience` for the authenticated persona journey. It is rendered only by full `/persona/<slug>` and the native persona app shell. Full embeds, compact widgets, anonymous landings and internal playgrounds ignore it. Rendering, restoring, or refreshing it must never run a command.
 
 Set `experience.sessionMode` explicitly. `"stepper"` is the default for newly authored persona Chat Apps: every new, active, resumed, edited, and completed chat session stays in the guided renderer instead of changing to a transcript when messages exist. The server persists the current guided snapshot against the authenticated chat session, and web/native hosts restore that exact snapshot. A completed session remains on its terminal confirmation and next actions; reopening it must not restart steps, re-run a command, or automatically claim the result again. `"chat"` preserves the legacy empty-session-only start screen and allows the normal conversation UI after the first action. Never persist runtime step answers, preview tokens, customer uploads, or session ids in Git; only author the stable mode and journey/action definition.
 
@@ -146,7 +206,7 @@ policies; complete layouts are authored validated config. Translations and
 generated assets live under their matched variant and cannot use a shared global
 translation cache. Preserve human approvals, real-data boundaries and access checks.
 
-For a new standard Persona dashboard, also run `node scripts/validate-chat-app.js --dashboard-first assets/chat-app.json assets/chat-config.json` from its scaffold. The optional format check rejects a missing Home coach and sidebar clutter; do not apply it to an explicitly different layout or migrate unrelated legacy apps.
+For the five-module starter dashboard, also run `node scripts/validate-chat-app.js --dashboard-first assets/chat-app.json assets/chat-config.json` from its scaffold. The format check verifies the review-only Coach and the starter navigation.
 
 Never add duplicate Playbooks, Signals, Schedule, routines or milestones/goal tabs to Home. The registered component type determines ownership even when a tab is renamed. Verify sidebar Playbooks, Coach milestones and Signals routines remain reachable; hide the duplicates without deleting saved runtime data.
 
@@ -171,7 +231,7 @@ editor saves encrypted web/Android/iOS keys and map ID outside portable Git.
 
 Author-only MCP: `gabriel_get_persona_maps_config` and
 `gabriel_update_persona_maps_config` (`pageId`, optional `webApiKey`,
-`androidApiKey`, `iosApiKey`, `mapId`), requiring `digital-twin:admin`.
+`androidApiKey`, `iosApiKey`, `mapId`), requiring the Persona Playground author token with `digital-twin:admin`.
 GET/PUT `/api/gateway/pages/:pageId/maps-config` expose status/fingerprints and
 save keys. Blank key inputs preserve current credentials. Runner discovery reads
 only the chosen persona's settings; it cannot change author credentials.
@@ -192,4 +252,33 @@ For a family activity or school-workshop flagship, read [the community activity 
 
 For a Persona that teaches and awards badges, read [the learning course contract](references/learning-courses.md). Declare `chatApp.learning` (the commands that produce courses, the Canvas task ids for the brief, script, quiz, media and the two approvals, intake keys, age bands, who may open a course, and the adult link rules) and place the `course-publications`, `verification-queue`, `learning-links` and `badge-shelf` components where they suit the Persona. Nothing about course publishing, verification or badges is tied to a particular Persona's names.
 
+To let agents read and change what a Persona's app shows (typed `app_*` tools, REST routes and an OpenAPI description), and to open writes to its Coach, read [the agent tools contract](references/agent-tools.md).
+
 To give a Persona pages of its own under `/persona/<slug>/…` (a course player, a badge check, a short information page), read [the persona routes contract](references/persona-routes.md). A route picks a template and composes registered components, with the Persona's own wording; nothing about the pages is built into the platform.
+
+## Workspace playbooks
+
+Use the **persona-team-manager** skill for Git-managed team definitions and the two registered playbook types. Studio, coach and coding-agent operations must call the same authoring services. Keep Apps (shared interfaces), Connectors (operation contracts), private account connections and vault secrets distinct. Display verified setup blockers as targeted conversation actions; approvals remain effect decisions. Never infer account access from installing an interface.
+
+For team setup, use **Team Quick Start** and browser sign-in or a workspace key with a chosen expiry (one hour by default), scoped to the selected persona and workspace. Playbook creation, editing and placement belong to the **Canvas library panel**, not a separate team Playbooks tab. Writers can prepare definitions using the team key; owner activation, account sign-in and effect approvals remain in their authenticated flows. Never request the persona author’s token. **Try with Agents** reopens Quick Start. Manage or revoke your assistant sign-ins and keys in **App access**.
+
+## Team characters and terminology
+
+Use `chatApp.studio.agentAppearance` for a persona's sub-agent identity. The shared
+Experience → Coach and Studio → Team characters editor configures this setting in
+both Create/Edit Persona and the Chat App editor. Choose `template: "balloons"`,
+`"gems"` or `"flowers"` and author `singular`/`plural` labels. Omission preserves
+balloons and existing bot vocabulary. Do not infer a theme from persona names.
+
+Optional `characters` contain stable `id`, human `name`, public HTTPS/site-relative
+`image`, and `seeds` such as `command:meeting-prep`. Reuse the landing-page artwork
+and assign every domain command to its specialist. A character's ID is also its
+preview seed. Unassigned playbooks keep a deterministic character. Studio's API,
+MCP overview, sidebar mark, canvas, inspector and 3D markers consume this same
+accepted configuration. Public Stayor and Company Intelligence teams reuse matching
+character names while retaining their landing copy and animation metadata. Changing
+an image clears obsolete eye coordinates in the rendered landing team.
+
+Keep `assets/chat-app.json` and `publishedConfig.chatApp` in `assets/chat-config.json`
+identical. This is presentation only: do not alter executable targets, existing
+team definitions, private runtime records, approval state or workflow permissions.

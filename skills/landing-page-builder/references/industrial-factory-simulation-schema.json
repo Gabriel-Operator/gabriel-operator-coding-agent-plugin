@@ -1,0 +1,28 @@
+{
+  "copyKeys": [
+    "eyebrow",
+    "title",
+    "summary",
+    "notice",
+    "startLabel",
+    "pauseLabel",
+    "resumeLabel",
+    "restartLabel",
+    "nextLabel",
+    "readyLabel",
+    "runningLabel",
+    "pendingLabel",
+    "completeLabel",
+    "decisionLabel",
+    "rejectedLabel",
+    "approvalTitle",
+    "approvalBody",
+    "approveLabel",
+    "rejectLabel",
+    "approvalNote",
+    "completedTitle",
+    "completedBody",
+    "rejectedTitle",
+    "rejectedBody"
+  ]
+}

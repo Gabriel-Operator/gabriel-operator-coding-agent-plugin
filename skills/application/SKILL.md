@@ -15,6 +15,10 @@ metadata:
 
 # Application Skill
 
+## Private Studio connector apps
+
+When an app should connect an external MCP to Studio Lists/assets/outputs, use skill topic **connector-app-builder**. Its `app-config.json` is a versioned connector manifest, separate from the Application/slash-command configuration below. It bundles `mcp-app.html`, the MCP Apps guest SDK and Gabriel's distributed styled controls, or selects a discovered provider `ui://` resource. All calls pass through an installation-scoped bridge; do not put the pipeline API keys described below, provider tokens, arbitrary backend code or CDN dependencies in a private connector UI. The focused skill includes the package schema, UI starter, validator, preview and registration helpers. Definitions and installations stay creator-only; mapped team output follows team visibility. Automatic runs require owner activation.
+
 ## Offline-first applications
 
 Read [the embedded runtime contract](references/offline-runtime-v1.md). When hosted inside Gabriel mobile or desktop local mode, bind reads and writes to the local repository and render queued, blocked, conflict, and partially available states. CDN modules and live API-key reads still require connectivity, so a fully offline application must package its UI assets and declare only compatible local data/actions.
@@ -177,3 +181,9 @@ See `references/APP-CONFIG-SCHEMA.md` for the full data API reference.
 Edit `mcp-app.html` directly in the git repo. The server re-reads it on every request in development (hot-reload). In production, content is cached — push a new commit and redeploy to pick up changes.
 
 Edit `public/index.html` (or build to `public/`) for the full-page Applications tab view.
+
+## Team playbooks and connector use
+
+Use **persona-team-manager** for workspace-owned teams and structured/goal playbooks. An app renders shared data; a connector defines operations; a connection belongs to its authenticated member; vault access does not imply a playbook grant. Declare logical requirements and map them to scoped installations through the common broker. Shared destinations accept only approved output fields. Keep account IDs and credentials out of portable app and team definitions. Missing setup must resume the existing execution after verified authentication, not launch replacement work.
+
+For team setup, use **Team Quick Start** and browser sign-in or a workspace key with a chosen expiry (one hour by default), scoped to the selected persona and workspace. Playbook creation, editing and placement belong to the **Canvas library panel**, not a separate team Playbooks tab. Writers can prepare definitions using the team key; owner activation, account sign-in and effect approvals remain in their authenticated flows. Never request the persona author’s token. **Try with Agents** reopens Quick Start. Manage or revoke your assistant sign-ins and keys in **App access**.

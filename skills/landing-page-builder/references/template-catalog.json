@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "selectionField": "landingPage.design.variant",
+  "fallbackVariant": "default",
+  "templates": [
+    { "id": "event-introductions", "name": "Lane", "description": "Editorial introductions, communities and professional connections.", "contentModel": "eventIntroductions", "previewPath": "/persona/lane" },
+    { "id": "form-operations", "name": "Sherma", "description": "Simulation-first operations, document intake and approval-led automation.", "contentModel": "formOperations", "previewPath": "/persona/sherma" },
+    { "id": "home-introductions", "name": "Nest", "description": "Editorial property, matching and privacy-led services.", "contentModel": "homeIntroductions", "previewPath": "/persona/nest" },
+    { "id": "signature", "name": "Juno", "description": "A refined general service presentation with a strong character identity.", "contentModel": null, "previewPath": "/persona/juno" },
+    { "id": "recruiting-operations", "name": "Lina", "description": "Signal-led recruiting, lead discovery and professional pipelines.", "contentModel": "recruitingOperations", "previewPath": "/persona/lina" },
+    { "id": "grocery-twin", "name": "Kai", "description": "A product-led consumer assistant with lifestyle and app demonstrations.", "contentModel": "groceryTwin", "previewPath": "/persona/kai" },
+    { "id": "logistics-portal", "name": "Emil", "description": "Technical logistics, portal operations and controlled workflow rehearsals.", "contentModel": "logisticsPortal", "previewPath": "/persona/emil" },
+    { "id": "banking", "name": "Nora", "description": "A trust-led financial or professional service presentation.", "contentModel": null, "previewPath": "/persona/nora" },
+    { "id": "cinematic-campaigns", "name": "Archer", "description": "A cinematic media, hospitality or campaign production presentation.", "contentModel": "cinematicCampaigns", "previewPath": "/persona/archer" },
+    { "id": "wardrobe-twin", "name": "Cole", "description": "A visual wardrobe, style and personal shopping presentation.", "contentModel": "wardrobeTwin", "previewPath": "/persona/cole" },
+    { "id": "boli-learning", "name": "Boli", "description": "An illustrated character-led learning experience with parent and school editions.", "contentModel": "boliLearning", "previewPath": "/persona/boli" },
+    { "id": "chakri-scrap", "name": "Chakri", "description": "A regional consumer and business recycling or collection presentation.", "contentModel": "scrapOperations", "previewPath": "/persona/chakri" },
+    { "id": "klok", "name": "Paya", "description": "A bold typographic shopping and purchasing presentation.", "contentModel": "klok", "contentModelExample": "references/klok-template-example.json", "previewPath": "/persona/paya" },
+    { "id": "community-connections", "name": "Mirav", "description": "A community-first presentation with audience editions and mobile previews.", "contentModel": "mirav", "previewPath": "/persona/mirav" },
+    { "id": "industrial-production", "name": "Fabio", "description": "An engineering and industrial operations presentation with technical illustrations.", "contentModel": null, "previewPath": "/persona/fabio" },
+    { "id": "company-intelligence", "name": "Aria", "description": "Company intelligence with gemstone agents, visible activity and connected applications.", "contentModel": null, "previewPath": "/persona/aria" },
+    { "id": "stayor", "name": "Mila", "description": "Warm editorial HR operations with serif headlines, rounded character imagery and stacked notification cards.", "contentModel": null, "previewPath": "/persona/mila" }
+  ]
+}

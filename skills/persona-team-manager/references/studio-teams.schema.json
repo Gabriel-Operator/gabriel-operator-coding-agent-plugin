@@ -8,6 +8,137 @@
           "type": "number",
           "const": 1
         },
+        "packageInstallations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "requestId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "playbook",
+                  "team",
+                  "persona"
+                ]
+              },
+              "pin": {
+                "type": "object",
+                "properties": {
+                  "registry": {
+                    "type": "string",
+                    "maxLength": 300,
+                    "format": "uri",
+                    "default": "https://registry.npmjs.org/"
+                  },
+                  "name": {
+                    "type": "string",
+                    "maxLength": 214,
+                    "pattern": "^@[a-z0-9][a-z0-9._-]*\\/[a-z0-9][a-z0-9._-]*$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+                  },
+                  "integrity": {
+                    "type": "string",
+                    "pattern": "^sha512-[A-Za-z0-9+/]{86}==$"
+                  }
+                },
+                "required": [
+                  "name",
+                  "version",
+                  "integrity"
+                ],
+                "additionalProperties": false
+              },
+              "pins": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/StudioTeams/properties/packageInstallations/items/properties/pin"
+                },
+                "maxItems": 128
+              },
+              "sources": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/definitions/StudioTeams/properties/packageInstallations/items/properties/pin"
+                },
+                "propertyNames": {
+                  "maxLength": 160,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                }
+              },
+              "teamSources": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "propertyNames": {
+                  "maxLength": 160,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                }
+              },
+              "teamIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 160,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                },
+                "maxItems": 100
+              },
+              "playbookKeys": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/StudioTeams/properties/packageInstallations/items/properties/teamIds/items"
+                },
+                "maxItems": 128
+              },
+              "resourceKeys": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/StudioTeams/properties/packageInstallations/items/properties/teamIds/items"
+                },
+                "maxItems": 256
+              },
+              "placementIds": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/StudioTeams/properties/packageInstallations/items/properties/teamIds/items"
+                },
+                "maxItems": 640
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "id",
+              "requestId",
+              "kind",
+              "pin",
+              "pins",
+              "teamIds",
+              "playbookKeys",
+              "resourceKeys",
+              "placementIds",
+              "createdAt"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100
+        },
         "market": {
           "type": "string",
           "pattern": "^[A-Z]{2}$"
@@ -17,6 +148,9 @@
           "items": {
             "type": "object",
             "properties": {
+              "archived": {
+                "type": "boolean"
+              },
               "id": {
                 "type": "string",
                 "minLength": 1,
@@ -225,6 +359,21 @@
                 "items": {
                   "type": "object",
                   "properties": {
+                    "skillSourceId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "desktopRunner": {
+                      "type": "string",
+                      "enum": [
+                        "codex",
+                        "claude",
+                        "antigravity",
+                        "grok",
+                        "muse",
+                        "custom-acp"
+                      ]
+                    },
                     "id": {
                       "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
                     },
@@ -345,6 +494,475 @@
                     "type": "number",
                     "const": 1
                   },
+                  "runtime": {
+                    "type": "object",
+                    "properties": {
+                      "targets": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "gabriel",
+                            "openai-sdk",
+                            "openai-hosted",
+                            "claude-sdk",
+                            "claude-managed",
+                            "google-adk",
+                            "gemini-hosted",
+                            "cursor-sdk"
+                          ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "default": [
+                          "gabriel"
+                        ]
+                      },
+                      "agent": {
+                        "type": "object",
+                        "properties": {
+                          "instructions": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 12000
+                          },
+                          "models": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "$ref": "#/definitions/StudioTeams/properties/packageInstallations/items/properties/teamIds/items"
+                            },
+                            "propertyNames": {
+                              "enum": [
+                                "gabriel",
+                                "openai-sdk",
+                                "openai-hosted",
+                                "claude-sdk",
+                                "claude-managed",
+                                "google-adk",
+                                "gemini-hosted",
+                                "cursor-sdk"
+                              ]
+                            }
+                          },
+                          "role": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 160
+                          }
+                        },
+                        "required": [
+                          "instructions",
+                          "models",
+                          "role"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "input": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "object"
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ],
+                        "additionalProperties": true
+                      },
+                      "output": {
+                        "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/input"
+                      },
+                      "skills": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                            },
+                            "source": {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "kind": {
+                                      "type": "string",
+                                      "const": "github"
+                                    },
+                                    "owner": {
+                                      "type": "string",
+                                      "pattern": "^[a-zA-Z0-9-]{1,39}$"
+                                    },
+                                    "repository": {
+                                      "type": "string",
+                                      "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,99}$"
+                                    },
+                                    "commit": {
+                                      "type": "string",
+                                      "pattern": "^[0-9a-f]{40}$"
+                                    },
+                                    "path": {
+                                      "type": "string",
+                                      "maxLength": 200,
+                                      "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_.-]*(?:\\/[a-zA-Z0-9_][a-zA-Z0-9_.-]*)*$"
+                                    }
+                                  },
+                                  "required": [
+                                    "kind",
+                                    "owner",
+                                    "repository",
+                                    "commit",
+                                    "path"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "kind": {
+                                      "type": "string",
+                                      "const": "npm"
+                                    },
+                                    "package": {
+                                      "$ref": "#/definitions/StudioTeams/properties/packageInstallations/items/properties/pin"
+                                    },
+                                    "path": {
+                                      "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/skills/items/properties/source/anyOf/0/properties/path"
+                                    }
+                                  },
+                                  "required": [
+                                    "kind",
+                                    "package"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            },
+                            "digest": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "source",
+                            "digest"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 8,
+                        "default": []
+                      },
+                      "scripts": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                            },
+                            "skill": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                            },
+                            "path": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/skills/items/properties/source/anyOf/0/properties/path"
+                            },
+                            "interpreter": {
+                              "type": "string",
+                              "enum": [
+                                "node",
+                                "python"
+                              ]
+                            },
+                            "event": {
+                              "type": "string",
+                              "enum": [
+                                "BeforeTask",
+                                "AfterTask",
+                                "tool"
+                              ]
+                            },
+                            "input": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/input"
+                            },
+                            "output": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/input"
+                            },
+                            "timeoutSeconds": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 120,
+                              "default": 30
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "path",
+                            "interpreter",
+                            "event",
+                            "input",
+                            "output"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 20,
+                        "default": []
+                      },
+                      "tools": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                            },
+                            "requirement": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                            },
+                            "operation": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "read",
+                                "write",
+                                "process"
+                              ]
+                            },
+                            "input": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/input"
+                            },
+                            "output": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/input"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "requirement",
+                            "operation",
+                            "effect",
+                            "input",
+                            "output"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 30,
+                        "default": []
+                      },
+                      "delegation": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                            },
+                            "playbook": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                            },
+                            "mode": {
+                              "type": "string",
+                              "enum": [
+                                "tool",
+                                "handoff"
+                              ]
+                            },
+                            "fields": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                              },
+                              "maxItems": 30,
+                              "default": []
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "playbook",
+                            "mode"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 20,
+                        "default": []
+                      },
+                      "execution": {
+                        "type": "object",
+                        "properties": {
+                          "profile": {
+                            "type": "string",
+                            "enum": [
+                              "text",
+                              "sandbox",
+                              "realtime",
+                              "decision"
+                            ]
+                          },
+                          "question": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "boolean"
+                                  },
+                                  "instructions": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 4000
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "instructions"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "choice"
+                                  },
+                                  "instructions": {
+                                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/execution/properties/question/anyOf/0/properties/instructions"
+                                  },
+                                  "options": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 400
+                                    },
+                                    "minItems": 2,
+                                    "maxItems": 20
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "instructions",
+                                  "options"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "score"
+                                  },
+                                  "instructions": {
+                                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/execution/properties/question/anyOf/0/properties/instructions"
+                                  },
+                                  "levels": {
+                                    "type": "array",
+                                    "items": {
+                                      "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/execution/properties/question/anyOf/1/properties/options/items"
+                                    },
+                                    "minItems": 2,
+                                    "maxItems": 10
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "instructions",
+                                  "levels"
+                                ],
+                                "additionalProperties": false
+                              }
+                            ]
+                          },
+                          "voice": {
+                            "type": "string",
+                            "enum": [
+                              "native",
+                              "transcribed"
+                            ]
+                          },
+                          "retainTranscript": {
+                            "type": "boolean",
+                            "default": false
+                          }
+                        },
+                        "required": [
+                          "profile"
+                        ],
+                        "additionalProperties": false,
+                        "default": {
+                          "profile": "text"
+                        }
+                      },
+                      "guardrails": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "phase": {
+                              "type": "string",
+                              "enum": [
+                                "input",
+                                "beforeTool",
+                                "output"
+                              ]
+                            },
+                            "tool": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/agent/properties/models/additionalProperties"
+                            },
+                            "schema": {
+                              "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime/properties/input"
+                            }
+                          },
+                          "required": [
+                            "phase",
+                            "schema"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 20,
+                        "default": []
+                      },
+                      "approvals": {
+                        "type": "object",
+                        "properties": {
+                          "protectedEffects": {
+                            "type": "string",
+                            "const": "rehearse-and-approve"
+                          }
+                        },
+                        "required": [
+                          "protectedEffects"
+                        ],
+                        "additionalProperties": false,
+                        "default": {
+                          "protectedEffects": "rehearse-and-approve"
+                        }
+                      },
+                      "session": {
+                        "type": "string",
+                        "enum": [
+                          "run",
+                          "conversation"
+                        ],
+                        "default": "run"
+                      },
+                      "tracing": {
+                        "type": "string",
+                        "const": "metadata",
+                        "default": "metadata"
+                      }
+                    },
+                    "required": [
+                      "agent",
+                      "input",
+                      "output"
+                    ],
+                    "additionalProperties": false
+                  },
                   "key": {
                     "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
                   },
@@ -372,6 +990,33 @@
                         },
                         "required": {
                           "type": "boolean"
+                        },
+                        "format": {
+                          "type": "string",
+                          "enum": [
+                            "text",
+                            "image",
+                            "video",
+                            "audio",
+                            "pdf",
+                            "file",
+                            "record",
+                            "list",
+                            "boolean",
+                            "choice",
+                            "number",
+                            "folder"
+                          ]
+                        },
+                        "options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 400
+                          },
+                          "minItems": 1,
+                          "maxItems": 50
                         }
                       },
                       "required": [
@@ -383,6 +1028,32 @@
                     },
                     "maxItems": 50,
                     "default": []
+                  },
+                  "fileInput": {
+                    "type": "object",
+                    "properties": {
+                      "destination": {
+                        "type": "string",
+                        "enum": [
+                          "gabriel",
+                          "obsidian-local"
+                        ]
+                      },
+                      "queryInput": {
+                        "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                      },
+                      "collection": {
+                        "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                      },
+                      "requiresOriginal": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "destination",
+                      "queryInput"
+                    ],
+                    "additionalProperties": false
                   },
                   "requirements": {
                     "type": "array",
@@ -447,6 +1118,46 @@
                     },
                     "maxItems": 100,
                     "default": []
+                  },
+                  "outputModality": {
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "image",
+                      "video",
+                      "audio",
+                      "pdf",
+                      "file",
+                      "record",
+                      "list",
+                      "boolean",
+                      "choice",
+                      "number"
+                    ]
+                  },
+                  "outputDisplayFormat": {
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "image",
+                      "video",
+                      "audio",
+                      "pdf",
+                      "file",
+                      "record",
+                      "list",
+                      "boolean",
+                      "choice",
+                      "number"
+                    ]
+                  },
+                  "evaluationSubjectInputs": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "minItems": 1,
+                    "maxItems": 50
                   },
                   "kind": {
                     "type": "string",
@@ -606,6 +1317,17 @@
                           "type": "boolean",
                           "default": false
                         },
+                        "revisionTarget": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                            },
+                            {
+                              "type": "string",
+                              "const": "$inputs"
+                            }
+                          ]
+                        },
                         "publication": {
                           "type": "object",
                           "properties": {
@@ -642,6 +1364,12 @@
                     },
                     "minItems": 1,
                     "maxItems": 32
+                  },
+                  "finalOutputMappings": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/automationPolicies/items/properties/meetingCycle/properties/signalRules/items/properties/field"
+                    }
                   }
                 },
                 "required": [
@@ -663,6 +1391,9 @@
                   "schemaVersion": {
                     "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/schemaVersion"
                   },
+                  "runtime": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/runtime"
+                  },
                   "key": {
                     "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
                   },
@@ -675,11 +1406,23 @@
                   "inputs": {
                     "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/inputs"
                   },
+                  "fileInput": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/fileInput"
+                  },
                   "requirements": {
                     "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/requirements"
                   },
                   "outputFields": {
                     "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/outputFields"
+                  },
+                  "outputModality": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/outputModality"
+                  },
+                  "outputDisplayFormat": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/outputDisplayFormat"
+                  },
+                  "evaluationSubjectInputs": {
+                    "$ref": "#/definitions/StudioTeams/properties/playbooks/items/anyOf/0/properties/evaluationSubjectInputs"
                   },
                   "kind": {
                     "type": "string",
@@ -786,6 +1529,104 @@
             ]
           },
           "maxItems": 128
+        },
+        "graphPlaybooks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "teamId": {
+                "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+              },
+              "botId": {
+                "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+              },
+              "commandId": {
+                "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+              },
+              "detached": {
+                "type": "boolean",
+                "const": true
+              },
+              "path": {
+                "type": "string",
+                "pattern": "^skills\\/[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "files": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 65536
+                },
+                "propertyNames": {
+                  "pattern": "^(SKILL\\.md|references\\/[A-Za-z0-9_-]+\\.md|(?:assets|fixtures)\\/[A-Za-z0-9_.-]+\\.json)$"
+                }
+              }
+            },
+            "required": [
+              "teamId",
+              "botId",
+              "commandId",
+              "files"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 32
+        },
+        "commandGraphs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "trigger": {
+                "type": "string",
+                "pattern": "^\\/[a-z0-9][a-z0-9-]{0,99}$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "files": {
+                "$ref": "#/definitions/StudioTeams/properties/graphPlaybooks/items/properties/files"
+              },
+              "packageContract": {
+                "type": "object",
+                "properties": {
+                  "inputs": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "maxItems": 50
+                  },
+                  "outputs": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/StudioTeams/properties/teams/items/properties/id"
+                    },
+                    "maxItems": 100
+                  }
+                },
+                "required": [
+                  "inputs",
+                  "outputs"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "trigger",
+              "files"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 16
         },
         "resources": {
           "type": "array",
@@ -1175,6 +2016,45 @@
             ]
           },
           "maxItems": 256
+        },
+        "playbookSkills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "playbookId": {
+                "type": "string",
+                "pattern": "^(?:command|studio|canvas):[A-Za-z0-9][A-Za-z0-9._:-]{0,180}$"
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 71,
+                "pattern": "^skills\\/[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "template": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "files": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 65536
+                },
+                "propertyNames": {
+                  "maxLength": 200,
+                  "pattern": "^(?:SKILL\\.md|AGENTS\\.md|CLAUDE\\.md|LICENSE(?:\\.md|\\.txt)?|(?:references|assets|scripts|evals|gabriel|examples|fixtures)\\/(?:[A-Za-z0-9_][A-Za-z0-9_.-]{0,79}\\/){0,3}[A-Za-z0-9_][A-Za-z0-9_.-]{0,79})$"
+                }
+              }
+            },
+            "required": [
+              "playbookId",
+              "path",
+              "files"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 128
         }
       },
       "required": [

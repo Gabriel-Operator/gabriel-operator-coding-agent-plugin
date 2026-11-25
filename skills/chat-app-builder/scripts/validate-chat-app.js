@@ -41,6 +41,16 @@ try {
     sources.commandIds=commands.map(c=>c.id).filter(id=>typeof id==='string'&&id.length>0);
     sources.commandTriggers=commands.map(c=>c.trigger);
     sources.commandCatalog=commands.map(c=>({id:c.id,trigger:c.trigger,supportsAttachments:Boolean(c.attachmentInput?.inputKey),supportsIntake:Boolean(c.preRunIntake?.steps?.length),supportsVoice:c.voiceAgent?.enabled===true}));
+    // Canvas task ids each command's workflow declares, so chatApp.learning can be checked against them.
+    const collectTaskIds=(node,out)=>{ if(Array.isArray(node)) node.forEach(item=>collectTaskIds(item,out)); else if(node&&typeof node==='object'){ if(node.canvasTask&&typeof node.canvasTask.taskId==='string') out.push(node.canvasTask.taskId); Object.values(node).forEach(item=>collectTaskIds(item,out)); } return out; };
+    sources.canvasTasks={};
+    for(const command of commands) {
+      const repo=dependencyRepos.find(r=>r.kind==='workflow'&&r.resourceKey===command.execution?.workflowRef?.resourceKey);
+      if(!repo||typeof command.id!=='string')continue;
+      const filename=path.resolve(root,repo.path,repo.assetPath||'assets/workflow.json');
+      if(!filename.startsWith(root+path.sep)||!fs.existsSync(filename))continue;
+      sources.canvasTasks[command.id]=collectTaskIds(JSON.parse(fs.readFileSync(filename,'utf8')),[]);
+    }
     sources.profileId=config.publishedConfig?.roiMonitoring?.profileId;
     sources.metricIds=config.publishedConfig?.roiMonitoring?.metrics?.map(m=>m.id);
     issues.push(...validatePersonalizationAsset(config.publishedConfig?.personalization, { sources }));

@@ -38,7 +38,7 @@
       "labelMaxLength": 80,
       "placement": "hero",
       "labelUse": "tooltip",
-      "installCommand": "<origin>/chat/<slug>/install.sh",
+      "installCommand": "<origin>/persona/<slug>/install.sh",
       "shownWhen": "public_published_not_password_protected"
     },
     "capabilityPreview": {
@@ -176,7 +176,7 @@
           "key": "icon",
           "type": "text",
           "required": false,
-          "description": "One of the allowed icon tokens \u2014 see SKILL.md"
+          "description": "One of the allowed icon tokens — see SKILL.md"
         },
         {
           "key": "title",
@@ -712,9 +712,9 @@
           "electricity"
         ],
         "ageGroups": [
-          "9\u201311",
-          "12\u201314",
-          "15\u201318"
+          "9–11",
+          "12–14",
+          "15–18"
         ],
         "lessonsPerCourseMinimum": 1,
         "lessonsPerCourseMaximum": 6,
@@ -1125,6 +1125,39 @@
       "optionIdsTranslated": false,
       "operationalCommandsTranslated": false,
       "prototypeRuntimeSideEffects": false
+    },
+    "heroChart": {
+      "optional": true,
+      "fields": [
+        "heading",
+        "note",
+        "unitLabel",
+        "items"
+      ],
+      "additionalProperties": false,
+      "items": {
+        "minItems": 2,
+        "maxItems": 8,
+        "fields": [
+          "label",
+          "value"
+        ],
+        "value": "finite_non_negative_number"
+      },
+      "runtimeSideEffects": false,
+      "dataClassification": "authored_illustration_only"
+    },
+    "editorialPresentation": {
+      "copyOwnedByModel": true,
+      "heroCharacterImage": "full_character_media_url",
+      "supportingScene": "backgroundImage",
+      "specialists": "platform.items",
+      "agentScene": "platform.narrative: one more sentence fragment than 2 to 8 platform.items; individual transparent head images",
+      "processImages": "howItWorks.steps[].image and alt",
+      "welcomeMessage": "heroChat.openingMessage, translated with the landing page",
+      "calculatorChrome": "roiCalculator.ui; complete labels are required when supplied",
+      "motion": "half_cropped_heads_reveal_then_shrink_into_inline_text_gaps_on_scroll_with_static_reduced_motion",
+      "flagshipChat": "shared GuidedJourneyHost; workflow-owned pinned package; experience command IDs; one progress strip; explicit review and private continuation"
     }
   }
 }

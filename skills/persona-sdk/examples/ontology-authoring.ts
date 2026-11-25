@@ -1,8 +1,8 @@
-/** Validate/preview a local candidate with a workspace token; --save opts into candidate writing. */
+/** Validate/preview a shared persona candidate with an author token; --save opts into candidate writing. */
 import fs from 'node:fs/promises';
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
-const key=process.env.GABRIEL_WORKSPACE_TOKEN,pageId=process.env.GABRIEL_PAGE_ID,file=process.argv[2];
-if(!key||!pageId||!file)throw new Error('Set GABRIEL_WORKSPACE_TOKEN (admin), GABRIEL_PAGE_ID and pass a candidate JSON file.');
+const key=process.env.GABRIEL_AUTHOR_TOKEN,pageId=process.env.GABRIEL_PAGE_ID,file=process.argv[2];
+if(!key||!pageId||!file)throw new Error('Set GABRIEL_AUTHOR_TOKEN (Persona Playground author token), GABRIEL_PAGE_ID and pass a candidate JSON file.');
 const client=new Client({name:'ontology-authoring-example',version:'1.0.0'});
 async function call(name:string,args:Record<string,unknown>){
   const result=await client.callTool({name,arguments:{pageId,...args}});

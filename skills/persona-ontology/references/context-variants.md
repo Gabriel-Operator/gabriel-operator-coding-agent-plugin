@@ -22,7 +22,7 @@ node scripts/validate-ontology.cjs assets/ontology.json assets/data-feeds/exampl
 
 ## Agent APIs
 
-Workspace REST: `GET/PUT /api/gateway/pages/{pageId}/ontology`; `POST .../validate`, `POST .../preview`, `POST .../translate`; `GET .../view`. Author methods require ownership and `digital-twin:admin`. View requires existing gateway access and persona visibility. Responses use the gateway `{success,data}` envelope.
+Persona Playground author REST: `GET/PUT /api/gateway/pages/{pageId}/ontology`; `POST .../validate`, `POST .../preview`, `POST .../translate`; `GET .../view`. Author methods require ownership and the Persona Playground author token with `digital-twin:admin`; workspace keys cannot call them. View requires existing gateway access and persona visibility. Responses use the gateway `{success,data}` envelope.
 
 MCP: get/validate/preview/translate/save/view tools have the same service behavior. Get returns `{definition,headSha,canEdit}`. Validate receives `{pageId,definition}` and returns `{valid,issues,checkedFeeds}`; issues may identify a feed. Preview receives `{pageId,definition?,scopeId?,language?}` and returns `{definition,copy,selection}`. Translate additionally requires `targetLanguage` and returns a draft `{language,copy}` without saving. Save receives `{pageId,definition,expectedHeadSha}` and returns `{headSha,branchName}`. Increase the parent semantic version; stale heads return 409. Keep the resource key.
 

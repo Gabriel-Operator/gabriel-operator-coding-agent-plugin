@@ -1,0 +1,133 @@
+{
+  "processMaps": {
+    "event-campaigns": {
+      "summary": "How an event gets promoted: a person decides, the playbook builds it, and nothing is published without an explicit approval.",
+      "basis": "authored",
+      "whenUsed": "When the restaurant has an event or promotion to announce.",
+      "howPeopleUseIt": "The owner starts the playbook from chat or the Playbooks page, then confirms each decision it stops at.",
+      "evidence": [
+        "Interview with the owner, 2026-10",
+        "Playbook definition: pipeline.example.event-campaign"
+      ],
+      "lanes": [
+        {
+          "id": "owner",
+          "label": "Owner or manager",
+          "role": "Restaurant",
+          "kind": "person"
+        },
+        {
+          "id": "playbook",
+          "label": "Event campaign",
+          "kind": "playbook"
+        },
+        {
+          "id": "instagram",
+          "label": "Instagram",
+          "kind": "system"
+        }
+      ],
+      "phases": [
+        {
+          "id": "request",
+          "label": "Request"
+        },
+        {
+          "id": "build",
+          "label": "Build and review"
+        },
+        {
+          "id": "outcome",
+          "label": "Outcome"
+        }
+      ],
+      "variants": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "description": "The usual route, with one review.",
+          "steps": [
+            {
+              "id": "ask",
+              "label": "Describe the event",
+              "laneId": "owner",
+              "phaseId": "request",
+              "kind": "start"
+            },
+            {
+              "id": "build",
+              "label": "Build the campaign",
+              "laneId": "playbook",
+              "phaseId": "build",
+              "actionId": "run-event-campaign",
+              "description": "Drafts images and a caption."
+            },
+            {
+              "id": "review",
+              "label": "Approve the creative",
+              "laneId": "owner",
+              "phaseId": "build",
+              "kind": "decision"
+            },
+            {
+              "id": "post",
+              "label": "Publish the post",
+              "laneId": "instagram",
+              "phaseId": "outcome",
+              "kind": "end"
+            }
+          ],
+          "flows": [
+            {
+              "from": "ask",
+              "to": "build"
+            },
+            {
+              "from": "build",
+              "to": "review"
+            },
+            {
+              "from": "review",
+              "to": "post",
+              "label": "Approved"
+            },
+            {
+              "from": "review",
+              "to": "build",
+              "label": "Changes",
+              "kind": "loop"
+            }
+          ]
+        },
+        {
+          "id": "urgent",
+          "label": "Urgent",
+          "steps": [
+            {
+              "id": "ask",
+              "label": "Describe the event",
+              "laneId": "owner",
+              "phaseId": "request",
+              "kind": "start"
+            },
+            {
+              "id": "post",
+              "label": "Publish the post",
+              "laneId": "instagram",
+              "phaseId": "outcome",
+              "kind": "end",
+              "description": "Skips the review when the event is today."
+            }
+          ],
+          "flows": [
+            {
+              "from": "ask",
+              "to": "post",
+              "label": "No review"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

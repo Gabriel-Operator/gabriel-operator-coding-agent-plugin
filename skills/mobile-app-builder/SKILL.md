@@ -117,7 +117,7 @@ editor saves encrypted web/Android/iOS keys and map ID outside portable Git.
 
 Author-only MCP: `gabriel_get_persona_maps_config` and
 `gabriel_update_persona_maps_config` (`pageId`, optional `webApiKey`,
-`androidApiKey`, `iosApiKey`, `mapId`), requiring `digital-twin:admin`.
+`androidApiKey`, `iosApiKey`, `mapId`), requiring the Persona Playground author token with `digital-twin:admin`.
 GET/PUT `/api/gateway/pages/:pageId/maps-config` expose status/fingerprints and
 save keys. Blank key inputs preserve current credentials. Runner discovery reads
 only the chosen persona's settings; it cannot change author credentials.

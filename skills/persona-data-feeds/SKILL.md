@@ -17,14 +17,37 @@ schema version 2, the matching resource key and `structure`. Set the parent
 can refer to additional definition/workflow/copy assets; account targeting and
 credentials stay outside the portable bundle.
 
-Choose one operation (`create`, `read`, `update`, `delete`), exact JSON schemas
-and service hostnames. The generic types are email, file, transaction, calendar,
-message, portal and source. Acquisition modes describe on-demand, push, pull,
+Choose one operation (`create`, `read`, `update`, `delete`, `publish`), exact JSON
+schemas and service hostnames. `publish` acts on an external service so something
+becomes visible to others (post, schedule, send); it must declare its service host
+and the credential slot that authorizes it, and the consuming playbook puts a human
+approval before it. The generic types are email, file, transaction, calendar,
+message, portal, source, social and analytics. Acquisition modes describe on-demand, push, pull,
 watch, scheduled, event-driven, user-requested or device-captured observations;
 the consuming playbook owns triggers, consent, checkpoints and repeated runs.
 
-Declare credential slot descriptors only. Runtime Mobile Guardians/grants
-supply secrets for the authorized actor, domain, feed revision and playbook.
+Declare credential slot descriptors only. Secrets come at runtime for the
+authorized actor, domain, feed revision and playbook, either from a key the actor
+connected on the feed's page (stored encrypted in their account, write-only,
+released only to the slot's declared host and audited) or from Mobile
+Guardians/grants. Never put a token, key or password in a definition or
+workflow; reference it as `{{credentials.slot}}`. Put ids in `pathParams` so they
+are URL-encoded, and make every declared input required and bounded (patterns for
+ids, `maxLength` for text).
+
+In a shared persona workspace, use the workspace owner identity only to find
+the workspace definition and its execution records. Resolve credential slots,
+Guardian requests and grants using the captured initiating member. Require that
+member’s connection and keep the initiator stable across resume and retry. When
+a consuming playbook saves source JSON to shared run history, disclose that on
+the launch form and require consent before retrieval. Preview the saved source
+in the review step before passing it into drafting or other downstream work.
+For a reviewed Canvas draft, bind the feed stage’s `json` output to
+`approvedSource` on the dependent text stage. Use `approvalPolicy: every_stage`
+and preview the complete JSON on the feed stage. The owner can save this through
+the workspace definition tools using the current `expectedRevision`. A replay
+uses the saved approved output even when a caller supplies pinned prompts.
+
 Public skeleton adoption creates a private pinned revision and strips author
 audience targeting. Country/language are presentation/source choices, never
 an identity override. Wire keys and ontology IDs remain stable in translation.
@@ -53,9 +76,9 @@ activation. Report fixture tests separately from actual provider/Guardian and
 source-side effect verification.
 
 
-## Required playbook team protocol
+## Multi-agent playbook team protocol
 
-Every slash command and directly runnable saved Canvas playbook owns a human-reviewed schema-v1 `team`. Generate or validate it after defining steps with `gabriel_propose_playbook_team` / `gabriel_validate_playbook_team`, then return the authenticated review URL. Use `gabriel_update_playbook_team` with the current `expectedFingerprint` to save a draft. API/MCP clients cannot confirm, import or manufacture human approval. Activation and new launches fail with `TEAM_REVIEW_REQUIRED` or `TEAM_REVIEW_STALE` until the author/owner confirms.
+An ordinary slash command or saved Canvas workflow uses its existing steps, permissions and approval rules; do not generate a team merely to make it executable. Configure a schema-v1 `team` only when the author chooses multi-agent execution. Generate or validate that explicit team with `gabriel_propose_playbook_team` / `gabriel_validate_playbook_team`, then return the authenticated review URL. Use `gabriel_update_playbook_team` with the current `expectedFingerprint` to save a draft. API/MCP clients cannot confirm, import or manufacture human approval. Saving, enabling and viewing history do not require team confirmation. Only a new run with a configured team fails with `TEAM_REVIEW_REQUIRED` or `TEAM_REVIEW_STALE` until reviewed. Published persona users inherit an original author’s acceptance only for the exact matching executable/team/framework/registry fingerprint; private credentials, permissions and effect approvals remain actor-scoped. Previous runs retain their captured configuration and remain readable independently of current readiness. Team editing belongs in the author’s Advanced: multi-agent team tabs, never in execution history.
 
 Define contextual specialist sub-agents with explicit goals, start conditions, outputs, completion criteria, approved stage IDs, hierarchy, recipients and finite invocation/step/time limits. Coordinator, reviewer, scorer, independent judge, auditor and memory steward are always present. Assign one integration owner. Preserve ontology usage, feed revision references, declared record operations, optional recorded Signal triggers and authored outcome metric bindings; missing semantics or capabilities block affected work. Deterministic actions remain tools of the appropriate specialist.
 

@@ -1,0 +1,4 @@
+{
+  "partIds": ["materials", "laser", "press", "weld", "flow"],
+  "copyKeys": ["sceneLabel", "partsLabel", "exploreLabel", "resetLabel", "separateLabel", "zoomInLabel", "zoomOutLabel", "rotateLeftLabel", "rotateRightLabel", "interactionHint", "note"]
+}

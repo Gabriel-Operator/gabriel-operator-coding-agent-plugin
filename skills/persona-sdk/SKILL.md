@@ -21,7 +21,7 @@ relevant to the requested work.
 
 Read [the embedded runtime contract](references/offline-runtime-v1.md). Persona Token SDK calls are hosted operations and require connectivity. A prepared embedded app may continue with its encrypted local Persona pack, local model, and implemented local operations, but must queue local mutations for an explicit **Sync now** action rather than using the Persona Token in the background.
 
-This kit connects code to **one** Gabriel AI persona. The Persona Token (`gabi_` key in `.env` as `GABRIEL_API_KEY`) is minted separately from the workspace Gateway key: it can chat with, and use the media/command capabilities of, exactly one persona. It cannot list or touch anything else in the owner's Gabriel workspace. Mint it from Chat Publish → SDK / API Integration, Via Coding Agent → SDK, or `POST /api/gateway/pages/{pageId}/persona-keys` using a workspace token.
+This kit connects code to **one** Gabriel AI persona. The Persona Token (`gabi_` key in `.env` as `GABRIEL_API_KEY`) is minted separately from both the Persona Playground author credential and workspace keys: it can chat with, and use the media/command capabilities of, exactly one persona. It cannot list or touch anything else in the owner's Gabriel workspace. Mint it from Chat Publish → SDK / API Integration, Via Coding Agent → SDK, or `POST /api/gateway/pages/{pageId}/persona-keys` using the Persona Playground author credential.
 
 ## What you can build with this kit
 

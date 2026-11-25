@@ -1,0 +1,93 @@
+{
+  "organizationDefaultDomain": "distribution",
+  "organizationDomains": [
+    {
+      "schemaVersion": 1,
+      "id": "distribution",
+      "label": "Distribution & logistics",
+      "description": "A starting blueprint for demand, fulfilment and delivery. Adapt it to the workspace.",
+      "departments": [
+        {
+          "id": "marketing",
+          "label": "Marketing",
+          "processes": [],
+          "color": "#ec4899",
+          "position": {
+            "x": 28,
+            "y": 50
+          }
+        },
+        {
+          "id": "demand",
+          "label": "Demand generation",
+          "parentId": "marketing",
+          "processes": [
+            {
+              "id": "campaigns",
+              "label": "Campaign planning",
+              "sourceProcessId": "event-campaigns"
+            }
+          ],
+          "color": "#db2777"
+        },
+        {
+          "id": "fulfilment",
+          "label": "Fulfilment",
+          "processes": [
+            {
+              "id": "order-planning",
+              "label": "Order planning",
+              "position": {
+                "x": 28,
+                "y": 50
+              }
+            },
+            {
+              "id": "dispatch",
+              "label": "Dispatch",
+              "position": {
+                "x": 72,
+                "y": 50
+              }
+            }
+          ],
+          "color": "#f59e0b",
+          "position": {
+            "x": 72,
+            "y": 50
+          }
+        }
+      ],
+      "scenes": {
+        "organization": {
+          "imageUrl": "/images/organization-maps/generic/campus.svg",
+          "alt": "A neutral company campus",
+          "aspectRatio": 1.5
+        }
+      },
+      "connections": [
+        {
+          "from": "campaigns",
+          "to": "order-planning",
+          "label": "Forecast demand"
+        },
+        {
+          "from": "order-planning",
+          "to": "dispatch",
+          "label": "Fulfilment plan"
+        }
+      ],
+      "valueChains": [
+        {
+          "id": "demand-to-delivery",
+          "label": "Demand to delivery",
+          "nodeIds": [
+            "campaigns",
+            "order-planning",
+            "dispatch"
+          ]
+        }
+      ]
+    }
+  ]
+}

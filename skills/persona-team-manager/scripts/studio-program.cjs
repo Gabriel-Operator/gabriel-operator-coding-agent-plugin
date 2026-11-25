@@ -9,9 +9,9 @@ var __export = (target, all) => {
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
-    for (let key3 of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key3) && key3 !== except)
-        __defProp(to, key3, { get: () => from[key3], enumerable: !(desc = __getOwnPropDesc(from, key3)) || desc.enumerable });
+    for (let key4 of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key4) && key4 !== except)
+        __defProp(to, key4, { get: () => from[key4], enumerable: !(desc = __getOwnPropDesc(from, key4)) || desc.enumerable });
   }
   return to;
 };
@@ -20,17 +20,29 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // server/src/shared/studio-program.ts
 var studio_program_exports = {};
 __export(studio_program_exports, {
+  PLAYBOOK_SKILL_FILE: () => PLAYBOOK_SKILL_FILE,
+  PLAYBOOK_SKILL_HOOKS: () => PLAYBOOK_SKILL_HOOKS,
+  PLAYBOOK_SKILL_LIMITS: () => PLAYBOOK_SKILL_LIMITS,
+  PLAYBOOK_SKILL_PATH: () => PLAYBOOK_SKILL_PATH,
   STUDIO_TEAMS_ASSET: () => STUDIO_TEAMS_ASSET,
   emptyStudioAsset: () => emptyStudioAsset,
+  isStudioFileField: () => isStudioFileField,
   normalizeStudioPlaybook: () => normalizeStudioPlaybook,
+  portablePlaybookSchema: () => portablePlaybookSchema,
   studioAssetSchema: () => studioAssetSchema,
   studioBotSchema: () => studioBotSchema,
+  studioFileInputSchema: () => studioFileInputSchema,
   studioGoalLimitsSchema: () => studioGoalLimitsSchema,
   studioMeetingCycleSchema: () => studioMeetingCycleSchema,
   studioOperationSchema: () => studioOperationSchema,
+  studioPlaybookInputSchema: () => studioPlaybookInputSchema,
   studioPlaybookSchema: () => studioPlaybookSchema,
+  studioPlaybookSkillSchema: () => studioPlaybookSkillSchema,
   studioRequirementSchema: () => studioRequirementSchema,
+  studioRevisionTarget: () => studioRevisionTarget,
+  studioStepRequiresReview: () => studioStepRequiresReview,
   studioStepSchema: () => studioStepSchema,
+  studioStepSupportsModelOverride: () => studioStepSupportsModelOverride,
   studioTeamSchema: () => studioTeamSchema
 });
 module.exports = __toCommonJS(studio_program_exports);
@@ -181,9 +193,9 @@ var util;
   };
   util2.objectKeys = typeof Object.keys === "function" ? (obj) => Object.keys(obj) : (object) => {
     const keys = [];
-    for (const key3 in object) {
-      if (Object.prototype.hasOwnProperty.call(object, key3)) {
-        keys.push(key3);
+    for (const key4 in object) {
+      if (Object.prototype.hasOwnProperty.call(object, key4)) {
+        keys.push(key4);
       }
     }
     return keys;
@@ -583,10 +595,10 @@ var ParseStatus = class _ParseStatus {
   static async mergeObjectAsync(status, pairs) {
     const syncPairs = [];
     for (const pair of pairs) {
-      const key3 = await pair.key;
+      const key4 = await pair.key;
       const value = await pair.value;
       syncPairs.push({
-        key: key3,
+        key: key4,
         value
       });
     }
@@ -595,17 +607,17 @@ var ParseStatus = class _ParseStatus {
   static mergeObjectSync(status, pairs) {
     const finalObject = {};
     for (const pair of pairs) {
-      const { key: key3, value } = pair;
-      if (key3.status === "aborted")
+      const { key: key4, value } = pair;
+      if (key4.status === "aborted")
         return INVALID;
       if (value.status === "aborted")
         return INVALID;
-      if (key3.status === "dirty")
+      if (key4.status === "dirty")
         status.dirty();
       if (value.status === "dirty")
         status.dirty();
-      if (key3.value !== "__proto__" && (typeof value.value !== "undefined" || pair.alwaysSet)) {
-        finalObject[key3.value] = value.value;
+      if (key4.value !== "__proto__" && (typeof value.value !== "undefined" || pair.alwaysSet)) {
+        finalObject[key4.value] = value.value;
       }
     }
     return { status: status.value, value: finalObject };
@@ -630,12 +642,12 @@ var errorUtil;
 
 // server/node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value, path, key3) {
+  constructor(parent, value, path, key4) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value;
     this._path = path;
-    this._key = key3;
+    this._key = key4;
   }
   get path() {
     if (!this._cachedPath.length) {
@@ -2380,9 +2392,9 @@ ZodArray.create = (schema, params) => {
 function deepPartialify(schema) {
   if (schema instanceof ZodObject) {
     const newShape = {};
-    for (const key3 in schema.shape) {
-      const fieldSchema = schema.shape[key3];
-      newShape[key3] = ZodOptional.create(deepPartialify(fieldSchema));
+    for (const key4 in schema.shape) {
+      const fieldSchema = schema.shape[key4];
+      newShape[key4] = ZodOptional.create(deepPartialify(fieldSchema));
     }
     return new ZodObject({
       ...schema._def,
@@ -2433,29 +2445,29 @@ var ZodObject = class _ZodObject extends ZodType {
     const { shape, keys: shapeKeys } = this._getCached();
     const extraKeys = [];
     if (!(this._def.catchall instanceof ZodNever && this._def.unknownKeys === "strip")) {
-      for (const key3 in ctx.data) {
-        if (!shapeKeys.includes(key3)) {
-          extraKeys.push(key3);
+      for (const key4 in ctx.data) {
+        if (!shapeKeys.includes(key4)) {
+          extraKeys.push(key4);
         }
       }
     }
     const pairs = [];
-    for (const key3 of shapeKeys) {
-      const keyValidator = shape[key3];
-      const value = ctx.data[key3];
+    for (const key4 of shapeKeys) {
+      const keyValidator = shape[key4];
+      const value = ctx.data[key4];
       pairs.push({
-        key: { status: "valid", value: key3 },
-        value: keyValidator._parse(new ParseInputLazyPath(ctx, value, ctx.path, key3)),
-        alwaysSet: key3 in ctx.data
+        key: { status: "valid", value: key4 },
+        value: keyValidator._parse(new ParseInputLazyPath(ctx, value, ctx.path, key4)),
+        alwaysSet: key4 in ctx.data
       });
     }
     if (this._def.catchall instanceof ZodNever) {
       const unknownKeys = this._def.unknownKeys;
       if (unknownKeys === "passthrough") {
-        for (const key3 of extraKeys) {
+        for (const key4 of extraKeys) {
           pairs.push({
-            key: { status: "valid", value: key3 },
-            value: { status: "valid", value: ctx.data[key3] }
+            key: { status: "valid", value: key4 },
+            value: { status: "valid", value: ctx.data[key4] }
           });
         }
       } else if (unknownKeys === "strict") {
@@ -2472,15 +2484,15 @@ var ZodObject = class _ZodObject extends ZodType {
       }
     } else {
       const catchall = this._def.catchall;
-      for (const key3 of extraKeys) {
-        const value = ctx.data[key3];
+      for (const key4 of extraKeys) {
+        const value = ctx.data[key4];
         pairs.push({
-          key: { status: "valid", value: key3 },
+          key: { status: "valid", value: key4 },
           value: catchall._parse(
-            new ParseInputLazyPath(ctx, value, ctx.path, key3)
+            new ParseInputLazyPath(ctx, value, ctx.path, key4)
             //, ctx.child(key), value, getParsedType(value)
           ),
-          alwaysSet: key3 in ctx.data
+          alwaysSet: key4 in ctx.data
         });
       }
     }
@@ -2488,10 +2500,10 @@ var ZodObject = class _ZodObject extends ZodType {
       return Promise.resolve().then(async () => {
         const syncPairs = [];
         for (const pair of pairs) {
-          const key3 = await pair.key;
+          const key4 = await pair.key;
           const value = await pair.value;
           syncPairs.push({
-            key: key3,
+            key: key4,
             value,
             alwaysSet: pair.alwaysSet
           });
@@ -2616,8 +2628,8 @@ var ZodObject = class _ZodObject extends ZodType {
   //   }) as any;
   //   return merged;
   // }
-  setKey(key3, schema) {
-    return this.augment({ [key3]: schema });
+  setKey(key4, schema) {
+    return this.augment({ [key4]: schema });
   }
   // merge<Incoming extends AnyZodObject>(
   //   merging: Incoming
@@ -2648,9 +2660,9 @@ var ZodObject = class _ZodObject extends ZodType {
   }
   pick(mask) {
     const shape = {};
-    for (const key3 of util.objectKeys(mask)) {
-      if (mask[key3] && this.shape[key3]) {
-        shape[key3] = this.shape[key3];
+    for (const key4 of util.objectKeys(mask)) {
+      if (mask[key4] && this.shape[key4]) {
+        shape[key4] = this.shape[key4];
       }
     }
     return new _ZodObject({
@@ -2660,9 +2672,9 @@ var ZodObject = class _ZodObject extends ZodType {
   }
   omit(mask) {
     const shape = {};
-    for (const key3 of util.objectKeys(this.shape)) {
-      if (!mask[key3]) {
-        shape[key3] = this.shape[key3];
+    for (const key4 of util.objectKeys(this.shape)) {
+      if (!mask[key4]) {
+        shape[key4] = this.shape[key4];
       }
     }
     return new _ZodObject({
@@ -2678,12 +2690,12 @@ var ZodObject = class _ZodObject extends ZodType {
   }
   partial(mask) {
     const newShape = {};
-    for (const key3 of util.objectKeys(this.shape)) {
-      const fieldSchema = this.shape[key3];
-      if (mask && !mask[key3]) {
-        newShape[key3] = fieldSchema;
+    for (const key4 of util.objectKeys(this.shape)) {
+      const fieldSchema = this.shape[key4];
+      if (mask && !mask[key4]) {
+        newShape[key4] = fieldSchema;
       } else {
-        newShape[key3] = fieldSchema.optional();
+        newShape[key4] = fieldSchema.optional();
       }
     }
     return new _ZodObject({
@@ -2693,16 +2705,16 @@ var ZodObject = class _ZodObject extends ZodType {
   }
   required(mask) {
     const newShape = {};
-    for (const key3 of util.objectKeys(this.shape)) {
-      if (mask && !mask[key3]) {
-        newShape[key3] = this.shape[key3];
+    for (const key4 of util.objectKeys(this.shape)) {
+      if (mask && !mask[key4]) {
+        newShape[key4] = this.shape[key4];
       } else {
-        const fieldSchema = this.shape[key3];
+        const fieldSchema = this.shape[key4];
         let newField = fieldSchema;
         while (newField instanceof ZodOptional) {
           newField = newField._def.innerType;
         }
-        newShape[key3] = newField;
+        newShape[key4] = newField;
       }
     }
     return new _ZodObject({
@@ -2946,14 +2958,14 @@ function mergeValues(a, b) {
     return { valid: true, data: a };
   } else if (aType === ZodParsedType.object && bType === ZodParsedType.object) {
     const bKeys = util.objectKeys(b);
-    const sharedKeys = util.objectKeys(a).filter((key3) => bKeys.indexOf(key3) !== -1);
+    const sharedKeys = util.objectKeys(a).filter((key4) => bKeys.indexOf(key4) !== -1);
     const newObj = { ...a, ...b };
-    for (const key3 of sharedKeys) {
-      const sharedValue = mergeValues(a[key3], b[key3]);
+    for (const key4 of sharedKeys) {
+      const sharedValue = mergeValues(a[key4], b[key4]);
       if (!sharedValue.valid) {
         return { valid: false };
       }
-      newObj[key3] = sharedValue.data;
+      newObj[key4] = sharedValue.data;
     }
     return { valid: true, data: newObj };
   } else if (aType === ZodParsedType.array && bType === ZodParsedType.array) {
@@ -3117,11 +3129,11 @@ var ZodRecord = class _ZodRecord extends ZodType {
     const pairs = [];
     const keyType = this._def.keyType;
     const valueType = this._def.valueType;
-    for (const key3 in ctx.data) {
+    for (const key4 in ctx.data) {
       pairs.push({
-        key: keyType._parse(new ParseInputLazyPath(ctx, key3, ctx.path, key3)),
-        value: valueType._parse(new ParseInputLazyPath(ctx, ctx.data[key3], ctx.path, key3)),
-        alwaysSet: key3 in ctx.data
+        key: keyType._parse(new ParseInputLazyPath(ctx, key4, ctx.path, key4)),
+        value: valueType._parse(new ParseInputLazyPath(ctx, ctx.data[key4], ctx.path, key4)),
+        alwaysSet: key4 in ctx.data
       });
     }
     if (ctx.common.async) {
@@ -3169,9 +3181,9 @@ var ZodMap = class extends ZodType {
     }
     const keyType = this._def.keyType;
     const valueType = this._def.valueType;
-    const pairs = [...ctx.data.entries()].map(([key3, value], index) => {
+    const pairs = [...ctx.data.entries()].map(([key4, value], index) => {
       return {
-        key: keyType._parse(new ParseInputLazyPath(ctx, key3, ctx.path, [index, "key"])),
+        key: keyType._parse(new ParseInputLazyPath(ctx, key4, ctx.path, [index, "key"])),
         value: valueType._parse(new ParseInputLazyPath(ctx, value, ctx.path, [index, "value"]))
       };
     });
@@ -3179,30 +3191,30 @@ var ZodMap = class extends ZodType {
       const finalMap = /* @__PURE__ */ new Map();
       return Promise.resolve().then(async () => {
         for (const pair of pairs) {
-          const key3 = await pair.key;
+          const key4 = await pair.key;
           const value = await pair.value;
-          if (key3.status === "aborted" || value.status === "aborted") {
+          if (key4.status === "aborted" || value.status === "aborted") {
             return INVALID;
           }
-          if (key3.status === "dirty" || value.status === "dirty") {
+          if (key4.status === "dirty" || value.status === "dirty") {
             status.dirty();
           }
-          finalMap.set(key3.value, value.value);
+          finalMap.set(key4.value, value.value);
         }
         return { status: status.value, value: finalMap };
       });
     } else {
       const finalMap = /* @__PURE__ */ new Map();
       for (const pair of pairs) {
-        const key3 = pair.key;
+        const key4 = pair.key;
         const value = pair.value;
-        if (key3.status === "aborted" || value.status === "aborted") {
+        if (key4.status === "aborted" || value.status === "aborted") {
           return INVALID;
         }
-        if (key3.status === "dirty" || value.status === "dirty") {
+        if (key4.status === "dirty" || value.status === "dirty") {
           status.dirty();
         }
-        finalMap.set(key3.value, value.value);
+        finalMap.set(key4.value, value.value);
       }
       return { status: status.value, value: finalMap };
     }
@@ -4076,26 +4088,147 @@ var coerce = {
 };
 var NEVER = INVALID;
 
+// server/src/shared/gabriel-package.ts
+var packageKindSchema = external_exports.enum(["playbook", "team", "persona"]);
+var packageNameSchema = external_exports.string().max(214).regex(/^@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*$/);
+var packageVersionSchema = external_exports.string().max(100).regex(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/);
+var packageKeySchema = external_exports.string().max(160).regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/);
+var packageRegistrySchema = external_exports.string().max(300).url().refine((value) => {
+  const url = new URL(value);
+  return url.protocol === "https:" && !url.username && !url.password && !url.search && !url.hash && value.endsWith("/") && url.href === value;
+}, "Use a canonical HTTPS registry URL ending in /.");
+var publicPackageRegistry = "https://registry.npmjs.org/";
+var packageReferenceSchema = external_exports.object({
+  registry: packageRegistrySchema.default(publicPackageRegistry),
+  name: packageNameSchema,
+  version: packageVersionSchema
+}).strict();
+var packagePinSchema = packageReferenceSchema.extend({
+  integrity: external_exports.string().regex(/^sha512-[A-Za-z0-9+/]{86}==$/)
+}).strict();
+var gabrielPackageManifestSchema = external_exports.object({
+  schemaVersion: external_exports.literal(1),
+  kind: packageKindSchema,
+  title: external_exports.string().trim().min(1).max(160),
+  description: external_exports.string().trim().max(1e3),
+  entry: external_exports.enum(["playbook.json", "team.json", "persona.json"]),
+  runtime: external_exports.object({ contract: external_exports.enum(["gabriel-studio-v1", "gabriel-studio-v2"]), hooks: external_exports.boolean() }).strict(),
+  dependencies: external_exports.record(packageKeySchema, packagePinSchema).refine((pins) => Object.keys(pins).length <= 64)
+}).strict().superRefine((manifest, ctx) => {
+  if (manifest.entry !== manifest.kind + ".json") ctx.addIssue({ code: "custom", message: "Entry file must match the package kind." });
+  if (manifest.kind !== "playbook" && manifest.runtime.contract === "gabriel-studio-v2") ctx.addIssue({ code: "custom", message: "The portable runtime contract belongs to playbook packages." });
+  if (manifest.kind !== "playbook" && manifest.runtime.hooks) ctx.addIssue({ code: "custom", message: "Hooks belong to playbook packages." });
+});
+var packageInstallationSchema = external_exports.object({
+  id: external_exports.string().uuid(),
+  requestId: external_exports.string().uuid(),
+  kind: packageKindSchema,
+  pin: packagePinSchema,
+  pins: external_exports.array(packagePinSchema).max(128),
+  sources: external_exports.record(packageKeySchema, packagePinSchema).optional(),
+  teamSources: external_exports.record(packageKeySchema, external_exports.string().regex(/^[a-f0-9]{64}$/)).optional(),
+  teamIds: external_exports.array(packageKeySchema).max(100),
+  playbookKeys: external_exports.array(packageKeySchema).max(128),
+  resourceKeys: external_exports.array(packageKeySchema).max(256),
+  placementIds: external_exports.array(packageKeySchema).max(640),
+  createdAt: external_exports.string().datetime()
+}).strict();
+
+// server/src/shared/portable-playbook.ts
+var portableRuntimeTargets = ["gabriel", "openai-sdk", "openai-hosted", "claude-sdk", "claude-managed", "google-adk", "gemini-hosted", "cursor-sdk"];
+var portableRuntimeTargetSchema = external_exports.enum(portableRuntimeTargets);
+var portableRuntimeLabels = {
+  gabriel: "Gabriel",
+  "openai-sdk": "OpenAI Agents SDK",
+  "openai-hosted": "OpenAI hosted Agents API",
+  "claude-sdk": "Claude Agent SDK",
+  "claude-managed": "Claude Managed Agents",
+  "google-adk": "Google ADK",
+  "gemini-hosted": "Gemini hosted Agents API",
+  "cursor-sdk": "Cursor Agent SDK"
+};
+var key = packageKeySchema.refine((value) => !["__proto__", "constructor", "prototype"].includes(value));
+var digest = external_exports.string().regex(/^[a-f0-9]{64}$/);
+var skillFilePath = external_exports.string().max(200).regex(/^[a-zA-Z0-9_][a-zA-Z0-9_.-]*(?:\/[a-zA-Z0-9_][a-zA-Z0-9_.-]*)*$/).refine((value) => !value.split("/").some((part) => /^(node_modules|\.git|credentials(?:\.json)?|auth\.json|id_(?:rsa|ed25519))$/i.test(part)));
+var externalSkillSourceSchema = external_exports.discriminatedUnion("kind", [
+  external_exports.object({ kind: external_exports.literal("github"), owner: external_exports.string().regex(/^[a-zA-Z0-9-]{1,39}$/), repository: external_exports.string().regex(/^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,99}$/), commit: external_exports.string().regex(/^[0-9a-f]{40}$/), path: skillFilePath }).strict(),
+  external_exports.object({ kind: external_exports.literal("npm"), package: packagePinSchema, path: skillFilePath.optional() }).strict()
+]);
+var externalSkillPinSchema = external_exports.object({ id: key, source: externalSkillSourceSchema, digest }).strict();
+var dataSchema = external_exports.object({ type: external_exports.literal("object") }).passthrough();
+var questionInstructions = external_exports.string().trim().min(1).max(4e3);
+var questionOption = external_exports.string().trim().min(1).max(400);
+var decisionQuestionSchema = external_exports.discriminatedUnion("type", [
+  external_exports.object({ type: external_exports.literal("boolean"), instructions: questionInstructions }).strict(),
+  external_exports.object({ type: external_exports.literal("choice"), instructions: questionInstructions, options: external_exports.array(questionOption.refine((value) => !["__proto__", "constructor", "prototype"].includes(value))).min(2).max(20) }).strict(),
+  external_exports.object({ type: external_exports.literal("score"), instructions: questionInstructions, levels: external_exports.array(questionOption).min(2).max(10) }).strict()
+]).superRefine((question, ctx) => {
+  if (question.type === "choice" && new Set(question.options).size !== question.options.length)
+    ctx.addIssue({ code: "custom", message: "Decision options must be unique.", path: ["options"] });
+});
+var script = external_exports.object({
+  id: key,
+  skill: key.optional(),
+  path: skillFilePath.refine((path) => path.startsWith("scripts/")),
+  interpreter: external_exports.enum(["node", "python"]),
+  event: external_exports.enum(["BeforeTask", "AfterTask", "tool"]),
+  input: dataSchema,
+  output: dataSchema,
+  timeoutSeconds: external_exports.number().int().min(1).max(120).default(30)
+}).strict().refine((value) => value.interpreter === "node" ? /\.[cm]?js$/.test(value.path) : value.path.endsWith(".py"), "Match the script extension to its interpreter.");
+var portablePlaybookRuntimeSchema = external_exports.object({
+  targets: external_exports.array(portableRuntimeTargetSchema).min(1).max(portableRuntimeTargets.length).default(["gabriel"]),
+  agent: external_exports.object({ instructions: external_exports.string().trim().min(1).max(12e3), models: external_exports.record(portableRuntimeTargetSchema, key), role: external_exports.string().trim().min(1).max(160) }).strict(),
+  input: dataSchema,
+  output: dataSchema,
+  skills: external_exports.array(externalSkillPinSchema).max(8).default([]),
+  scripts: external_exports.array(script).max(20).default([]),
+  tools: external_exports.array(external_exports.object({ id: key, requirement: key, operation: key, effect: external_exports.enum(["read", "write", "process"]), input: dataSchema, output: dataSchema }).strict()).max(30).default([]),
+  delegation: external_exports.array(external_exports.object({ id: key, playbook: key, mode: external_exports.enum(["tool", "handoff"]), fields: external_exports.array(key).max(30).default([]) }).strict()).max(20).default([]),
+  execution: external_exports.object({ profile: external_exports.enum(["text", "sandbox", "realtime", "decision"]), question: decisionQuestionSchema.optional(), voice: external_exports.enum(["native", "transcribed"]).optional(), retainTranscript: external_exports.boolean().default(false) }).strict().default({ profile: "text" }),
+  guardrails: external_exports.array(external_exports.object({ phase: external_exports.enum(["input", "beforeTool", "output"]), tool: key.optional(), schema: dataSchema }).strict()).max(20).default([]),
+  approvals: external_exports.object({ protectedEffects: external_exports.literal("rehearse-and-approve") }).strict().default({ protectedEffects: "rehearse-and-approve" }),
+  session: external_exports.enum(["run", "conversation"]).default("run"),
+  tracing: external_exports.literal("metadata").default("metadata")
+}).strict().superRefine((runtime, ctx) => {
+  for (const list of [runtime.targets, ...[runtime.skills, runtime.scripts, runtime.tools, runtime.delegation].map((values) => values.map((value) => value.id))]) {
+    if (new Set(list).size !== list.length) ctx.addIssue({ code: "custom", message: "Runtime targets and declaration IDs must be unique." });
+  }
+  if (new Set([...runtime.scripts, ...runtime.tools, ...runtime.delegation].map((value) => value.id)).size !== runtime.scripts.length + runtime.tools.length + runtime.delegation.length)
+    ctx.addIssue({ code: "custom", message: "Tools, scripts and delegation must have distinct names." });
+  for (const target of runtime.targets) if (target !== "gabriel" && !runtime.agent.models[target]) ctx.addIssue({ code: "custom", message: `Select a model for ${portableRuntimeLabels[target]}.` });
+  if (runtime.execution.profile === "realtime" !== Boolean(runtime.execution.voice)) ctx.addIssue({ code: "custom", message: "Select a voice mode for a realtime profile." });
+  if (runtime.execution.profile === "decision" !== Boolean(runtime.execution.question))
+    ctx.addIssue({ code: "custom", message: "Set a question for Decision execution.", path: ["execution", "question"] });
+  if (runtime.execution.profile === "decision" && (runtime.targets.some((target) => target !== "gabriel") || runtime.scripts.length || runtime.tools.length || runtime.skills.length || runtime.delegation.length || runtime.session !== "run"))
+    ctx.addIssue({ code: "custom", message: "Decision requires Gabriel Harness and a run-scoped playbook without tools, skills, scripts or delegation." });
+  for (const script2 of runtime.scripts) if (script2.skill && !runtime.skills.some((skill) => script2.skill === skill.id)) ctx.addIssue({ code: "custom", message: `Unknown skill for script ${script2.id}.` });
+  for (const guardrail of runtime.guardrails) if (guardrail.tool && (guardrail.phase !== "beforeTool" || ![...runtime.tools, ...runtime.scripts, ...runtime.delegation].some((tool) => tool.id === guardrail.tool))) ctx.addIssue({ code: "custom", message: "Tool guardrails must target a declared capability." });
+});
+
+// server/src/shared/studio-agent-runner.ts
+var STUDIO_AGENT_PROVIDERS = ["codex", "claude", "antigravity", "grok", "muse", "custom-acp"];
+
 // server/src/shared/studio-resources.ts
-var key = external_exports.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/);
+var key2 = external_exports.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/);
 var pointer = external_exports.string().max(1e3).refine((value) => value === "" || value.startsWith("/") && !value.split("/").some((part) => ["__proto__", "constructor", "prototype"].includes(part.replace(/~1/g, "/").replace(/~0/g, "~"))), "Use a safe JSON Pointer.");
 var studioColumnSchema = external_exports.object({
-  key,
+  key: key2,
   label: external_exports.string().min(1).max(160),
   type: external_exports.enum(["text", "number", "boolean", "date", "select", "image", "json"]),
   required: external_exports.boolean().default(false),
   options: external_exports.array(external_exports.string().max(160)).max(100).optional()
 }).strict();
 var studioPipelineOperationSchema = external_exports.object({
-  spaceId: key,
-  playbookKey: key,
+  spaceId: key2,
+  playbookKey: key2,
   sourceFingerprint: external_exports.string().length(64),
   inputMappings: external_exports.record(pointer).default({}),
   maxCredits: external_exports.number().positive().finite(),
   maxModelCalls: external_exports.number().int().min(1).max(128),
-  sharedFields: external_exports.array(key).max(100).default([])
+  sharedFields: external_exports.array(key2).max(100).default([])
 }).strict();
-var common = { key: external_exports.string().max(160).regex(/^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$/), teamId: key, revision: external_exports.number().int().positive(), archived: external_exports.boolean().default(false) };
+var common = { key: external_exports.string().max(160).regex(/^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$/), teamId: key2, revision: external_exports.number().int().positive(), archived: external_exports.boolean().default(false) };
 var studioResourceSchema = external_exports.discriminatedUnion("kind", [
   external_exports.object({ ...common, kind: external_exports.literal("list"), definition: external_exports.object({
     name: external_exports.string().min(1).max(160),
@@ -4106,25 +4239,25 @@ var studioResourceSchema = external_exports.discriminatedUnion("kind", [
   external_exports.object({ ...common, kind: external_exports.literal("pipeline"), definition: external_exports.object({
     name: external_exports.string().min(1).max(160),
     description: external_exports.string().max(4e3).default(""),
-    listRef: key,
-    stages: external_exports.array(external_exports.object({ id: key, name: external_exports.string().min(1).max(160), type: external_exports.enum(["initial", "intermediate", "terminal"]), description: external_exports.string().max(4e3).optional() }).strict()).min(1).max(50),
+    listRef: key2,
+    stages: external_exports.array(external_exports.object({ id: key2, name: external_exports.string().min(1).max(160), type: external_exports.enum(["initial", "intermediate", "terminal"]), description: external_exports.string().max(4e3).optional() }).strict()).min(1).max(50),
     transitions: external_exports.array(external_exports.object({
-      id: key,
+      id: key2,
       name: external_exports.string().min(1).max(160),
-      fromStageId: key,
-      toStageId: key,
+      fromStageId: key2,
+      toStageId: key2,
       connectorOperation: studioPipelineOperationSchema.optional(),
-      fieldMappings: external_exports.array(external_exports.object({ targetField: key, sourcePath: external_exports.string().max(1e3), required: external_exports.boolean().optional() }).strict()).max(100).default([])
+      fieldMappings: external_exports.array(external_exports.object({ targetField: key2, sourcePath: external_exports.string().max(1e3), required: external_exports.boolean().optional() }).strict()).max(100).default([])
     }).strict()).max(100).default([])
   }).strict() }).strict(),
   external_exports.object({ ...common, kind: external_exports.literal("app"), definition: external_exports.object({
     name: external_exports.string().min(1).max(160),
     description: external_exports.string().max(4e3).default(""),
-    listRef: key,
+    listRef: key2,
     view: external_exports.enum(["grid", "board"]).default("grid"),
-    fields: external_exports.array(key).min(1).max(100),
-    pipelineRef: key.optional(),
-    requirements: external_exports.array(key).max(30).default([])
+    fields: external_exports.array(key2).min(1).max(100),
+    pipelineRef: key2.optional(),
+    requirements: external_exports.array(key2).max(30).default([])
   }).strict() }).strict()
 ]);
 var studioResourceInputSchema = external_exports.object({ resource: studioResourceSchema, expectedVersion: external_exports.number().int().nonnegative(), expectedRevision: external_exports.number().int().positive(), expectedHead: external_exports.string().min(1), validateOnly: external_exports.boolean().default(true) }).strict();
@@ -4154,7 +4287,7 @@ function studioResourceProblems(resources, teams, books) {
       for (const transition of resource.definition.transitions) {
         if (!stages.includes(transition.fromStageId) || !stages.includes(transition.toStageId)) errors.push("Transitions must reference declared stages.");
         const operation = transition.connectorOperation;
-        if (operation) {
+        if (operation && !resource.archived) {
           const book = books.find((candidate) => candidate.key === operation.playbookKey);
           if (operation.spaceId !== resource.teamId || !book || book.kind !== "structured" || book.steps?.length !== 1 || book.steps[0].type !== "connector_operation") errors.push("A connector transition needs this team and a registered single-operation playbook.");
         }
@@ -4164,43 +4297,47 @@ function studioResourceProblems(resources, teams, books) {
   return errors;
 }
 
+// server/src/shared/studio-run-output.ts
+var studioOutputModalities = ["text", "image", "video", "audio", "pdf", "file", "record", "list", "boolean", "choice", "number"];
+
 // server/src/shared/studio-program.ts
 var STUDIO_TEAMS_ASSET = "assets/studio-teams.json";
-var key2 = external_exports.string().min(1).max(160).regex(/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/);
+var key3 = external_exports.string().min(1).max(160).regex(/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/);
 var text = external_exports.string().trim().min(1).max(12e3);
 var pointer2 = external_exports.string().max(1e3).refine((value) => value === "" || value.startsWith("/") && !value.split("/").some((part) => ["__proto__", "constructor", "prototype"].includes(part.replace(/~1/g, "/").replace(/~0/g, "~"))), "Use a safe JSON Pointer.");
 var studioRequirementSchema = external_exports.object({
-  id: key2,
+  id: key3,
   label: external_exports.string().min(1).max(120),
   context: external_exports.enum(["personal", "app"]),
-  providers: external_exports.array(key2).min(1).max(100),
-  operations: external_exports.array(key2).min(1).max(50),
+  providers: external_exports.array(key3).min(1).max(100),
+  operations: external_exports.array(key3).min(1).max(50),
   optional: external_exports.boolean().default(false),
-  appId: key2.optional()
+  appId: key3.optional()
 }).strict().refine((value) => value.context !== "app" || !!value.appId, "A shared destination must name its app.");
 var studioOperationSchema = external_exports.object({
-  requirementId: key2,
-  operationId: key2,
+  requirementId: key3,
+  operationId: key3,
   values: external_exports.record(pointer2).default({}),
   effect: external_exports.enum(["read", "write", "process"]),
   safety: external_exports.enum(["member_briefing", "consented_meeting"]).optional(),
   remoteId: pointer2.optional(),
   expectedRevision: pointer2.optional(),
-  completion: external_exports.object({ operationId: key2, values: external_exports.record(pointer2).default({}), statePath: pointer2, success: external_exports.array(external_exports.string()).min(1), failure: external_exports.array(external_exports.string()).default([]), intervalSeconds: external_exports.number().int().min(15).max(3600).default(60), deadlineSeconds: external_exports.number().int().min(30).max(604800) }).strict().optional()
+  completion: external_exports.object({ operationId: key3, values: external_exports.record(pointer2).default({}), statePath: pointer2, success: external_exports.array(external_exports.string()).min(1), failure: external_exports.array(external_exports.string()).default([]), intervalSeconds: external_exports.number().int().min(15).max(3600).default(60), deadlineSeconds: external_exports.number().int().min(30).max(604800) }).strict().optional()
 }).strict();
 var studioStepSchema = external_exports.object({
-  id: key2,
+  id: key3,
   title: external_exports.string().min(1).max(160),
   instruction: text,
-  dependsOn: external_exports.array(key2).max(32).default([]),
+  dependsOn: external_exports.array(key3).max(32).default([]),
   type: external_exports.enum(["reason", "connector_operation", "playbook", "wait_until", "publish_page", "publish_list"]),
   operation: studioOperationSchema.optional(),
-  playbookKey: key2.optional(),
+  playbookKey: key3.optional(),
   inputMappings: external_exports.record(pointer2).default({}),
   outputFields: external_exports.record(pointer2).default({}),
   waitUntil: pointer2.optional(),
   requiresApproval: external_exports.boolean().default(false),
-  publication: external_exports.object({ target: key2, fields: external_exports.record(pointer2), recordId: pointer2.optional(), expectedUpdatedAt: pointer2.optional() }).strict().optional()
+  revisionTarget: external_exports.union([key3, external_exports.literal("$inputs")]).optional(),
+  publication: external_exports.object({ target: key3, fields: external_exports.record(pointer2), recordId: pointer2.optional(), expectedUpdatedAt: pointer2.optional() }).strict().optional()
 }).strict().superRefine((step, ctx) => {
   if (step.type === "connector_operation" && !step.operation) ctx.addIssue({ code: "custom", message: "A connector step needs its operation." });
   if (step.type === "playbook" && !step.playbookKey) ctx.addIssue({ code: "custom", message: "Select the registered playbook." });
@@ -4215,33 +4352,86 @@ var studioGoalLimitsSchema = external_exports.object({
   activeMinutes: external_exports.number().int().min(1).max(60).default(60),
   elapsedDays: external_exports.number().int().min(1).max(7).default(7)
 }).strict();
+var studioFileInputSchema = external_exports.object({
+  destination: external_exports.enum(["gabriel", "obsidian-local"]),
+  queryInput: key3,
+  collection: key3.optional(),
+  requiresOriginal: external_exports.boolean().optional()
+}).strict();
+var studioPlaybookInputSchema = external_exports.object({
+  key: key3,
+  label: external_exports.string().min(1).max(160),
+  required: external_exports.boolean(),
+  format: external_exports.enum([...studioOutputModalities, "folder"]).optional(),
+  options: external_exports.array(external_exports.string().min(1).max(400)).min(1).max(50).optional()
+}).strict();
+var isStudioFileField = (field) => field.format === "file" || field.format === "folder";
 var common2 = {
-  teamId: key2.optional(),
+  teamId: key3.optional(),
   schemaVersion: external_exports.literal(1),
-  key: key2,
+  runtime: portablePlaybookRuntimeSchema.optional(),
+  key: key3,
   name: external_exports.string().min(1).max(160),
   revision: external_exports.number().int().positive(),
-  inputs: external_exports.array(external_exports.object({ key: key2, label: external_exports.string().min(1).max(160), required: external_exports.boolean() }).strict()).max(50).default([]),
+  inputs: external_exports.array(studioPlaybookInputSchema).max(50).default([]),
+  fileInput: studioFileInputSchema.optional(),
   requirements: external_exports.array(studioRequirementSchema).max(30).default([]),
-  outputFields: external_exports.array(key2).max(100).default([])
+  outputFields: external_exports.array(key3).max(100).default([]),
+  outputModality: external_exports.enum(studioOutputModalities).optional(),
+  outputDisplayFormat: external_exports.enum(studioOutputModalities).optional(),
+  evaluationSubjectInputs: external_exports.array(key3).min(1).max(50).optional()
 };
 var studioPlaybookSchema = external_exports.discriminatedUnion("kind", [
-  external_exports.object({ ...common2, kind: external_exports.literal("structured"), steps: external_exports.array(studioStepSchema).min(1).max(32) }).strict(),
+  external_exports.object({ ...common2, kind: external_exports.literal("structured"), steps: external_exports.array(studioStepSchema).min(1).max(32), finalOutputMappings: external_exports.record(pointer2).optional() }).strict(),
   external_exports.object({
     ...common2,
     kind: external_exports.literal("goal"),
     objective: text,
     completionCriteria: text,
-    allowedSkills: external_exports.array(key2).max(30).default([]),
+    allowedSkills: external_exports.array(key3).max(30).default([]),
     limits: studioGoalLimitsSchema.default({}),
-    allowedPlaybooks: external_exports.array(key2).max(30).default([]),
-    procedureRef: external_exports.object({ key: key2, revision: external_exports.number().int().positive(), sourceRunId: key2 }).strict().optional()
+    allowedPlaybooks: external_exports.array(key3).max(30).default([]),
+    procedureRef: external_exports.object({ key: key3, revision: external_exports.number().int().positive(), sourceRunId: key3 }).strict().optional()
   }).strict()
 ]).superRefine((book, ctx) => {
+  if (book.fileInput) {
+    if (!book.inputs.some(isStudioFileField) || !book.inputs.some((field) => field.key === book.fileInput.queryInput && (!field.format || field.format === "text" || field.format === "choice"))) {
+      ctx.addIssue({ code: "custom", path: ["fileInput"], message: "Declare a file or folder input and a text or choice field for Query." });
+    }
+    if (book.inputs.some((field) => field.key === "fileQuery") || new Set(book.inputs.map((field) => field.key)).size !== book.inputs.length) {
+      ctx.addIssue({ code: "custom", path: ["inputs"], message: "Use unique input keys and reserve fileQuery for the Query result." });
+    }
+  }
+  if (book.evaluationSubjectInputs?.some((key4) => !book.inputs.some((field) => field.key === key4)))
+    ctx.addIssue({ code: "custom", path: ["evaluationSubjectInputs"], message: "Use declared input keys to identify the subject of the evaluation." });
+  if (book.outputModality && (book.outputFields.length !== 1 || book.outputFields[0] !== "result")) {
+    ctx.addIssue({ code: "custom", path: ["outputFields"], message: "A configured output modality requires one final field named result." });
+  }
+  if (book.runtime) {
+    if (book.runtime.execution.profile === "decision" && (book.requirements.length || book.outputFields.length !== 1 || book.outputFields[0] !== "answer" || (book.kind === "goal" ? book.procedureRef || book.allowedPlaybooks.length : book.steps.length !== 1 || book.steps[0]?.type !== "reason" || book.steps[0].operation || Object.keys(book.steps[0].outputFields).length || book.finalOutputMappings)))
+      ctx.addIssue({ code: "custom", message: "Decision requires a goal or single-step analysis playbook with one output named answer and no connector requirements or reusable procedures." });
+    if (book.kind === "structured" && book.steps.some((step) => step.type.startsWith("publish_"))) ctx.addIssue({ code: "custom", message: "Use a declared connector operation for portable publication so it can be rehearsed and approved." });
+    if (book.kind === "structured") {
+      for (const step of book.steps) if (step.operation && !book.runtime.tools.some((tool) => tool.requirement === step.operation.requirementId && tool.operation === step.operation.operationId && tool.effect === step.operation.effect)) ctx.addIssue({ code: "custom", message: `Step ${step.id} needs a matching portable tool declaration.` });
+    }
+    for (const tool of book.runtime.tools) if (!book.requirements.some((value) => value.id === tool.requirement && value.operations.includes(tool.operation)))
+      ctx.addIssue({ code: "custom", message: `Tool ${tool.id} must reference a declared connector operation.` });
+    if (book.kind === "goal" && book.allowedSkills.length)
+      ctx.addIssue({ code: "custom", message: "Move legacy skill references into exact portable skill pins." });
+  }
   if (new Set(book.requirements.map((row) => row.id)).size !== book.requirements.length) ctx.addIssue({ code: "custom", message: "Requirement identities must be unique." });
   if (book.kind === "structured") {
+    if (book.finalOutputMappings) {
+      const mappings = Object.entries(book.finalOutputMappings);
+      if (!mappings.length || mappings.length !== book.outputFields.length || mappings.some(([field, path]) => {
+        const [, source, stepId, ...segments] = path.split("/");
+        return !book.outputFields.includes(field) || source !== "steps" || !segments.length || !book.steps.some((step) => step.id === stepId);
+      })) ctx.addIssue({ code: "custom", path: ["finalOutputMappings"], message: "Map every named output to a field from an authored step, for example /steps/draft/text." });
+    }
     const seen = /* @__PURE__ */ new Set();
     for (const step of book.steps) {
+      if (step.revisionTarget && (!studioStepRequiresReview(step) || (step.revisionTarget === "$inputs" ? !book.inputs.length : !seen.has(step.revisionTarget))))
+        ctx.addIssue({ code: "custom", path: ["steps", book.steps.indexOf(step), "revisionTarget"], message: "Choose playbook inputs or an earlier step for this approval\u2019s changes." });
       if (seen.has(step.id) || step.dependsOn.some((id) => !seen.has(id))) ctx.addIssue({ code: "custom", message: "Steps need unique identities and may depend only on preceding steps." });
       if (step.operation && !book.requirements.some((row) => row.id === step.operation.requirementId && row.operations.includes(step.operation.operationId))) ctx.addIssue({ code: "custom", message: "Every operation must belong to a declared requirement." });
       if (step.operation?.completion && !book.requirements.some((row) => row.id === step.operation.requirementId && row.operations.includes(step.operation.completion.operationId))) ctx.addIssue({ code: "custom", message: "Completion polling must belong to the same declared requirement." });
@@ -4250,8 +4440,10 @@ var studioPlaybookSchema = external_exports.discriminatedUnion("kind", [
   }
 });
 var studioBotSchema = external_exports.object({
-  id: key2,
-  playbookId: key2,
+  skillSourceId: external_exports.string().uuid().optional(),
+  desktopRunner: external_exports.enum(STUDIO_AGENT_PROVIDERS).optional(),
+  id: key3,
+  playbookId: key3,
   sourceFingerprint: external_exports.string().max(128),
   name: external_exports.string().min(1).max(160),
   objective: text,
@@ -4259,38 +4451,94 @@ var studioBotSchema = external_exports.object({
   position: external_exports.object({ x: external_exports.number().finite(), y: external_exports.number().finite() }).strict()
 }).strict();
 var studioMeetingCycleSchema = external_exports.object({
-  researcher: key2,
-  caller: key2,
-  scribe: key2,
-  analyst: key2,
-  steward: key2,
-  publisher: key2,
+  researcher: key3,
+  caller: key3,
+  scribe: key3,
+  analyst: key3,
+  steward: key3,
+  publisher: key3,
   prepareMinutes: external_exports.literal(30).default(30),
   lookbackDays: external_exports.literal(90).default(90),
   maxCallSeconds: external_exports.literal(180).default(180),
-  signalRules: external_exports.array(external_exports.object({ id: key2, field: pointer2, equals: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]), targetPlaybookKey: key2.optional() }).strict()).max(20).default([])
+  signalRules: external_exports.array(external_exports.object({ id: key3, field: pointer2, equals: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]), targetPlaybookKey: key3.optional() }).strict()).max(20).default([])
 }).strict();
 var studioTeamSchema = external_exports.object({
-  id: key2,
+  archived: external_exports.boolean().optional(),
+  id: key3,
   name: external_exports.string().min(1).max(160),
   goal: text,
   revision: external_exports.number().int().positive(),
   budget: external_exports.object({ dailyCredits: external_exports.number().nonnegative().finite(), episodeCredits: external_exports.number().nonnegative().finite() }).strict(),
-  apps: external_exports.array(key2).max(50).default([]),
-  automationPolicies: external_exports.array(external_exports.object({ id: key2, playbookKey: key2, intervalMinutes: external_exports.number().int().min(5).max(1440), maxCredits: external_exports.number().positive().finite(), maxModelCalls: external_exports.number().int().min(1).max(128), sharedFields: external_exports.array(key2).max(100).default([]), meetingCycle: studioMeetingCycleSchema.optional() }).strict()).max(20).default([]),
-  pagePositions: external_exports.record(key2, external_exports.object({ x: external_exports.number().finite(), y: external_exports.number().finite() }).strict()).optional(),
-  hiddenPageIds: external_exports.array(key2).max(256).optional(),
+  apps: external_exports.array(key3).max(50).default([]),
+  automationPolicies: external_exports.array(external_exports.object({ id: key3, playbookKey: key3, intervalMinutes: external_exports.number().int().min(5).max(1440), maxCredits: external_exports.number().positive().finite(), maxModelCalls: external_exports.number().int().min(1).max(128), sharedFields: external_exports.array(key3).max(100).default([]), meetingCycle: studioMeetingCycleSchema.optional() }).strict()).max(20).default([]),
+  pagePositions: external_exports.record(key3, external_exports.object({ x: external_exports.number().finite(), y: external_exports.number().finite() }).strict()).optional(),
+  hiddenPageIds: external_exports.array(key3).max(256).optional(),
   bots: external_exports.array(studioBotSchema).max(64),
-  connections: external_exports.array(external_exports.object({ id: key2, sourceBotId: key2, targetBotId: key2.optional(), pageId: key2.optional(), kind: external_exports.enum(["delegate", "handoff", "update_page", "read_page"]), instruction: external_exports.string().max(4e3).default("") }).strict()).max(200)
+  connections: external_exports.array(external_exports.object({ id: key3, sourceBotId: key3, targetBotId: key3.optional(), pageId: key3.optional(), kind: external_exports.enum(["delegate", "handoff", "update_page", "read_page"]), instruction: external_exports.string().max(4e3).default("") }).strict()).max(200)
 }).strict();
+var PLAYBOOK_SKILL_PATH = /^skills\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
+var PLAYBOOK_SKILL_FILE = /^(?:SKILL\.md|AGENTS\.md|CLAUDE\.md|LICENSE(?:\.md|\.txt)?|(?:references|assets|scripts|evals|gabriel|examples|fixtures)\/(?:[A-Za-z0-9_][A-Za-z0-9_.-]{0,79}\/){0,3}[A-Za-z0-9_][A-Za-z0-9_.-]{0,79})$/;
+var PLAYBOOK_SKILL_HOOKS = "gabriel/hooks.json";
+var PLAYBOOK_SKILL_LIMITS = { files: 48, fileBytes: 65536, bytes: 262144 };
+var skillFiles = external_exports.record(external_exports.string().max(200).regex(PLAYBOOK_SKILL_FILE), external_exports.string().max(PLAYBOOK_SKILL_LIMITS.fileBytes)).superRefine((files, ctx) => {
+  const names = Object.keys(files);
+  if (!names.includes("SKILL.md")) ctx.addIssue({ code: "custom", message: "A playbook skill folder needs its SKILL.md." });
+  if (names.length > PLAYBOOK_SKILL_LIMITS.files || names.reduce((size, name) => size + new TextEncoder().encode(files[name]).byteLength, 0) > PLAYBOOK_SKILL_LIMITS.bytes)
+    ctx.addIssue({ code: "custom", message: "A playbook skill folder holds up to 48 files and 256 KB." });
+});
+var studioPlaybookSkillSchema = external_exports.object({
+  playbookId: external_exports.string().regex(/^(?:command|studio|canvas):[A-Za-z0-9][A-Za-z0-9._:-]{0,180}$/),
+  path: external_exports.string().max(71).regex(PLAYBOOK_SKILL_PATH),
+  template: external_exports.string().regex(/^[a-f0-9]{64}$/).optional(),
+  files: skillFiles
+}).strict();
+var graphFiles = external_exports.record(external_exports.string().regex(/^(SKILL\.md|references\/[A-Za-z0-9_-]+\.md|(?:assets|fixtures)\/[A-Za-z0-9_.-]+\.json)$/), external_exports.string().max(65536));
 var studioAssetSchema = external_exports.object({
   schemaVersion: external_exports.literal(1),
+  packageInstallations: external_exports.array(packageInstallationSchema).max(100).optional(),
   market: external_exports.string().regex(/^[A-Z]{2}$/).optional(),
   teams: external_exports.array(studioTeamSchema).max(100),
   playbooks: external_exports.array(studioPlaybookSchema).max(128),
-  resources: external_exports.array(studioResourceSchema).max(256).optional()
+  graphPlaybooks: external_exports.array(external_exports.object({
+    teamId: key3,
+    botId: key3,
+    commandId: key3,
+    detached: external_exports.literal(true).optional(),
+    /** The skill folder this copy was installed from, in the playbook's workflow repository. */
+    path: external_exports.string().regex(/^skills\/[a-z0-9]+(?:-[a-z0-9]+)*$/).optional(),
+    files: graphFiles
+  }).strict()).max(32).optional(),
+  commandGraphs: external_exports.array(external_exports.object({
+    trigger: external_exports.string().regex(/^\/[a-z0-9][a-z0-9-]{0,99}$/),
+    title: external_exports.string().trim().min(1).max(160).optional(),
+    description: external_exports.string().trim().min(1).max(1e3).optional(),
+    files: graphFiles,
+    packageContract: external_exports.object({ inputs: external_exports.array(key3).max(50), outputs: external_exports.array(key3).max(100) }).strict().optional()
+  }).strict()).max(16).optional(),
+  resources: external_exports.array(studioResourceSchema).max(256).optional(),
+  playbookSkills: external_exports.array(studioPlaybookSkillSchema).max(128).optional()
 }).strict().superRefine((asset, ctx) => {
+  const skills = asset.playbookSkills || [];
+  if (new Set(skills.map((skill) => skill.playbookId)).size !== skills.length || new Set(skills.map((skill) => skill.path)).size !== skills.length)
+    ctx.addIssue({ code: "custom", message: "Each playbook has one skill folder, and each folder its own name." });
+  if (new Set(asset.commandGraphs?.map((graph) => graph.trigger)).size !== (asset.commandGraphs?.length || 0))
+    ctx.addIssue({ code: "custom", message: "Each command needs a unique graph binding." });
+  const receipts = asset.packageInstallations || [];
+  if (new Set(receipts.map((row) => row.id)).size !== receipts.length)
+    ctx.addIssue({ code: "custom", message: "Package installation identities must be unique." });
+  for (const graph of asset.commandGraphs || []) {
+    const command = graph.trigger.slice(1);
+    if (Boolean(graph.packageContract) !== receipts.some((row) => row.playbookKeys.includes(command)))
+      ctx.addIssue({ code: "custom", message: "A package graph requires an installation receipt." });
+  }
   for (const message of studioResourceProblems(asset.resources || [], asset.teams, asset.playbooks)) ctx.addIssue({ code: "custom", message });
+  const graphBindings = /* @__PURE__ */ new Set();
+  for (const graph of asset.graphPlaybooks || []) {
+    const identity = JSON.stringify([graph.teamId, graph.commandId]);
+    if (graphBindings.has(identity) || !asset.teams.some((team) => team.id === graph.teamId && (graph.detached ? !team.bots.some((bot) => bot.id === graph.botId) : team.bots.some((bot) => bot.id === graph.botId))))
+      ctx.addIssue({ code: "custom", message: "A graph playbook needs a unique command in its team and an attached bot or a detached definition." });
+    graphBindings.add(identity);
+  }
   for (const rows of [asset.teams, asset.playbooks]) {
     const ids = rows.map((row) => "key" in row ? row.key : row.id);
     if (new Set(ids).size !== ids.length) ctx.addIssue({ code: "custom", message: "Definition identities must be unique." });
@@ -4322,27 +4570,58 @@ var studioAssetSchema = external_exports.object({
       if (!asset.playbooks.some((candidate) => candidate.key === child)) ctx.addIssue({ code: "custom", message: "Reuse only registered playbooks." });
       else visit(child, [...ancestry, id]);
     }
+    for (const link of book?.runtime?.delegation || []) {
+      const child = asset.playbooks.find((row) => row.key === link.playbook);
+      if (!child || book?.teamId && child.teamId && child.teamId !== book.teamId) ctx.addIssue({ code: "custom", message: "A portable specialist must belong to this team or be shared." });
+      else visit(child.key, [...ancestry, id]);
+    }
     visited.add(id);
   };
   for (const book of asset.playbooks) visit(book.key, []);
 });
+var studioStepRequiresReview = (step) => step.requiresApproval || Boolean(step.operation && step.operation.effect !== "read");
+var studioStepSupportsModelOverride = (step, profile) => step.type === "reason" && (!profile || profile === "text" || profile === "sandbox");
+function studioRevisionTarget(steps, index, hasInputs) {
+  const step = steps[index];
+  return step.revisionTarget || [...steps.slice(0, index)].reverse().find((row) => row.type === "reason")?.id || (hasInputs ? "$inputs" : step.id);
+}
 var emptyStudioAsset = () => ({ schemaVersion: 1, teams: [], playbooks: [] });
 function normalizeStudioPlaybook(value) {
   const record = value;
   return studioPlaybookSchema.parse({ ...record, kind: record?.kind || "structured" });
 }
+var portablePlaybookSchema = external_exports.object({
+  schemaVersion: external_exports.literal(2),
+  definition: studioPlaybookSchema,
+  skill: external_exports.string().max(71).regex(PLAYBOOK_SKILL_PATH).optional()
+}).strict().superRefine((entry, ctx) => {
+  if (!entry.definition.runtime || entry.definition.teamId || entry.definition.kind === "goal" && entry.definition.procedureRef)
+    ctx.addIssue({ code: "custom", message: "A portable playbook requires a runtime definition and portable workflow settings." });
+});
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  PLAYBOOK_SKILL_FILE,
+  PLAYBOOK_SKILL_HOOKS,
+  PLAYBOOK_SKILL_LIMITS,
+  PLAYBOOK_SKILL_PATH,
   STUDIO_TEAMS_ASSET,
   emptyStudioAsset,
+  isStudioFileField,
   normalizeStudioPlaybook,
+  portablePlaybookSchema,
   studioAssetSchema,
   studioBotSchema,
+  studioFileInputSchema,
   studioGoalLimitsSchema,
   studioMeetingCycleSchema,
   studioOperationSchema,
+  studioPlaybookInputSchema,
   studioPlaybookSchema,
+  studioPlaybookSkillSchema,
   studioRequirementSchema,
+  studioRevisionTarget,
+  studioStepRequiresReview,
   studioStepSchema,
+  studioStepSupportsModelOverride,
   studioTeamSchema
 });

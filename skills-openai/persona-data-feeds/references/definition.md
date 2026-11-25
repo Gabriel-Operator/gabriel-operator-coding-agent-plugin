@@ -11,8 +11,10 @@
 }
 ```
 
-Definition fields: `schemaVersion: 1`, `name`, one `operation`, `inputSchema`,
-`outputSchema`, `credentialRequirements`, `allowedDomains`; optional `type`,
+Definition fields: `schemaVersion: 1`, `name`, one `operation` (`create`, `read`,
+`update`, `delete` or `publish`; a `publish` feed needs at least one credential slot
+and one allowed host), `inputSchema`,
+`outputSchema`, `credentialRequirements`, `allowedDomains`; optional `type` (email, file, transaction, calendar, message, portal, source, social or analytics),
 `acquisition`, `ontology`, `ontologyUsage`, `registryRef`, `sourceSelection`,
 `outputKind`, `outputStepId` and `localization`. Source registry references use
 `{kind: "list", resourceKey}`; they are not subscriber List IDs. JSON Schema
@@ -42,3 +44,11 @@ An ontology projection is `{entityType, ontologyVersion?, recordsPath, fields}`;
 `fields` maps stable ontology attribute IDs to JSON pointers. It validates meaning
 without writing graph instances. Source receipts and imported rows remain in
 runtime storage, while only definitions/references belong in Git.
+
+A REST step names the provider call. Use `pathParams` for ids (`url: ".../:accountId/media"`,
+`pathParams: [{key: "accountId", value: "{{inputs.accountId}}"}]`), `queryParams` for text,
+a JSON `body` object for typed values, and `headers: [{key: "Authorization", value:
+"Bearer {{credentials.slot}}"}]` for secrets. `responseVariableName` keeps a step's JSON
+for a later step (`{{made.id}}`, `{{hashtag.data.0.id}}`); `outputStepId` names the step
+whose JSON is returned. A chain is allowed for one provider handshake (look a hashtag up,
+then read it); a person-visible action should be its own `publish` feed.

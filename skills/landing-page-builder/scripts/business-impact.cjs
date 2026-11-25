@@ -137,11 +137,14 @@ function validateCompactRoi(value, path = "landingPage.roiCalculator.compact") {
     if (typeof v !== "string" || !v.trim() || v.length > 2e3) fail(p, "Expected non-empty copy, up to 2000 characters.");
   };
   if (!record(value)) return [{ path, message: "Expected compact calculator configuration." }];
-  keys(value, ["schemaVersion", "defaultProfileId", "copy", "profiles"], path);
+  keys(value, ["schemaVersion", "showWorkOutput", "scaleCapacityOnly", "defaultProfileId", "copy", "profiles"], path);
+  if (value.showWorkOutput !== void 0 && typeof value.showWorkOutput !== "boolean") fail(`${path}.showWorkOutput`, "Choose whether to show the work-output forecast.");
+  if (value.scaleCapacityOnly !== void 0 && typeof value.scaleCapacityOnly !== "boolean") fail(`${path}.scaleCapacityOnly`, "Choose whether paid tiers keep the same benefit per unit.");
   if (value.schemaVersion !== 1) fail(`${path}.schemaVersion`, "Supported compact version is 1.");
   if (!record(value.copy)) fail(`${path}.copy`, "Add localized calculator copy.");
   else {
-    keys(value.copy, Object.keys(COMPACT_ROI_COPY), `${path}.copy`);
+    keys(value.copy, [...Object.keys(COMPACT_ROI_COPY), "value"], `${path}.copy`);
+    if (value.copy.value !== void 0) text(value.copy.value, `${path}.copy.value`);
     Object.keys(COMPACT_ROI_COPY).forEach((k) => text(value.copy[k], `${path}.copy.${k}`));
   }
   if (!Array.isArray(value.profiles) || !value.profiles.length || value.profiles.length > 8) return [...issues, { path: `${path}.profiles`, message: "Use one to eight audience profiles." }];

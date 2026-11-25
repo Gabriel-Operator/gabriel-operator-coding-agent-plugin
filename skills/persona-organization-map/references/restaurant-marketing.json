@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "title": "Restaurant playbook map",
+  "description": "Explore the restaurant campus, enter a department and discover the workspaces and playbooks inside.",
+  "nodes": [
+    {
+      "id": "restaurant",
+      "kind": "organization",
+      "label": "Restaurant",
+      "description": "Explore the teams that bring your restaurant to life. Archer currently supports marketing workflows; other departments show their available coverage."
+    },
+    {
+      "id": "marketing",
+      "kind": "department",
+      "parentId": "restaurant",
+      "label": "Marketing",
+      "description": "Build demand, promote events and create campaign content with Archer.",
+      "position": {
+        "x": 24,
+        "y": 28
+      },
+      "scene": {
+        "imageUrl": "assets/organization-map/studio.webp",
+        "alt": "A cutaway restaurant marketing studio with six connected creative work areas.",
+        "aspectRatio": 1.5
+      },
+      "color": "#ec4899"
+    },
+    {
+      "id": "guest-experience",
+      "kind": "department",
+      "parentId": "restaurant",
+      "label": "Guest experience",
+      "description": "Reservations, hospitality and guest relationships. No playbooks are mapped here yet.",
+      "position": {
+        "x": 52,
+        "y": 28
+      },
+      "color": "#3b82f6"
+    },
+    {
+      "id": "kitchen",
+      "kind": "department",
+      "parentId": "restaurant",
+      "label": "Kitchen & menu",
+      "description": "Menu planning, food preparation and kitchen operations. No playbooks are mapped here yet.",
+      "position": {
+        "x": 80,
+        "y": 28
+      },
+      "color": "#f59e0b"
+    },
+    {
+      "id": "purchasing",
+      "kind": "department",
+      "parentId": "restaurant",
+      "label": "Purchasing",
+      "description": "Suppliers, ingredients and stock. No playbooks are mapped here yet.",
+      "position": {
+        "x": 24,
+        "y": 62
+      },
+      "color": "#eab308"
+    },
+    {
+      "id": "people",
+      "kind": "department",
+      "parentId": "restaurant",
+      "label": "People & training",
+      "description": "Team development, staffing and training. No playbooks are mapped here yet.",
+      "position": {
+        "x": 52,
+        "y": 62
+      },
+      "color": "#a855f7"
+    },
+    {
+      "id": "finance",
+      "kind": "department",
+      "parentId": "restaurant",
+      "label": "Finance",
+      "description": "Restaurant finances and reporting. No playbooks are mapped here yet.",
+      "position": {
+        "x": 80,
+        "y": 62
+      },
+      "color": "#10b981"
+    },
+    {
+      "id": "event-campaigns",
+      "kind": "process",
+      "parentId": "marketing",
+      "label": "Event campaigns",
+      "description": "Turn a restaurant website or Instagram URL into a brand identity and an event campaign, with review before publishing or scheduling.",
+      "position": {
+        "x": 22,
+        "y": 30
+      },
+      "actionIds": [
+        "run-instagram-campaign"
+      ],
+      "color": "#ec4899",
+      "scene": {
+        "imageUrl": "assets/organization-map/workspace.webp",
+        "alt": "A closer view of a restaurant marketing campaign workspace with a planning table and creative tools.",
+        "aspectRatio": 1.5
+      }
+    },
+    {
+      "id": "paid-creative",
+      "kind": "process",
+      "parentId": "marketing",
+      "label": "Advertising creative",
+      "description": "Prepare a campaign brief, storyboard and cinematic advertising video.",
+      "position": {
+        "x": 50,
+        "y": 30
+      },
+      "actionIds": [
+        "run-cinematic-ad"
+      ],
+      "color": "#3b82f6",
+      "scene": {
+        "imageUrl": "assets/organization-map/workspace.webp",
+        "alt": "A closer view of a restaurant marketing campaign workspace with a planning table and creative tools.",
+        "aspectRatio": 1.5
+      }
+    },
+    {
+      "id": "brand-storytelling",
+      "kind": "process",
+      "parentId": "marketing",
+      "label": "Brand storytelling",
+      "description": "Create a cinematic trailer to introduce a restaurant, launch or story.",
+      "position": {
+        "x": 78,
+        "y": 30
+      },
+      "actionIds": [
+        "run-trailer"
+      ],
+      "color": "#f59e0b",
+      "scene": {
+        "imageUrl": "assets/organization-map/workspace.webp",
+        "alt": "A closer view of a restaurant marketing campaign workspace with a planning table and creative tools.",
+        "aspectRatio": 1.5
+      }
+    },
+    {
+      "id": "content-production",
+      "kind": "process",
+      "parentId": "marketing",
+      "label": "Content production",
+      "description": "Create campaign media in the connected creative workspace.",
+      "position": {
+        "x": 22,
+        "y": 65
+      },
+      "actionIds": [
+        "run-higgsfield"
+      ],
+      "color": "#eab308",
+      "scene": {
+        "imageUrl": "assets/organization-map/workspace.webp",
+        "alt": "A closer view of a restaurant marketing campaign workspace with a planning table and creative tools.",
+        "aspectRatio": 1.5
+      }
+    },
+    {
+      "id": "media-operations",
+      "kind": "process",
+      "parentId": "marketing",
+      "label": "Creative asset operations",
+      "description": "Import campaign assets and manage the connected creative session.",
+      "position": {
+        "x": 50,
+        "y": 65
+      },
+      "actionIds": [
+        "run-higgsfield-assets",
+        "run-higgsfield-logout"
+      ],
+      "color": "#a855f7",
+      "scene": {
+        "imageUrl": "assets/organization-map/workspace.webp",
+        "alt": "A closer view of a restaurant marketing campaign workspace with a planning table and creative tools.",
+        "aspectRatio": 1.5
+      }
+    },
+    {
+      "id": "audience-loyalty",
+      "kind": "process",
+      "parentId": "marketing",
+      "label": "Audience & loyalty",
+      "description": "Audience insight and loyalty planning. No playbooks are mapped to this process yet.",
+      "position": {
+        "x": 78,
+        "y": 65
+      },
+      "actionIds": [],
+      "color": "#10b981",
+      "scene": {
+        "imageUrl": "assets/organization-map/workspace.webp",
+        "alt": "A closer view of a restaurant marketing campaign workspace with a planning table and creative tools.",
+        "aspectRatio": 1.5
+      }
+    },
+    {
+      "id": "supplier-sourcing",
+      "kind": "process",
+      "parentId": "purchasing",
+      "label": "Supplier sourcing",
+      "description": "Identify and manage ingredient suppliers. No registered playbook is mapped here."
+    },
+    {
+      "id": "ingredient-ordering",
+      "kind": "process",
+      "parentId": "purchasing",
+      "label": "Ingredient ordering",
+      "description": "Order ingredients for planned demand. No registered playbook is mapped here."
+    },
+    {
+      "id": "goods-receiving",
+      "kind": "process",
+      "parentId": "purchasing",
+      "label": "Receiving & stock",
+      "description": "Receive deliveries and maintain ingredient stock. No registered playbook is mapped here."
+    },
+    {
+      "id": "menu-planning",
+      "kind": "process",
+      "parentId": "kitchen",
+      "label": "Menu & production planning",
+      "description": "Plan menus and kitchen production. No registered playbook is mapped here."
+    },
+    {
+      "id": "food-preparation",
+      "kind": "process",
+      "parentId": "kitchen",
+      "label": "Food preparation",
+      "description": "Prepare dishes for service. No registered playbook is mapped here."
+    },
+    {
+      "id": "guest-service",
+      "kind": "process",
+      "parentId": "guest-experience",
+      "label": "Guest service",
+      "description": "Welcome guests and serve orders. No registered playbook is mapped here."
+    },
+    {
+      "id": "guest-feedback",
+      "kind": "process",
+      "parentId": "guest-experience",
+      "label": "Guest feedback",
+      "description": "Collect guest feedback for the next planning cycle. No registered playbook is mapped here."
+    }
+  ],
+  "connections": [
+    {
+      "from": "marketing",
+      "to": "guest-experience",
+      "label": "Guest demand"
+    },
+    {
+      "from": "guest-experience",
+      "to": "kitchen",
+      "label": "Guest feedback"
+    },
+    {
+      "from": "purchasing",
+      "to": "kitchen",
+      "label": "Ingredients"
+    },
+    {
+      "from": "people",
+      "to": "guest-experience",
+      "label": "Team readiness"
+    },
+    {
+      "from": "event-campaigns",
+      "to": "paid-creative",
+      "label": "Campaign brief"
+    },
+    {
+      "from": "paid-creative",
+      "to": "brand-storytelling",
+      "label": "Brand story"
+    },
+    {
+      "from": "content-production",
+      "to": "media-operations",
+      "label": "Approved assets"
+    }
+  ],
+  "scenes": {
+    "organization": {
+      "imageUrl": "assets/organization-map/campus.webp",
+      "alt": "An isometric restaurant company campus with six buildings for marketing, hospitality, kitchen, purchasing, people and finance.",
+      "aspectRatio": 1.5
+    }
+  },
+  "valueChains": [
+    {
+      "id": "restaurant-supply-chain",
+      "label": "Restaurant supply chain",
+      "description": "A conceptual view from demand creation through sourcing, food preparation and guest service. Coverage reflects the playbooks registered in this workspace.",
+      "nodeIds": [
+        "marketing",
+        "supplier-sourcing",
+        "ingredient-ordering",
+        "goods-receiving",
+        "menu-planning",
+        "food-preparation",
+        "guest-service",
+        "guest-feedback"
+      ]
+    },
+    {
+      "id": "marketing-capabilities",
+      "label": "Marketing capabilities",
+      "description": "Explore campaign and creative capabilities supported by Archer. These stages are navigation perspectives, not mandatory execution dependencies.",
+      "nodeIds": [
+        "event-campaigns",
+        "paid-creative",
+        "brand-storytelling",
+        "content-production",
+        "media-operations",
+        "audience-loyalty"
+      ]
+    }
+  ],
+  "enabled": true
+}
